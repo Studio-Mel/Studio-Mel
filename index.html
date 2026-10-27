@@ -11,7 +11,8 @@
 body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);line-height:1.6}
 header{position:sticky;top:0;background:rgba(11,13,18,.9);border-bottom:1px solid #1e2330;z-index:10}
 nav{max-width:1100px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:18px 24px;flex-wrap:wrap;gap:10px}
-.logo{font-weight:800;font-size:1.3rem}
+.logo{font-weight:800;font-size:1.3rem;display:flex;align-items:center;gap:10px}
+.logo b{background:var(--blue);color:#fff;width:34px;height:34px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center}
 .logo span{color:var(--blue2)}
 .menu{display:flex;gap:6px;flex-wrap:wrap}
 .menu button{background:none;border:none;color:var(--mute);font:inherit;padding:8px 14px;border-radius:8px;cursor:pointer}
@@ -39,12 +40,14 @@ summary{cursor:pointer;font-weight:600}
 details p{color:var(--mute);margin-top:10px}
 form{display:grid;gap:14px;max-width:560px;margin-top:30px}
 input,textarea,select{background:var(--card);border:1px solid #1e2330;color:var(--txt);padding:14px;border-radius:10px;font:inherit}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--blue)}
+#devis-statut{color:var(--blue2);font-weight:600}
 footer{text-align:center;color:var(--mute);padding:40px;border-top:1px solid #1e2330}
 </style>
 </head>
 <body>
 <header><nav>
-<div class="logo">Studio <span>Mel</span></div>
+<div class="logo"><b>M</b>Studio <span>Mel</span></div>
 <div class="menu">
 <button class="active" onclick="go('accueil')">Accueil</button>
 <button onclick="go('formules')">Formules</button>
@@ -99,23 +102,48 @@ footer{text-align:center;color:var(--mute);padding:40px;border-top:1px solid #1e
 <section id="contact">
 <h2>Contact</h2>
 <p class="sub">Parlez-moi de votre projet, réponse sous 48 h avec un devis gratuit.</p>
-<form action="mailto:studio-mail@outlook.fr" method="post" enctype="text/plain">
+<form id="devis-form">
 <input name="nom" placeholder="Votre nom" required>
-<input name="entreprise" placeholder="Votre entreprise">
-<input type="email" name="email" placeholder="Votre e-mail" required>
-<select name="formule"><option>Création</option><option>Refonte</option><option>Maintenance</option><option>Fiche Google</option></select>
-<textarea name="message" rows="5" placeholder="Votre projet en quelques mots"></textarea>
-<button class="btn" type="submit">Envoyer</button>
+<input name="entreprise" placeholder="Votre entreprise" required>
+<input name="email" type="email" placeholder="Votre e-mail" required>
+<select name="formule" required>
+<option value="Création de site vitrine">Création · 750 €</option>
+<option value="Refonte de site">Refonte · 500 €</option>
+<option value="Maintenance mensuelle">Maintenance · 40 €/mois</option>
+<option value="Fiche Google Business">Fiche Google · 80 €</option>
+</select>
+<textarea name="message" rows="5" placeholder="Parlez-moi de votre projet"></textarea>
+<button class="btn" type="submit">Demander un devis gratuit</button>
+<p id="devis-statut"></p>
 </form>
 </section>
 </main>
-<footer>© 2026 Studio Mel · Région lyonnaise</footer>
+<footer>© 2026 Studio Mel · studio-mel@outlook.fr · Région lyonnaise</footer>
 <script>
 function go(id){
 document.querySelectorAll('section').forEach(s=>s.classList.toggle('show',s.id===id));
 document.querySelectorAll('.menu button').forEach(b=>b.classList.toggle('active',b.getAttribute('onclick').includes("'"+id+"'")));
 window.scrollTo(0,0);
 }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>
+<script>
+emailjs.init({ publicKey: "53BDiH6RSJl99cF65" });
+const prix = { "Création de site vitrine": "750 €", "Refonte de site": "500 €", "Maintenance mensuelle": "40 €/mois", "Fiche Google Business": "80 €" };
+document.getElementById("devis-form").addEventListener("submit", e => {
+e.preventDefault();
+const f = e.target, s = document.getElementById("devis-statut");
+s.textContent = "Envoi en cours...";
+emailjs.send("service_nszz5ip", "template_ab96u3d", {
+nom: f.nom.value, entreprise: f.entreprise.value, email: f.email.value,
+formule: f.formule.value, prix: prix[f.formule.value],
+message: f.message.value || "Aucun message",
+date: new Date().toLocaleDateString("fr-FR")
+}).then(
+() => { s.textContent = "Merci ! Je vous recontacte sous 48 h."; f.reset(); },
+() => { s.textContent = "Oups, une erreur. Écrivez-moi à studio-mel@outlook.fr"; }
+);
+});
 </script>
 </body>
 </html>
