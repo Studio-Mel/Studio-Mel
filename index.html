@@ -2,147 +2,296 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Studio Mel — Création de sites web</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Studio Mel · Création de sites web pour les petites entreprises</title>
+<meta name="description" content="Studio Mel crée et modernise les sites web des artisans et petites entreprises de la région lyonnaise. Devis gratuit.">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0b0d12;--card:#141821;--txt:#e8eaf0;--mute:#8b93a7;--blue:#2a4bff;--blue2:#4169e1}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);line-height:1.6}
-header{position:sticky;top:0;background:rgba(11,13,18,.9);border-bottom:1px solid #1e2330;z-index:10}
-nav{max-width:1100px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:18px 24px;flex-wrap:wrap;gap:10px}
-.logo{font-weight:800;font-size:1.3rem;display:flex;align-items:center;gap:10px}
-.logo b{background:var(--blue);color:#fff;width:34px;height:34px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center}
-.logo span{color:var(--blue2)}
-.menu{display:flex;gap:6px;flex-wrap:wrap}
-.menu button{background:none;border:none;color:var(--mute);font:inherit;padding:8px 14px;border-radius:8px;cursor:pointer}
-.menu button:hover,.menu button.active{color:var(--txt);background:#1a1f2b}
-main{max-width:1100px;margin:auto;padding:70px 24px}
-section{display:none}
-section.show{display:block}
-h1{font-size:clamp(2.2rem,5vw,3.8rem);font-weight:800;line-height:1.1}
-h1 em{font-style:normal;color:var(--blue2)}
-h2{font-size:2rem;font-weight:800;margin-bottom:12px}
-.sub{color:var(--mute);font-size:1.1rem;max-width:560px;margin:20px 0 34px}
-.btn{background:var(--blue);color:#fff;padding:14px 28px;border-radius:10px;font:inherit;font-weight:600;border:none;cursor:pointer}
-.btn:hover{background:var(--blue2)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:36px}
-.card{background:var(--card);border:1px solid #1e2330;border-radius:16px;padding:30px}
-.card:hover{border-color:var(--blue)}
-.card p,.card ul{color:var(--mute)}
-.card ul{list-style:none}
-.card li{padding:5px 0}
-.card li::before{content:"✓ ";color:var(--blue2)}
-.price{font-size:2.2rem;font-weight:800;color:var(--blue2);margin:10px 0}
-.pill{display:inline-block;font-size:.8rem;color:var(--blue2);border:1px solid var(--blue);border-radius:20px;padding:3px 12px;margin-bottom:14px}
-details{background:var(--card);border:1px solid #1e2330;border-radius:12px;padding:20px 24px;margin-top:14px}
-summary{cursor:pointer;font-weight:600}
-details p{color:var(--mute);margin-top:10px}
-form{display:grid;gap:14px;max-width:560px;margin-top:30px}
-input,textarea,select{background:var(--card);border:1px solid #1e2330;color:var(--txt);padding:14px;border-radius:10px;font:inherit}
-input:focus,textarea:focus,select:focus{outline:none;border-color:var(--blue)}
-#devis-statut{color:var(--blue2);font-weight:600}
-footer{text-align:center;color:var(--mute);padding:40px;border-top:1px solid #1e2330}
+:root{--bg:#0E1117;--card:#161B24;--line:#262D3A;--txt:#E8EBF2;--mut:#8A93A6;--blue:#2F5BFF;--blue2:#1E44D6;--soft:#2F5BFF1F}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Manrope,system-ui,sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit}
+button,input,select,textarea{font:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+header{position:sticky;top:0;z-index:10;background:#0E1117EE;backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hd{max-width:1100px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:500;text-decoration:none;background:none;border:0;color:var(--txt);cursor:pointer}
+.logo b{width:36px;height:36px;border-radius:8px;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:800}
+.logo span{color:var(--blue);font-weight:700}
+nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{background:none;border:0;color:var(--mut);padding:8px 12px;border-radius:8px;cursor:pointer;white-space:nowrap}
+nav button:hover{color:var(--txt)}
+nav button.on{color:#fff;background:var(--soft)}
+main{flex:1;max-width:1100px;width:100%;margin:0 auto;padding:0 20px}
+section{display:none;padding:64px 0}
+section.on{display:block;animation:in .35s ease}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){section.on{animation:none}html{scroll-behavior:auto}}
+h1{font-size:clamp(36px,6vw,64px);line-height:1.05;font-weight:800;letter-spacing:-.02em;max-width:14ch}
+h2{font-size:clamp(28px,4vw,40px);font-weight:800;letter-spacing:-.01em;margin-bottom:10px}
+h3{font-size:20px;font-weight:700}
+.lead{color:var(--mut);font-size:18px;max-width:56ch;margin-top:18px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.btn{display:inline-block;padding:14px 22px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--txt);cursor:pointer;font-weight:600;text-decoration:none}
+.btn:hover{border-color:var(--blue)}
+.btn.pri{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.pri:hover{background:var(--blue2)}
+.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:center}
+.mock{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.mock .dots{display:flex;gap:6px;margin-bottom:14px}
+.mock .dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.mock .bar{height:12px;border-radius:6px;background:var(--line);margin-bottom:10px}
+.mock .blk{height:110px;border-radius:10px;background:var(--soft);border:1px solid #2F5BFF55;margin:14px 0}
+.mock .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.mock .row div{height:56px;border-radius:8px;background:var(--line)}
+.points{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:64px}
+.pt{border-top:2px solid var(--blue);padding-top:14px}
+.pt p{color:var(--mut);margin-top:6px}
+.sub{color:var(--mut);max-width:60ch}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px}
+.card.top{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue) inset}
+.card .badge{align-self:flex-start;background:var(--blue);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px}
+.price{font-size:40px;font-weight:800}
+.price small{font-size:16px;color:var(--mut);font-weight:500}
+.card ul{list-style:none;color:var(--mut);display:grid;gap:6px;margin:6px 0 14px}
+.card li::before{content:"✓";color:var(--blue);font-weight:800;margin-right:8px}
+.card .btn{margin-top:auto;text-align:center}
+.extra{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.extra .card{flex-direction:row;justify-content:space-between;align-items:center}
+.extra p{color:var(--mut)}
+.extra strong{font-size:22px;white-space:nowrap}
+.real{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:32px}
+.shot{height:200px;border-radius:12px;margin-bottom:6px;display:grid;place-items:center;font-weight:700;font-size:22px}
+.shot.green{background:linear-gradient(135deg,#1F5F3A,#3E8E5E);color:#E9F7EE}
+.shot.empty{border:2px dashed var(--line);color:var(--mut)}
+.about{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:start;margin-top:32px}
+.avatar{width:140px;height:140px;border-radius:24px;background:var(--blue);display:grid;place-items:center;font-size:64px;font-weight:800;color:#fff}
+.about p{color:var(--mut);margin-bottom:14px;max-width:62ch}
+.about p strong{color:var(--txt)}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:10px}
+details[open]{border-color:var(--blue)}
+summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--blue);font-size:22px;line-height:1}
+details[open] summary::after{content:"−"}
+details p{color:var(--mut);margin-top:10px}
+.faq{margin-top:32px;max-width:760px}
+.contact{display:grid;grid-template-columns:1fr 1.2fr;gap:40px;margin-top:32px}
+.contact .info p{color:var(--mut);margin-bottom:12px}
+form{display:grid;gap:12px}
+form input,form select,form textarea{width:100%;background:var(--card);border:1px solid var(--line);color:var(--txt);border-radius:12px;padding:14px 16px}
+form input:focus,form select:focus,form textarea:focus{border-color:var(--blue);outline:none}
+form textarea{min-height:130px;resize:vertical}
+form .btn{width:100%;border:0}
+#devis-statut{color:var(--mut);min-height:24px}
+footer{border-top:1px solid var(--line);margin-top:40px}
+.ft{max-width:1100px;margin:0 auto;padding:22px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--mut);font-size:14px}
+.key{text-decoration:none;opacity:.35;font-size:16px;padding:4px 8px;border-radius:6px}
+.key:hover{opacity:1}
+@media (max-width:860px){
+.hd{flex-direction:column;align-items:flex-start;gap:10px}
+nav{width:100%}
+section{padding:40px 0}
+.hero,.contact,.about{grid-template-columns:1fr}
+.mock{display:none}
+.points,.grid,.real,.extra{grid-template-columns:1fr}
+.avatar{width:96px;height:96px;font-size:44px}
+}
 </style>
 </head>
 <body>
-<header><nav>
-<div class="logo"><b>M</b>Studio <span>Mel</span></div>
-<div class="menu">
-<button class="active" onclick="go('accueil')">Accueil</button>
-<button onclick="go('formules')">Formules</button>
-<button onclick="go('realisations')">Réalisations</button>
-<button onclick="go('apropos')">À propos</button>
-<button onclick="go('faq')">FAQ</button>
-<button onclick="go('contact')">Contact</button>
-</div>
-</nav></header>
+
+<header>
+  <div class="hd">
+    <button class="logo" data-go="accueil" aria-label="Accueil Studio Mel"><b>M</b>Studio <span>Mel</span></button>
+    <nav aria-label="Navigation principale">
+      <button data-go="accueil">Accueil</button>
+      <button data-go="formules">Formules</button>
+      <button data-go="realisations">Réalisations</button>
+      <button data-go="apropos">À propos</button>
+      <button data-go="faq">FAQ</button>
+      <button data-go="contact">Contact</button>
+    </nav>
+  </div>
+</header>
+
 <main>
-<section id="accueil" class="show">
-<span class="pill">Création & refonte de sites web</span>
-<h1>Votre entreprise mérite<br>un site <em>à sa hauteur.</em></h1>
-<p class="sub">Des sites modernes, rapides et simples pour les artisans, commerçants et petites entreprises de la région lyonnaise.</p>
-<button class="btn" onclick="go('contact')">Demander un devis gratuit</button>
-<div class="grid">
-<div class="card"><h3>Moderne</h3><p>Un design actuel qui inspire confiance.</p></div>
-<div class="card"><h3>Adapté au mobile</h3><p>70 % de vos visiteurs viennent d'un téléphone.</p></div>
-<div class="card"><h3>Visible sur Google</h3><p>Vos clients vous trouvent facilement près de chez eux.</p></div>
-</div>
-</section>
-<section id="formules">
-<h2>Formules</h2>
-<p class="sub">Des tarifs clairs. Paiement 50 % au démarrage, 50 % à la mise en ligne.</p>
-<div class="grid">
-<div class="card"><h3>Refonte</h3><div class="price">500 €</div><ul><li>Modernisation de votre site</li><li>Adapté mobile</li><li>2 tours de retouches</li></ul></div>
-<div class="card"><span class="pill">Le plus demandé</span><h3>Création</h3><div class="price">750 €</div><ul><li>Site créé de A à Z</li><li>Jusqu'à 5 pages</li><li>Nom de domaine géré</li><li>2 tours de retouches</li></ul></div>
-<div class="card"><h3>Maintenance</h3><div class="price">40 €/mois</div><ul><li>Hébergement & mises à jour</li><li>Petites modifs incluses</li><li>Support réactif</li></ul></div>
-<div class="card"><h3>Fiche Google</h3><div class="price">80 €</div><ul><li>Création ou optimisation</li><li>Visible sur Google Maps</li></ul></div>
-</div>
-</section>
-<section id="realisations">
-<h2>Réalisations</h2>
-<div class="grid">
-<div class="card"><span class="pill">Paysagiste</span><h3>Dorne Jardins</h3><p>Maquette de site vitrine pour un paysagiste à Sain-Bel.</p></div>
-<div class="card"><span class="pill">Bientôt</span><h3>Votre projet ?</h3><p>Votre site pourrait être le prochain ici.</p></div>
-</div>
-</section>
-<section id="apropos">
-<h2>À propos</h2>
-<p class="sub">Moi, c'est Mel. Alternant en comptabilité et gestion, je travaille avec des structures locales. J'ai créé Studio Mel pour aider les petites entreprises à avoir un site moderne sans payer des prix d'agence : tarifs clairs, suivi humain, un vrai interlocuteur.</p>
-<button class="btn" onclick="go('contact')">Discutons de votre projet</button>
-</section>
-<section id="faq">
-<h2>Questions fréquentes</h2>
-<details><summary>Combien de temps pour créer mon site ?</summary><p>Entre 1 et 3 semaines en général.</p></details>
-<details><summary>Je n'y connais rien, c'est un problème ?</summary><p>Pas du tout, je m'occupe de tout.</p></details>
-<details><summary>Comment se passe le paiement ?</summary><p>50 % au démarrage, 50 % à la mise en ligne. Paiement en 3 fois possible.</p></details>
-<details><summary>Et pour modifier mon site plus tard ?</summary><p>Avec la maintenance à 40 €/mois, les petites modifs sont incluses.</p></details>
-<details><summary>Le site m'appartient-il ?</summary><p>Oui, le site et le nom de domaine sont à votre nom.</p></details>
-</section>
-<section id="contact">
-<h2>Contact</h2>
-<p class="sub">Parlez-moi de votre projet, réponse sous 48 h avec un devis gratuit.</p>
-<form id="devis-form">
-<input name="nom" placeholder="Votre nom" required>
-<input name="entreprise" placeholder="Votre entreprise" required>
-<input name="email" type="email" placeholder="Votre e-mail" required>
-<select name="formule" required>
-<option value="Création de site vitrine">Création · 750 €</option>
-<option value="Refonte de site">Refonte · 500 €</option>
-<option value="Maintenance mensuelle">Maintenance · 40 €/mois</option>
-<option value="Fiche Google Business">Fiche Google · 80 €</option>
-</select>
-<textarea name="message" rows="5" placeholder="Parlez-moi de votre projet"></textarea>
-<button class="btn" type="submit">Demander un devis gratuit</button>
-<p id="devis-statut"></p>
-</form>
-</section>
+
+  <section id="accueil">
+    <div class="hero">
+      <div>
+        <h1>Un site qui travaille pour votre entreprise.</h1>
+        <p class="lead">Je crée et je modernise les sites des artisans et petites entreprises de la région lyonnaise. Simple, rapide, adapté au mobile, et sans jargon.</p>
+        <div class="cta">
+          <button class="btn pri" data-go="contact">Demander un devis gratuit</button>
+          <button class="btn" data-go="formules">Voir les formules</button>
+        </div>
+      </div>
+      <div class="mock" aria-hidden="true">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <div class="bar" style="width:60%"></div>
+        <div class="bar" style="width:40%"></div>
+        <div class="blk"></div>
+        <div class="row"><div></div><div></div><div></div></div>
+      </div>
+    </div>
+    <div class="points">
+      <div class="pt"><h3>Je m'occupe de tout</h3><p>Nom de domaine, hébergement, mise en ligne : vous n'avez rien de technique à gérer.</p></div>
+      <div class="pt"><h3>Pensé pour le mobile</h3><p>La majorité de vos clients vous cherchent sur leur téléphone. Votre site y sera parfait.</p></div>
+      <div class="pt"><h3>Des prix clairs</h3><p>Des formules fixes, un devis gratuit, et aucune mauvaise surprise sur la facture.</p></div>
+    </div>
+  </section>
+
+  <section id="formules">
+    <h2>Formules</h2>
+    <p class="sub">Des tarifs clairs, sans surprise. Paiement 50 % au démarrage, 50 % à la mise en ligne.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Refonte</h3>
+        <div class="price">500 €</div>
+        <ul><li>Modernisation de votre site existant</li><li>Adapté mobile</li><li>2 tours de retouches inclus</li></ul>
+        <button class="btn" data-go="contact" data-formule="Refonte de site">Choisir</button>
+      </div>
+      <div class="card top">
+        <span class="badge">Le plus demandé</span>
+        <h3>Création</h3>
+        <div class="price">750 €</div>
+        <ul><li>Site vitrine créé de zéro, jusqu'à 5 pages</li><li>Adapté mobile</li><li>Formulaire de contact</li><li>2 tours de retouches inclus</li></ul>
+        <button class="btn pri" data-go="contact" data-formule="Création de site vitrine">Choisir</button>
+      </div>
+      <div class="card">
+        <h3>Maintenance</h3>
+        <div class="price">40 € <small>/ mois</small></div>
+        <ul><li>Hébergement et mises à jour</li><li>1 h de petites modifs par mois</li><li>Au-delà : 30 € / heure</li></ul>
+        <button class="btn" data-go="contact">En parler</button>
+      </div>
+    </div>
+    <div class="extra">
+      <div class="card"><div><h3>Fiche Google</h3><p>Création ou optimisation de votre fiche Google Maps.</p></div><strong>80 €</strong></div>
+      <div class="card"><div><h3>Nom de domaine</h3><p>Acheté à votre nom, géré par moi.</p></div><strong>≈ 15 € / an</strong></div>
+    </div>
+  </section>
+
+  <section id="realisations">
+    <h2>Réalisations</h2>
+    <p class="sub">Quelques projets récents.</p>
+    <div class="real">
+      <div class="card"><div class="shot green">Dorne Jardins</div><h3>Paysagiste</h3><p class="sub">Maquette de site vitrine pour un paysagiste à Sain-Bel.</p></div>
+      <div class="card"><div class="shot empty">Bientôt</div><h3>Votre projet ?</h3><p class="sub">Votre site pourrait être le prochain ici.</p><button class="btn pri" data-go="contact">Me contacter</button></div>
+    </div>
+  </section>
+
+  <section id="apropos">
+    <h2>À propos</h2>
+    <div class="about">
+      <div class="avatar" aria-hidden="true">M</div>
+      <div>
+        <p>Moi c'est <strong>Mel</strong>. Je suis alternant en comptabilité et gestion dans le secteur public, et je crée des sites web pour les petites entreprises de la région lyonnaise.</p>
+        <p>Mon double profil, c'est mon avantage : je comprends vos contraintes de budget et de gestion, et je vous livre un site moderne, clair et efficace, sans jargon technique.</p>
+        <p>Mon objectif : que votre site vous ramène des clients, pas des soucis.</p>
+        <div class="cta"><button class="btn pri" data-go="contact">Travaillons ensemble</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <h2>Questions fréquentes</h2>
+    <div class="faq">
+      <details><summary>Combien de temps pour créer mon site ?</summary><p>Entre 1 et 3 semaines en général, une fois que j'ai vos textes et vos photos.</p></details>
+      <details><summary>Je n'y connais rien, c'est un problème ?</summary><p>Pas du tout, je m'occupe de tout et je vous explique simplement chaque étape.</p></details>
+      <details><summary>Comment se passe le paiement ?</summary><p>50 % au démarrage, 50 % à la mise en ligne. Paiement en 3 fois possible.</p></details>
+      <details><summary>Et pour modifier mon site plus tard ?</summary><p>Avec la maintenance à 40 €/mois, les petites modifs sont incluses.</p></details>
+      <details><summary>Le site m'appartient-il ?</summary><p>Oui, le site et le nom de domaine sont à votre nom.</p></details>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2>Contact</h2>
+    <div class="contact">
+      <div class="info">
+        <p>Parlez-moi de votre projet, je vous réponds sous 48 h avec un devis gratuit.</p>
+        <p>Vous préférez écrire directement ?<br><a href="mailto:studio-mel@outlook.fr">studio-mel@outlook.fr</a></p>
+      </div>
+      <form id="devis-form">
+        <input name="nom" placeholder="Votre nom" required autocomplete="name">
+        <input name="entreprise" placeholder="Votre entreprise" required autocomplete="organization">
+        <input name="email" type="email" placeholder="Votre e-mail" required autocomplete="email">
+        <select name="formule" required>
+          <option value="Création de site vitrine">Création · 750 €</option>
+          <option value="Refonte de site">Refonte · 500 €</option>
+          <option value="Fiche Google Business">Fiche Google · 80 €</option>
+        </select>
+        <textarea name="message" placeholder="Parlez-moi de votre projet"></textarea>
+        <button type="submit" class="btn pri">Demander un devis gratuit</button>
+        <p id="devis-statut" role="status"></p>
+      </form>
+    </div>
+  </section>
+
 </main>
-<footer>© 2026 Studio Mel · studio-mel@outlook.fr · Région lyonnaise</footer>
+
+<footer>
+  <div class="ft">
+    <span>© 2026 Studio Mel · Région lyonnaise</span>
+    <a href="admin.html" class="key" aria-label="Espace admin" title="Espace admin">🔑</a>
+  </div>
+</footer>
+
 <script>
+const pages = ["accueil","formules","realisations","apropos","faq","contact"];
 function go(id){
-document.querySelectorAll('section').forEach(s=>s.classList.toggle('show',s.id===id));
-document.querySelectorAll('.menu button').forEach(b=>b.classList.toggle('active',b.getAttribute('onclick').includes("'"+id+"'")));
-window.scrollTo(0,0);
+  if(!pages.includes(id)) id = "accueil";
+  document.querySelectorAll("main section").forEach(s => s.classList.toggle("on", s.id === id));
+  document.querySelectorAll("nav button").forEach(b => b.classList.toggle("on", b.dataset.go === id));
+  if(location.hash !== "#" + id) history.replaceState(null, "", "#" + id);
+  window.scrollTo(0, 0);
 }
+document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => {
+  if(b.dataset.formule) document.querySelector("#devis-form select").value = b.dataset.formule;
+  go(b.dataset.go);
+}));
+go(location.hash.slice(1));
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyDmPZCrevvmJnPORO1tSOJTL_HIz9HkLi0",
+  authDomain: "studio-mel.firebaseapp.com",
+  projectId: "studio-mel",
+  storageBucket: "studio-mel.firebasestorage.app",
+  messagingSenderId: "1021338202102",
+  appId: "1:1021338202102:web:16b1ab6859034ce959e1d7"
+});
+const db = getFirestore(app);
+
 emailjs.init({ publicKey: "53BDiH6RSJl99cF65" });
-const prix = { "Création de site vitrine": "750 €", "Refonte de site": "500 €", "Maintenance mensuelle": "40 €/mois", "Fiche Google Business": "80 €" };
-document.getElementById("devis-form").addEventListener("submit", e => {
-e.preventDefault();
-const f = e.target, s = document.getElementById("devis-statut");
-s.textContent = "Envoi en cours...";
-emailjs.send("service_nszz5ip", "template_ab96u3d", {
-nom: f.nom.value, entreprise: f.entreprise.value, email: f.email.value,
-formule: f.formule.value, prix: prix[f.formule.value],
-message: f.message.value || "Aucun message",
-date: new Date().toLocaleDateString("fr-FR")
-}).then(
-() => { s.textContent = "Merci ! Je vous recontacte sous 48 h."; f.reset(); },
-() => { s.textContent = "Oups, une erreur. Écrivez-moi à studio-mel@outlook.fr"; }
-);
+const prix = { "Création de site vitrine": "750 €", "Refonte de site": "500 €", "Fiche Google Business": "80 €" };
+
+document.getElementById("devis-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const f = e.target, s = document.getElementById("devis-statut");
+  const btn = f.querySelector("button");
+  btn.disabled = true;
+  s.textContent = "Envoi en cours...";
+  const demande = {
+    nom: f.nom.value, entreprise: f.entreprise.value, email: f.email.value,
+    formule: f.formule.value, prix: prix[f.formule.value],
+    message: f.message.value || "Aucun message",
+    date: new Date().toLocaleDateString("fr-FR")
+  };
+  try { await addDoc(collection(db, "devis"), { ...demande, statut: "nouveau", createdAt: serverTimestamp() }); }
+  catch (err) { console.error(err); }
+  emailjs.send("service_nszz5ip", "template_ab96u3d", demande).then(
+    () => { s.textContent = "Merci ! Je vous recontacte sous 48 h."; f.reset(); btn.disabled = false; },
+    () => { s.textContent = "Oups, une erreur. Écrivez-moi à studio-mel@outlook.fr"; btn.disabled = false; }
+  );
 });
 </script>
 </body>
