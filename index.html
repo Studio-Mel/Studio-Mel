@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studio Mel — Création de sites web</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0d12;--card:#141821;--txt:#e8eaf0;--mute:#8b93a7;--blue:#2a4bff;--blue2:#4169e1}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);line-height:1.6}
+header{position:sticky;top:0;background:rgba(11,13,18,.9);border-bottom:1px solid #1e2330;z-index:10}
+nav{max-width:1100px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:18px 24px;flex-wrap:wrap;gap:10px}
+.logo{font-weight:800;font-size:1.3rem}
+.logo span{color:var(--blue2)}
+.menu{display:flex;gap:6px;flex-wrap:wrap}
+.menu button{background:none;border:none;color:var(--mute);font:inherit;padding:8px 14px;border-radius:8px;cursor:pointer}
+.menu button:hover,.menu button.active{color:var(--txt);background:#1a1f2b}
+main{max-width:1100px;margin:auto;padding:70px 24px}
+section{display:none}
+section.show{display:block}
+h1{font-size:clamp(2.2rem,5vw,3.8rem);font-weight:800;line-height:1.1}
+h1 em{font-style:normal;color:var(--blue2)}
+h2{font-size:2rem;font-weight:800;margin-bottom:12px}
+.sub{color:var(--mute);font-size:1.1rem;max-width:560px;margin:20px 0 34px}
+.btn{background:var(--blue);color:#fff;padding:14px 28px;border-radius:10px;font:inherit;font-weight:600;border:none;cursor:pointer}
+.btn:hover{background:var(--blue2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:36px}
+.card{background:var(--card);border:1px solid #1e2330;border-radius:16px;padding:30px}
+.card:hover{border-color:var(--blue)}
+.card p,.card ul{color:var(--mute)}
+.card ul{list-style:none}
+.card li{padding:5px 0}
+.card li::before{content:"✓ ";color:var(--blue2)}
+.price{font-size:2.2rem;font-weight:800;color:var(--blue2);margin:10px 0}
+.pill{display:inline-block;font-size:.8rem;color:var(--blue2);border:1px solid var(--blue);border-radius:20px;padding:3px 12px;margin-bottom:14px}
+details{background:var(--card);border:1px solid #1e2330;border-radius:12px;padding:20px 24px;margin-top:14px}
+summary{cursor:pointer;font-weight:600}
+details p{color:var(--mute);margin-top:10px}
+form{display:grid;gap:14px;max-width:560px;margin-top:30px}
+input,textarea,select{background:var(--card);border:1px solid #1e2330;color:var(--txt);padding:14px;border-radius:10px;font:inherit}
+footer{text-align:center;color:var(--mute);padding:40px;border-top:1px solid #1e2330}
+</style>
+</head>
+<body>
+<header><nav>
+<div class="logo">Studio <span>Mel</span></div>
+<div class="menu">
+<button class="active" onclick="go('accueil')">Accueil</button>
+<button onclick="go('formules')">Formules</button>
+<button onclick="go('realisations')">Réalisations</button>
+<button onclick="go('apropos')">À propos</button>
+<button onclick="go('faq')">FAQ</button>
+<button onclick="go('contact')">Contact</button>
+</div>
+</nav></header>
+<main>
+<section id="accueil" class="show">
+<span class="pill">Création & refonte de sites web</span>
+<h1>Votre entreprise mérite<br>un site <em>à sa hauteur.</em></h1>
+<p class="sub">Des sites modernes, rapides et simples pour les artisans, commerçants et petites entreprises de la région lyonnaise.</p>
+<button class="btn" onclick="go('contact')">Demander un devis gratuit</button>
+<div class="grid">
+<div class="card"><h3>Moderne</h3><p>Un design actuel qui inspire confiance.</p></div>
+<div class="card"><h3>Adapté au mobile</h3><p>70 % de vos visiteurs viennent d'un téléphone.</p></div>
+<div class="card"><h3>Visible sur Google</h3><p>Vos clients vous trouvent facilement près de chez eux.</p></div>
+</div>
+</section>
+<section id="formules">
+<h2>Formules</h2>
+<p class="sub">Des tarifs clairs. Paiement 50 % au démarrage, 50 % à la mise en ligne.</p>
+<div class="grid">
+<div class="card"><h3>Refonte</h3><div class="price">500 €</div><ul><li>Modernisation de votre site</li><li>Adapté mobile</li><li>2 tours de retouches</li></ul></div>
+<div class="card"><span class="pill">Le plus demandé</span><h3>Création</h3><div class="price">750 €</div><ul><li>Site créé de A à Z</li><li>Jusqu'à 5 pages</li><li>Nom de domaine géré</li><li>2 tours de retouches</li></ul></div>
+<div class="card"><h3>Maintenance</h3><div class="price">40 €/mois</div><ul><li>Hébergement & mises à jour</li><li>Petites modifs incluses</li><li>Support réactif</li></ul></div>
+<div class="card"><h3>Fiche Google</h3><div class="price">80 €</div><ul><li>Création ou optimisation</li><li>Visible sur Google Maps</li></ul></div>
+</div>
+</section>
+<section id="realisations">
+<h2>Réalisations</h2>
+<div class="grid">
+<div class="card"><span class="pill">Paysagiste</span><h3>Dorne Jardins</h3><p>Maquette de site vitrine pour un paysagiste à Sain-Bel.</p></div>
+<div class="card"><span class="pill">Bientôt</span><h3>Votre projet ?</h3><p>Votre site pourrait être le prochain ici.</p></div>
+</div>
+</section>
+<section id="apropos">
+<h2>À propos</h2>
+<p class="sub">Moi, c'est Mel. Alternant en comptabilité et gestion, je travaille avec des structures locales. J'ai créé Studio Mel pour aider les petites entreprises à avoir un site moderne sans payer des prix d'agence : tarifs clairs, suivi humain, un vrai interlocuteur.</p>
+<button class="btn" onclick="go('contact')">Discutons de votre projet</button>
+</section>
+<section id="faq">
+<h2>Questions fréquentes</h2>
+<details><summary>Combien de temps pour créer mon site ?</summary><p>Entre 1 et 3 semaines en général.</p></details>
+<details><summary>Je n'y connais rien, c'est un problème ?</summary><p>Pas du tout, je m'occupe de tout.</p></details>
+<details><summary>Comment se passe le paiement ?</summary><p>50 % au démarrage, 50 % à la mise en ligne. Paiement en 3 fois possible.</p></details>
+<details><summary>Et pour modifier mon site plus tard ?</summary><p>Avec la maintenance à 40 €/mois, les petites modifs sont incluses.</p></details>
+<details><summary>Le site m'appartient-il ?</summary><p>Oui, le site et le nom de domaine sont à votre nom.</p></details>
+</section>
+<section id="contact">
+<h2>Contact</h2>
+<p class="sub">Parlez-moi de votre projet, réponse sous 48 h avec un devis gratuit.</p>
+<form action="mailto:contact@studiomel.fr" method="post" enctype="text/plain">
+<input name="nom" placeholder="Votre nom" required>
+<input name="entreprise" placeholder="Votre entreprise">
+<input type="email" name="email" placeholder="Votre e-mail" required>
+<select name="formule"><option>Création</option><option>Refonte</option><option>Maintenance</option><option>Fiche Google</option></select>
+<textarea name="message" rows="5" placeholder="Votre projet en quelques mots"></textarea>
+<button class="btn" type="submit">Envoyer</button>
+</form>
+</section>
+</main>
+<footer>© 2026 Studio Mel · Région lyonnaise</footer>
+<script>
+function go(id){
+document.querySelectorAll('section').forEach(s=>s.classList.toggle('show',s.id===id));
+document.querySelectorAll('.menu button').forEach(b=>b.classList.toggle('active',b.getAttribute('onclick').includes("'"+id+"'")));
+window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
