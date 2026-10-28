@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Page introuvable · Studio Mel</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232F5BFF'/%3E%3Cpath d='M17 46V19h6l9 13 9-13h6v27h-7V31l-8 11-8-11v15z' fill='white'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--blue:#2F5BFF;--hi:#B4C6FF;--muted:#a9aebb;--e:cubic-bezier(.16,1,.3,1)}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#000}
+body{font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;color:#fff;display:grid;place-items:center;text-align:center;padding:24px;padding-top:calc(24px + env(safe-area-inset-top,0px));padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));overflow:hidden}
+.logo{position:fixed;top:calc(18px + env(safe-area-inset-top,0px));left:24px;display:flex;align-items:center;gap:10px;font-size:19px;font-weight:500;color:#fff;text-decoration:none}
+.logo b{width:32px;height:32px;border-radius:8px;background:var(--blue);display:grid;place-items:center;font-weight:800;font-size:17px}
+.logo span{color:var(--hi);font-weight:800}
+.orbit{position:fixed;left:50%;bottom:-62vmin;width:120vmin;height:120vmin;margin-left:-60vmin;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 50% 50%,#03050c 58%,rgba(47,91,255,.0) 70%);box-shadow:0 0 0 1px rgba(47,91,255,.5),0 0 120px 10px rgba(47,91,255,.35),inset 0 30px 80px rgba(47,91,255,.25)}
+.orbit::after{content:"";position:absolute;inset:-9%;border-radius:50%;border:1px dashed rgba(180,198,255,.25);animation:spin 60s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+main{position:relative;z-index:1;max-width:520px}
+.code{margin:0;font-size:clamp(110px,26vw,190px);font-weight:800;letter-spacing:-.06em;line-height:.9;background:linear-gradient(180deg,#fff 30%,rgba(180,198,255,.25));-webkit-background-clip:text;background-clip:text;color:transparent;animation:rise 1s var(--e) both}
+h1{margin:18px 0 0;font-size:24px;font-weight:600;animation:rise 1s var(--e) .1s both}
+p{margin:10px 0 0;color:var(--muted);font-weight:300;font-size:16.5px;line-height:1.6;animation:rise 1s var(--e) .18s both}
+.btn{display:inline-flex;align-items:center;gap:9px;margin-top:28px;height:46px;padding:0 22px;border-radius:99px;background:#fdfdfd;color:#050505;text-decoration:none;font-weight:500;font-size:15px;animation:rise 1s var(--e) .26s both}
+.btn:focus-visible,.logo:focus-visible{outline:2px solid var(--hi);outline-offset:3px}
+@keyframes rise{from{opacity:0;transform:translateY(16px);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<a class="logo home" href="./"><b>M</b>Studio <span>Mel</span></a>
+<div class="orbit" aria-hidden="true"></div>
+<main>
+  <p class="code" aria-hidden="true">404</p>
+  <h1>Cette page n’existe pas</h1>
+  <p>Le lien est peut-être ancien ou mal tapé. Le reste du site, lui, est bien là.</p>
+  <a class="btn home" href="./">Retour à l’accueil
+    <svg width="13" height="11" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+</main>
+<script>
+// Sur GitHub Pages, le site vit dans /nom-du-depot/ : on renvoie vers sa racine
+(function(){
+  var base = '/';
+  if (/\.github\.io$/.test(location.hostname)) { var seg = location.pathname.split('/')[1]; if (seg) base = '/' + seg + '/'; }
+  document.querySelectorAll('.home').forEach(function(a){ a.href = base; });
+})();
+</script>
+</body>
+</html>
