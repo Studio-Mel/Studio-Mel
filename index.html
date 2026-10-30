@@ -45,6 +45,14 @@
   ]
 }
 </script>
+<script>
+  // ===== TARIFS : une seule source pour le simulateur et les outils (en €) =====
+  window.TARIFS = { refonte: 500, creation: 750, premium: 1200, boutique: 1900, lotProduits: 80, promo: 100, google: 80, domaine: 15, maint: 40, maintBoutique: 70, page: 60, galerie: 60, blog: 150, resa: 150 };
+  // Clé Google PageSpeed (gratuite, facultative) : voir le mode d'emploi. Sans clé, le test marche avec un quota plus faible.
+  window.PSI_KEY = '';
+  // Adresse du relais Cloudflare pour l'audit SEO : l'outil reste caché tant qu'elle est vide.
+  window.AUDIT_API = '';
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;800&family=Fraunces:opsz,wght@9..144,500&family=Barlow+Condensed:wght@700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
@@ -717,6 +725,151 @@ html.anim.go .hero .ctas .btn-ghost{animation:pillIn .7s var(--e-reveal) .97s bo
 html.anim .hero .audit-link{opacity:0}
 html.anim.go .hero .audit-link{animation:liftIn .6s var(--e-soft) 1.15s both}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* ================= OUTILS GRATUITS ================= */
+.launch{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0 0;padding:8px 14px 8px 8px;border-radius:99px;border:1px solid rgba(47,91,255,.45);background:rgba(47,91,255,.08);font-size:14px;color:var(--soft)}
+.launch b{padding:4px 10px;border-radius:99px;background:linear-gradient(90deg,#2F5BFF,#7f9bff);color:#fff;font-size:12px;font-weight:600;letter-spacing:.02em}
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:36px}
+.tool{display:grid;gap:4px;text-align:left;padding:16px 18px;cursor:pointer;color:inherit;font:inherit;transition:border-color .25s ease,transform .25s ease,background .25s ease}
+.tool b{font-size:15.5px;font-weight:600}
+.tool small{font-size:13px;color:var(--muted);line-height:1.45}
+.tool:hover{border-color:rgba(47,91,255,.5);transform:translateY(-2px)}
+.tool.on{border-color:rgba(47,91,255,.75);background:linear-gradient(160deg,rgba(47,91,255,.18),rgba(47,91,255,.04));box-shadow:0 18px 50px -24px rgba(47,91,255,.8)}
+.tool:focus-visible{outline:2px solid var(--blue-hi);outline-offset:3px}
+.tool[hidden]{display:none}
+.tpane{margin-top:14px;padding:28px}
+.tpane[hidden]{display:none}
+.tpane.in{animation:pmIn .45s cubic-bezier(.16,1,.3,1)}
+.t-note{margin:16px 0 0;font-size:13px;color:var(--muted);line-height:1.5}
+.t-note:empty{display:none}
+.t-form{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:end}
+.t-form .btn{width:auto;height:50px}
+.t-form .seg{height:50px;align-items:stretch}
+@media (max-width:640px){.tools{grid-template-columns:1fr 1fr;gap:8px}.tool{padding:12px 14px}.tool small{display:none}.tool b{font-size:14px}}
+@media (max-width:760px){.t-form{grid-template-columns:1fr}.t-form .btn{width:100%}.tpane{padding:20px}}
+
+/* questionnaires */
+.q-top{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.q-bar{flex:1;height:6px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+.q-bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#2F5BFF,#B4C6FF);transition:width .5s cubic-bezier(.16,1,.3,1)}
+.q-top small{font-size:13px;color:var(--muted);white-space:nowrap}
+.q-h{margin:0 0 16px;font-size:22px;font-weight:600;letter-spacing:-.02em}
+.q-ch{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.q-ch button{min-height:56px;padding:12px 16px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:#fff;font:inherit;font-size:15px;text-align:left;cursor:pointer;transition:border-color .2s ease,background .2s ease,transform .2s ease}
+.q-ch button:hover,.q-ch button:focus-visible{border-color:var(--blue);background:rgba(47,91,255,.12);outline:none;transform:translateY(-1px)}
+.q-ch button small{display:block;margin-top:2px;font-size:12.5px;color:var(--muted)}
+.q-nav{margin-top:16px;display:flex;gap:10px}
+.q-step{animation:pmIn .4s cubic-bezier(.16,1,.3,1)}
+.q-res h3{margin:0;font-size:24px;letter-spacing:-.02em}
+.q-res .q-k{margin:0 0 6px;font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--blue-hi)}
+.q-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:20px}
+.q-box{padding:16px 18px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.025)}
+.q-box h4{margin:0 0 10px;font-size:14px;font-weight:600;color:var(--soft)}
+.q-box ul,.q-box ol{margin:0;padding-left:18px;display:grid;gap:6px;color:var(--muted);font-size:14.5px;line-height:1.5}
+.q-box.ok{border-color:rgba(61,214,140,.35)}.q-box.ok h4{color:#7FE3B0}
+.q-box.ko{border-color:rgba(245,180,81,.35)}.q-box.ko h4{color:#F5C77E}
+.q-price{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:12px}
+.q-price b{font-size:30px;font-weight:600;letter-spacing:-.02em}
+.q-price small{color:var(--muted);font-size:13.5px}
+.q-act{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.score{display:flex;align-items:center;gap:18px;margin:6px 0 4px}
+.ring{--v:0;width:92px;height:92px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--c,#2F5BFF) calc(var(--v)*1%),rgba(255,255,255,.07) 0);position:relative}
+.ring::before{content:"";position:absolute;inset:8px;border-radius:50%;background:#090b13}
+.ring b{position:relative;font-size:24px;font-weight:600}
+.ring.g{--c:#3DD68C}.ring.o{--c:#F5B451}.ring.r{--c:#FF6369}
+
+/* atelier */
+.at{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:24px;align-items:start}
+.at-ctl{display:grid;gap:18px}
+.at-g h4{margin:0 0 8px;font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{height:34px;padding:0 13px;border-radius:99px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:#d6d8e0;font:inherit;font-size:13.5px;cursor:pointer;transition:all .2s ease}
+.chips button:hover{border-color:rgba(47,91,255,.6)}
+.chips button[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+.chips .sw3{display:inline-flex;gap:3px;margin-right:7px;vertical-align:-2px}
+.chips .sw3 i{width:12px;height:12px;border-radius:50%;box-shadow:0 0 0 1px rgba(255,255,255,.25)}
+.at-col{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--muted)}
+.at-col input{width:38px;height:30px;padding:0;border:1px solid var(--line);border-radius:8px;background:none;cursor:pointer}
+.at-side{position:sticky;top:90px;display:grid;gap:12px}
+.at-prev{--bg:#fff;--tx:#111;--ac:#2F5BFF;--ac2:#B4C6FF;--mu:#666;--sf:#f4f4f6;--rad:12px;--btnr:99px;--hf:inherit;--bf:inherit;border-radius:18px;overflow:hidden;background:var(--bg);color:var(--tx);font-family:var(--bf);box-shadow:0 0 0 1px var(--line),0 30px 80px -30px rgba(47,91,255,.5);transition:background .4s ease,color .4s ease}
+.ap-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;font-size:12.5px}
+.ap-nav b{font-family:var(--hf);font-size:16px}
+.ap-nav span{display:flex;gap:14px;color:var(--mu)}
+.ap-hero{display:grid;gap:12px;padding:26px 22px 22px;transition:all .4s ease}
+.ap-hero h5{margin:0;font-family:var(--hf);font-size:30px;line-height:1.08;font-weight:var(--hw,700);letter-spacing:var(--hl,-.02em)}
+.ap-hero p{margin:0;font-size:13.5px;line-height:1.55;color:var(--mu);max-width:36ch}
+.ap-img{min-height:150px;border-radius:var(--rad);background:linear-gradient(135deg,var(--ac),var(--ac2));position:relative;overflow:hidden}
+.ap-img::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.35),transparent 55%)}
+.lay-split .ap-hero{grid-template-columns:1.1fr 1fr;align-items:center}
+.lay-centre .ap-hero{text-align:center;justify-items:center}
+.lay-centre .ap-img{width:100%;min-height:90px}
+.lay-plein .ap-hero{position:relative;min-height:230px;align-content:end;color:#fff;background:linear-gradient(0deg,rgba(0,0,0,.55),rgba(0,0,0,.1)),linear-gradient(135deg,var(--ac),var(--ac2))}
+.lay-plein .ap-hero p{color:rgba(255,255,255,.85)}
+.lay-plein .ap-img{display:none}
+.ap-btns{display:flex;flex-wrap:wrap;gap:8px}
+.ap-b{display:inline-flex;align-items:center;height:36px;padding:0 16px;border-radius:var(--btnr);font-size:13px;font-weight:600;background:var(--ac);color:#fff;border:2px solid var(--ac)}
+.ap-b.s{background:transparent;color:inherit;border-color:currentColor;opacity:.85}
+.bt-contour .ap-b:not(.s){background:transparent;color:var(--ac)}
+.lay-plein.bt-contour .ap-b:not(.s){color:#fff;border-color:#fff}
+.ap-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:4px 22px 24px}
+.ap-c{padding:14px;border-radius:var(--rad);font-size:12.5px;line-height:1.4;transition:all .4s ease}
+.ap-c b{display:block;margin-bottom:4px;font-family:var(--hf);font-size:14px}
+.ap-c span{color:var(--mu)}
+.cd-ombre .ap-c{background:var(--bg);box-shadow:0 10px 30px -10px rgba(0,0,0,.35)}
+.cd-bord .ap-c{border:1px solid color-mix(in srgb,var(--tx) 18%,transparent)}
+.cd-plein .ap-c{background:var(--sf)}
+.cd-verre .ap-c{background:color-mix(in srgb,var(--ac) 12%,transparent);border:1px solid color-mix(in srgb,var(--ac) 30%,transparent)}
+.at-pal{display:flex;gap:8px;flex-wrap:wrap}
+.at-pal button{display:flex;align-items:center;gap:8px;height:34px;padding:0 12px 0 6px;border-radius:99px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:#d6d8e0;font:inherit;font-size:12.5px;cursor:copy}
+.at-pal button i{width:22px;height:22px;border-radius:50%;box-shadow:0 0 0 1px rgba(255,255,255,.2)}
+.at-act{display:flex;flex-wrap:wrap;gap:8px}
+@media (max-width:960px){.at{grid-template-columns:1fr}.at-side{position:static;order:-1}.ap-hero h5{font-size:24px}.lay-split .ap-hero{grid-template-columns:1fr}.ap-cards{grid-template-columns:1fr}}
+
+/* résultats de tests */
+.res-h{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin:24px 0 14px;font-size:13px;color:var(--muted)}
+.res-h b{color:var(--soft);font-size:15px}
+.rings{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.rings .q-box{display:grid;justify-items:center;gap:8px;text-align:center}
+.rings small{font-size:13px;color:var(--soft)}
+.vit{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}
+.vit div{padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.02)}
+.vit small{display:block;font-size:12px;color:var(--muted)}
+.vit b{font-size:18px;font-variant-numeric:tabular-nums}
+.vit .g b{color:#7FE3B0}.vit .o b{color:#F5C77E}.vit .r b{color:#FF8A8F}
+.chk-l{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.chk-l li{display:grid;grid-template-columns:22px 1fr;gap:10px;font-size:14.5px;line-height:1.5;color:var(--soft)}
+.chk-l li small{display:block;color:var(--muted);font-size:13px}
+.chk-l li::before{content:"";width:18px;height:18px;margin-top:2px;border-radius:50%;background:var(--c,#5f6578);box-shadow:inset 0 0 0 4px rgba(0,0,0,.35)}
+.chk-l .ok{--c:#3DD68C}.chk-l .warn{--c:#F5B451}.chk-l .ko{--c:#FF6369}.chk-l .nv{--c:#5f6578}
+.loading-bar{height:4px;margin-top:22px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+.loading-bar i{display:block;width:40%;height:100%;border-radius:inherit;background:linear-gradient(90deg,transparent,#4470FF,transparent);animation:lb 1.4s ease-in-out infinite}
+@keyframes lb{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
+@media (max-width:640px){.rings{grid-template-columns:repeat(2,1fr)}.ring{width:78px;height:78px}}
+@media (prefers-reduced-motion:reduce){.tpane.in,.q-step{animation:none}.loading-bar i{animation-duration:3s}}
+
+/* filtres des réalisations */
+.rf{display:flex;flex-wrap:wrap;gap:6px;margin-top:28px}
+.rf button{height:36px;padding:0 15px;border-radius:99px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:#d6d8e0;font:inherit;font-size:13.5px;cursor:pointer;transition:all .2s ease}
+.rf button:hover{border-color:rgba(47,91,255,.6)}
+.rf button[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+.rf button span{margin-left:6px;opacity:.6}
+.case.hid{display:none}
+.case.flt{animation:pmIn .45s cubic-bezier(.16,1,.3,1)}
+.cases{margin-top:18px}
+
+/* simulateur : fonctionnalités en plus */
+.sim-plus{border:1px solid var(--line);border-radius:16px;padding:0 14px}
+.sim-plus summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;min-height:48px;font-size:15px}
+.sim-plus summary::-webkit-details-marker{display:none}
+.sim-plus summary::after{content:"+";font-size:20px;color:var(--blue-hi);transition:transform .25s ease}
+.sim-plus[open] summary::after{transform:rotate(45deg)}
+.sim-plus>div{display:grid;gap:8px;padding-bottom:14px}
+.opt.dis{opacity:.5;cursor:not-allowed}
+.sim-recap{list-style:none;margin:6px 0 4px;padding:0;display:grid;gap:4px;font-size:13.5px;color:var(--muted)}
+.sim-recap li{display:flex;justify-content:space-between;gap:10px}
+.sim-recap li b{color:var(--soft);font-weight:500;white-space:nowrap}
+.sim-sd{margin:-2px 0 6px;font-size:14px;color:#F5C77E}
+.sim-sd:empty{display:none}
+.sim-warn{margin:10px 0 0;font-size:12.5px;color:var(--muted)}
 </style>
 <script>
 document.documentElement.classList.add('js');
@@ -744,6 +897,7 @@ document.documentElement.classList.add('js');
     <button data-go="formules">Formules</button>
     <button data-go="methode">Méthode</button>
     <button data-go="realisations">Réalisations</button>
+    <button data-go="outils">Outils</button>
     <button data-go="apropos">À propos</button>
     <button data-go="faq">FAQ</button>
     <button data-go="contact">Contact</button>
@@ -761,6 +915,7 @@ document.documentElement.classList.add('js');
   <button data-go="formules">Formules</button>
   <button data-go="methode">Méthode</button>
   <button data-go="realisations">Réalisations</button>
+  <button data-go="outils">Outils gratuits</button>
   <button data-go="apropos">À propos</button>
   <button data-go="faq">FAQ</button>
   <button data-go="contact">Contact</button>
@@ -791,6 +946,7 @@ document.documentElement.classList.add('js');
           <li>Tarifs transparents</li>
         </ul>
         <button class="audit-link" data-go="methode" data-audit>Ou faites auditer votre site actuel, gratuitement</button>
+        <button class="audit-link" data-go="outils">Ou testez nos outils gratuits : vitesse, diagnostic, style</button>
       </div>
     </div>
   </section>
@@ -799,6 +955,7 @@ document.documentElement.classList.add('js');
     <div class="inner">
       <h2><span class="ln"><span class="ln-i">Formules et tarifs</span></span></h2>
       <p class="lede">Des prix fixes, annoncés à l’avance. Chaque formule comprend le design, la version mobile, le référencement de base et la mise en ligne. Paiement en 2 ou 3 fois, sans frais.</p>
+      <p class="launch"><b>Tarifs de lancement</b>Studio Mel démarre : ces prix sont réservés à mes premiers clients et augmenteront ensuite.</p>
       <div class="plans">
         <div class="plan glass">
           <h3>Refonte</h3>
@@ -854,6 +1011,15 @@ document.documentElement.classList.add('js');
               <span class="stp"><button type="button" data-np="-1" aria-label="Moins de produits">−</button><output id="sim-np">20</output><button type="button" data-np="1" aria-label="Plus de produits">+</button></span></div>
             <label class="opt"><input type="checkbox" name="sim-promo"><span class="sw" aria-hidden="true"></span><span class="ot">Codes promo et livraison offerte<small>100 €</small></span></label>
           </div>
+          <details class="sim-plus"><summary>Fonctionnalités en plus</summary><div>
+            <div class="opt step"><span class="ot">Pages en plus<small>60 € la page, au-delà de celles de la formule</small></span>
+              <span class="stp"><button type="button" data-pp="-1" aria-label="Moins de pages">−</button><output id="sim-pp">0</output><button type="button" data-pp="1" aria-label="Plus de pages">+</button></span></div>
+            <label class="opt"><input type="checkbox" name="sim-gal"><span class="sw" aria-hidden="true"></span><span class="ot">Galerie photo<small>Vos réalisations en grand, 60 €</small></span></label>
+            <label class="opt"><input type="checkbox" name="sim-blog"><span class="sw" aria-hidden="true"></span><span class="ot">Blog ou actualités<small>Que vous publiez vous-même, 150 €</small></span></label>
+            <label class="opt"><input type="checkbox" name="sim-resa"><span class="sw" aria-hidden="true"></span><span class="ot">Réservation en ligne<small>Vos clients choisissent un créneau, 150 €</small></span></label>
+            <label class="opt"><input type="checkbox" name="sim-espace"><span class="sw" aria-hidden="true"></span><span class="ot">Espace client<small>Sur devis</small></span></label>
+            <label class="opt"><input type="checkbox" name="sim-mesure"><span class="sw" aria-hidden="true"></span><span class="ot">Fonctionnalité sur mesure<small>Calculateur, carte, outil métier… sur devis</small></span></label>
+          </div></details>
           <label class="opt"><input type="checkbox" name="sim-google"><span class="sw" aria-hidden="true"></span><span class="ot">Fiche Google Maps<small>Pour apparaître sur la carte, 80 €</small></span></label>
           <label class="opt"><input type="checkbox" name="sim-dom" checked><span class="sw" aria-hidden="true"></span><span class="ot">Nom de domaine à votre nom<small>Environ 15 € par an</small></span></label>
           <label class="opt"><input type="checkbox" name="sim-maint"><span class="sw" aria-hidden="true"></span><span class="ot">Maintenance<small id="sim-maint-t">Site suivi et 1 h de modifs par mois, 40 €/mois</small></span></label>
@@ -865,9 +1031,12 @@ document.documentElement.classList.add('js');
         <div class="sim-out" aria-live="polite">
           <small>Votre site</small>
           <div class="sim-total"><span id="sim-total">750</span> €</div>
+          <p class="sim-sd" id="sim-sd"></p>
+          <ul class="sim-recap" id="sim-recap"></ul>
           <ul id="sim-steps"></ul>
           <p id="sim-rec"></p>
           <button class="btn btn-lg btn-primary" id="sim-go">Demander ce devis</button>
+          <p class="sim-warn">Estimation indicative aux tarifs de lancement, pas un devis. Le prix final est confirmé par un devis gratuit.</p>
         </div>
       </div>
       <p class="note">TVA non applicable, art. 293 B du CGI. Prix indicatifs, confirmés par un devis gratuit.</p>
@@ -881,7 +1050,8 @@ document.documentElement.classList.add('js');
           <details class="glass"><summary>Y a-t-il des frais sur les ventes ?</summary><p>Je ne prends aucune commission. Le paiement passe par Stripe, sur un compte à votre nom : l’argent arrive directement chez vous, et Stripe prélève ses propres frais, environ 1,5 % + 0,25 € par paiement avec une carte européenne. Pas d’abonnement mensuel à une plateforme comme Shopify.</p></details>
           <details class="glass"><summary>La maintenance est-elle obligatoire ?</summary><p>Non. Sans maintenance, votre site reste en ligne et les modifications sont facturées 30 € de l’heure. Avec la maintenance à 40 € par mois, je surveille le site et je fais jusqu’à 1 h de changements par mois pour vous. Pour une boutique, elle est à 70 € par mois avec 2 h de changements, l’ajout de produits et le suivi technique des commandes. Elle s’engage sur 6 mois minimum.</p></details>
           <details class="glass"><summary>Comment se passe le paiement ?</summary><p>En 2 fois : 50 % au démarrage, 50 % à la mise en ligne. Ou en 3 fois : 30 % au démarrage, 40 % à la validation de la maquette, 30 % à la mise en ligne. Sans frais.</p></details>
-          <details class="glass"><summary>Et si j’ai besoin de plus de pages ?</summary><p>La Refonte et la Création vont jusqu’à 5 pages, le Premium jusqu’à 8. Une boutique comprend jusqu’à 20 produits, puis 80 € par lot de 20. Au-delà, on en parle et je vous fais un devis.</p></details>
+          <details class="glass"><summary>Et si j’ai besoin de plus de pages ?</summary><p>La Refonte et la Création vont jusqu’à 5 pages, le Premium jusqu’à 8. Chaque page en plus coûte 60 €. Une boutique comprend jusqu’à 20 produits, puis 80 € par lot de 20.</p></details>
+          <details class="glass"><summary>Pourquoi parler de tarifs de lancement ?</summary><p>Studio Mel est une activité qui démarre. Mes premiers clients profitent de prix plus bas en échange de leur confiance. Ces tarifs augmenteront après mes premiers projets : le prix indiqué sur votre devis signé, lui, ne change pas.</p></details>
           <details class="glass"><summary>Y a-t-il des frais cachés ?</summary><p>Non. Vous payez la formule, les options que vous choisissez et le nom de domaine, rien d’autre. Pour une boutique, seuls les frais du service de paiement s’ajoutent sur chaque vente. TVA non applicable.</p></details>
         </div>
       </div>
@@ -923,8 +1093,9 @@ document.documentElement.classList.add('js');
   <section class="page" id="realisations">
     <div class="inner">
       <h2><span class="ln"><span class="ln-i">Réalisations</span></span></h2>
-      <p class="lede">Des projets conçus pour des artisans de la région. Chaque fiche indique clairement s’il s’agit d’un site livré, d’une proposition ou d’un concept. Cliquez sur un aperçu pour le parcourir en version ordinateur ou téléphone.</p>
+      <p class="lede">Des projets conçus pour des artisans et commerçants de la région. Chaque fiche indique clairement s’il s’agit d’un site livré, d’un projet en cours, d’une proposition ou d’un concept. Cliquez sur un aperçu pour le parcourir en version ordinateur ou téléphone.</p>
       <!-- Les projets se règlent dans le script, tableau REALISATIONS : il suffit d’y ajouter un bloc pour un nouveau projet. -->
+      <div class="rf" id="rf" role="group" aria-label="Filtrer les réalisations"></div>
       <div class="cases" id="cases"></div>
       <div class="work glass cta"><div><h3>Votre projet ?</h3><p>Votre site pourrait être le prochain ici.</p></div><button class="btn btn-sm btn-primary" data-go="contact">Demander un devis gratuit</button></div>
       <div class="ba-wrap" id="ba-wrap" hidden>
@@ -936,6 +1107,68 @@ document.documentElement.classList.add('js');
           <div class="ba-line" aria-hidden="true"><i></i></div>
           <input type="range" min="0" max="100" value="50" aria-label="Comparer l’ancien et le nouveau site">
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="outils">
+    <div class="inner">
+      <h2><span class="ln"><span class="ln-i">Outils gratuits</span></span></h2>
+      <p class="lede">Testez votre présence en ligne, trouvez le site qu’il vous faut et imaginez son style. Gratuit, sans inscription : rien n’est envoyé tant que vous ne cliquez pas sur « Envoyer à Studio Mel ».</p>
+      <div class="tools" role="tablist" aria-label="Choisir un outil">
+        <button class="tool glass on" role="tab" aria-selected="true" data-tool="ideal"><b>Trouve ton site idéal</b><small>5 questions pour savoir quel site vous correspond</small></button>
+        <button class="tool glass" role="tab" aria-selected="false" data-tool="diag"><b>Diagnostic de présence</b><small>Êtes-vous facile à trouver en ligne ?</small></button>
+        <button class="tool glass" role="tab" aria-selected="false" data-tool="atelier"><b>L’Atelier</b><small>Imaginez le style de votre futur site</small></button>
+        <button class="tool glass" role="tab" aria-selected="false" data-tool="perf"><b>Test de vitesse</b><small>Les vrais scores Google de votre site</small></button>
+        <button class="tool glass" role="tab" aria-selected="false" data-tool="seo" id="tool-seo-btn" hidden><b>Audit SEO express</b><small>Ce que Google voit de votre site</small></button>
+      </div>
+
+      <!-- TROUVE TON SITE IDÉAL -->
+      <div class="tpane glass" data-pane-tool="ideal" role="tabpanel">
+        <div class="quiz" id="q-ideal"></div>
+      </div>
+
+      <!-- DIAGNOSTIC -->
+      <div class="tpane glass" data-pane-tool="diag" role="tabpanel" hidden>
+        <div class="quiz" id="q-diag"></div>
+      </div>
+
+      <!-- ATELIER -->
+      <div class="tpane glass" data-pane-tool="atelier" role="tabpanel" hidden>
+        <div class="at">
+          <div class="at-ctl" id="at-ctl"></div>
+          <div class="at-side">
+            <div class="at-prev" id="at-prev" aria-label="Aperçu du style choisi"></div>
+            <div class="at-pal" id="at-pal"></div>
+            <div class="at-act">
+              <button class="btn btn-sm btn-ghost" id="at-share">Copier le lien de ce style</button>
+              <button class="btn btn-sm btn-primary" id="at-send">Envoyer à Studio Mel</button>
+            </div>
+            <p class="t-note" id="at-msg" role="status"></p>
+          </div>
+        </div>
+        <p class="t-note">Une première idée d’ambiance, pas un site terminé. Les noms et textes de l’aperçu sont des exemples.</p>
+      </div>
+
+      <!-- TEST DE VITESSE -->
+      <div class="tpane glass" data-pane-tool="perf" role="tabpanel" hidden>
+        <form class="t-form" id="perf-form" novalidate>
+          <div class="fld"><label for="perf-url">Adresse du site à tester</label><input id="perf-url" type="url" inputmode="url" placeholder="www.monsite.fr" required autocomplete="url"><small class="err" aria-live="polite"></small></div>
+          <fieldset class="seg" aria-label="Appareil"><label><input type="radio" name="perf-st" value="mobile" checked><span>Téléphone</span></label><label><input type="radio" name="perf-st" value="desktop"><span>Ordinateur</span></label></fieldset>
+          <button class="btn btn-lg btn-primary" type="submit">Lancer le test</button>
+        </form>
+        <div id="perf-out" aria-live="polite"></div>
+        <p class="t-note">Résultats fournis par Google PageSpeed Insights (Lighthouse). Le test prend 20 à 40 secondes. Les scores varient légèrement d’un test à l’autre.</p>
+      </div>
+
+      <!-- AUDIT SEO (visible seulement quand le relais est configuré) -->
+      <div class="tpane glass" data-pane-tool="seo" role="tabpanel" hidden>
+        <form class="t-form" id="seo-form" novalidate>
+          <div class="fld"><label for="seo-url">Adresse de la page à analyser</label><input id="seo-url" type="url" inputmode="url" placeholder="www.monsite.fr" required autocomplete="url"><small class="err" aria-live="polite"></small></div>
+          <button class="btn btn-lg btn-primary" type="submit">Analyser</button>
+        </form>
+        <div id="seo-out" aria-live="polite"></div>
+        <p class="t-note">Analyse automatique des éléments visibles publiquement sur la page d’accueil. Ce n’est pas un audit SEO complet : pour un vrai regard, demandez l’<button type="button" class="inline-link" data-go="methode" data-audit>audit gratuit</button>.</p>
       </div>
     </div>
   </section>
@@ -1135,14 +1368,14 @@ document.documentElement.classList.add('js');
 
 <script>
 (function(){
-  var pages = ['accueil','formules','methode','realisations','apropos','faq','contact','mentions'];
+  var pages = ['accueil','formules','methode','realisations','outils','apropos','faq','contact','mentions'];
   var burger = document.getElementById('burger'), menu = document.getElementById('menu');
   function setMenu(open){
     menu.classList.toggle('open', open);
     burger.setAttribute('aria-expanded', open ? 'true' : 'false');
     burger.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
   }
-  var TITLES = { accueil: 'Création de site internet à Tarare, L’Arbresle et Lyon | Studio Mel', formules: 'Tarifs création et refonte de site internet', methode: 'Comment ça se passe', realisations: 'Réalisations et projets', apropos: 'À propos', faq: 'Questions fréquentes', contact: 'Contact et devis gratuit', mentions: 'Mentions légales' };
+  var TITLES = { outils: 'Outils gratuits : test de vitesse, diagnostic et style de site', accueil: 'Création de site internet à Tarare, L’Arbresle et Lyon | Studio Mel', formules: 'Tarifs création et refonte de site internet', methode: 'Comment ça se passe', realisations: 'Réalisations et projets', apropos: 'À propos', faq: 'Questions fréquentes', contact: 'Contact et devis gratuit', mentions: 'Mentions légales' };
   var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var current = null, swapT = null;
   // numérote les blocs de chaque page pour les faire entrer les uns après les autres
@@ -1193,6 +1426,7 @@ document.documentElement.classList.add('js');
       go(b.dataset.go);
     });
   });
+  window.goPage = go;
   burger.addEventListener('click', function(e){ e.stopPropagation(); setMenu(!menu.classList.contains('open')); });
   document.addEventListener('click', function(e){ if (menu.classList.contains('open') && !menu.contains(e.target) && !burger.contains(e.target)) setMenu(false); });
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && menu.classList.contains('open')) { setMenu(false); burger.focus(); } });
@@ -1203,7 +1437,7 @@ document.documentElement.classList.add('js');
   // apercu : une maquette intégrée (demo: 'dupuis' ou 'jardin') ou une capture d'écran (image: 'mon-projet.jpg').
   var REALISATIONS = [
     {
-      site: 'https://studio-mel.github.io/Anyae/', adresse: 'studio-mel.github.io/Anyae', statut: 'encours',
+      site: 'https://studio-mel.github.io/Anyae/', adresse: 'studio-mel.github.io/Anyae', statut: 'encours', cats: ['boutique', 'commerce'],
       nom: 'ANYAE', metier: 'Bougies personnalisées et bijoux artisanaux',
       entreprise: 'Une créatrice qui fabrique à la main des bougies personnalisées et des bijoux, et qui voulait une vraie boutique à son image.',
       besoin: 'Vendre ses créations en ligne avec un site haut de gamme, à la hauteur du soin apporté à chaque pièce.',
@@ -1212,7 +1446,7 @@ document.documentElement.classList.add('js');
       url: 'https://studio-mel.github.io/Anyae/'
     },
     {
-      demo: 'dupuis', adresse: 'sasfabiendupuis.fr', statut: 'proposition',
+      demo: 'dupuis', adresse: 'sasfabiendupuis.fr', statut: 'proposition', cats: ['vitrine', 'artisan'],
       nom: 'Fabien Dupuis', metier: 'Plâtrier peintre à Villechenève',
       entreprise: 'Une entreprise de plâtrerie et peinture qui coordonne tous les corps de métier, pour les particuliers comme pour les professionnels.',
       besoin: 'Un site existant peu moderne et mal organisé, qui ne mettait pas en valeur le savoir-faire de l’équipe.',
@@ -1221,7 +1455,7 @@ document.documentElement.classList.add('js');
       url: ''
     },
     {
-      demo: 'jardin', adresse: 'dornejardins.fr', statut: 'concept',
+      demo: 'jardin', adresse: 'dornejardins.fr', statut: 'concept', cats: ['vitrine', 'artisan'],
       nom: 'Dorne Jardins', metier: 'Paysagiste à Sain-Bel',
       entreprise: 'Un paysagiste des Monts du Lyonnais : création, entretien, taille et élagage.',
       besoin: '',
@@ -1239,7 +1473,7 @@ document.documentElement.classList.add('js');
       ? '<button class="shot live" data-demo="' + r.demo + '" aria-label="Ouvrir l’aperçu ' + r.nom + '"><div class="chrome"><i></i><i></i><i></i><span>' + (r.adresse || '') + '</span></div><div class="vp"><div class="ds-scaler"></div></div></button>'
       : '<div class="shot"><div class="chrome"><i></i><i></i><i></i><span>' + (r.adresse || '') + '</span></div><img src="' + r.image + '" alt="Capture du site ' + r.nom + '" loading="lazy"></div>';
     var li = function(a){ return a.map(function(x){ return '<li>' + x + '</li>'; }).join(''); };
-    return '<article class="case glass">' + apercu +
+    return '<article class="case glass" data-cats="' + (r.cats || []).join(' ') + ' ' + r.statut + '">' + apercu +
       '<div class="case-txt"><span class="tag ' + st[1] + '">' + st[0] + '</span><h3>' + r.nom + '</h3><p class="case-m">' + r.metier + '</p>' +
       '<p>' + r.entreprise + '</p>' +
       (r.besoin ? '<h4>Le besoin</h4><p>' + r.besoin + '</p>' : '') +
@@ -1248,6 +1482,24 @@ document.documentElement.classList.add('js');
       (r.url ? '<a class="btn btn-sm btn-primary" href="' + r.url + '" target="_blank" rel="noopener">' + (r.statut === 'livre' ? 'Voir le site en ligne' : 'Voir la boutique') + '</a>' : '') +
       '</div></article>';
   }).join('');
+
+  // filtres : n'apparaissent que s'ils contiennent au moins un projet
+  (function(){
+    var F = [['tous', 'Tous'], ['vitrine', 'Sites vitrines'], ['boutique', 'Boutiques en ligne'], ['artisan', 'Artisans'], ['commerce', 'Commerces'], ['services', 'Services'], ['livre', 'Projets livrés'], ['concept', 'Concepts et propositions']];
+    var compte = function(k){ return k === 'tous' ? REALISATIONS.length : REALISATIONS.filter(function(r){ return k === 'concept' ? (r.statut === 'concept' || r.statut === 'proposition') : (r.cats || []).indexOf(k) >= 0 || r.statut === k; }).length; };
+    var rf = document.getElementById('rf'), F2 = F.filter(function(f){ return compte(f[0]); });
+    if (F2.length < 3) { rf.hidden = true; return; }
+    rf.innerHTML = F2.map(function(f, i){ return '<button type="button" data-f="' + f[0] + '" aria-pressed="' + (i === 0) + '">' + f[1] + '<span>' + compte(f[0]) + '</span></button>'; }).join('');
+    rf.addEventListener('click', function(e){
+      var b = e.target.closest('[data-f]'); if (!b) return; var k = b.dataset.f;
+      rf.querySelectorAll('[data-f]').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      document.querySelectorAll('#cases .case').forEach(function(c){
+        var t = c.dataset.cats.split(' '), ok = k === 'tous' || t.indexOf(k) >= 0 || (k === 'concept' && (t.indexOf('concept') >= 0 || t.indexOf('proposition') >= 0));
+        c.classList.toggle('hid', !ok); c.classList.remove('flt'); if (ok) { void c.offsetWidth; c.classList.add('flt'); }
+      });
+      requestAnimationFrame(fit);
+    });
+  })();
 
   // ================= AVIS CLIENTS =================
   // Uniquement de vrais avis, avec l'accord écrit du client. Exemple de bloc :
@@ -1368,52 +1620,65 @@ document.documentElement.classList.add('js');
     (function step(now){ var k = Math.min((now - t0) / 450, 1), e = 1 - Math.pow(1 - k, 3); el.textContent = eur(from + (to - from) * e); if (k < 1) tw = requestAnimationFrame(step); })(t0);
   }
   var NOMS = { refonte: 'Refonte de site', creation: 'Création de site vitrine', premium: 'Site Premium', boutique: 'Boutique en ligne' };
-  var nbProd = 20;
+  var T = window.TARIFS, nbProd = 20, nbPages = 0;
   sim.querySelectorAll('[data-np]').forEach(function(b){ b.addEventListener('click', function(){ nbProd = Math.max(20, Math.min(200, nbProd + 20 * +b.dataset.np)); document.getElementById('sim-np').textContent = nbProd; simCalc(); }); });
+  sim.querySelectorAll('[data-pp]').forEach(function(b){ b.addEventListener('click', function(){ nbPages = Math.max(0, Math.min(15, nbPages + +b.dataset.pp)); document.getElementById('sim-pp').textContent = nbPages; simCalc(); }); });
+  var coche = function(n){ var el = sim.querySelector('[name=' + n + ']'); return el && el.checked && !el.disabled; };
   function simCalc(){
     var type = sim.querySelector('[name=sim-type]:checked').value, bq = type === 'boutique';
-    var base = { refonte: 500, creation: 750, premium: 1200, boutique: 1900 }[type];
+    var base = T[type];
     sim.querySelector('.sim-bq').hidden = !bq;
-    var lots = bq ? (nbProd - 20) / 20 : 0, promo = bq && sim.querySelector('[name=sim-promo]').checked;
-    var pm = bq ? 70 : 40;
-    document.getElementById('sim-maint-t').textContent = bq ? 'Boutique suivie, 2 h de modifs par mois, 70 €/mois' : 'Site suivi et 1 h de modifs par mois, 40 €/mois';
-    var g = sim.querySelector('[name=sim-google]').checked, dom = sim.querySelector('[name=sim-dom]').checked, maint = sim.querySelector('[name=sim-maint]').checked;
+    sim.querySelector('[name=sim-gal]').closest('.opt').hidden = bq;
+    var lots = bq ? (nbProd - 20) / 20 : 0, promo = bq && coche('sim-promo');
+    var pm = bq ? T.maintBoutique : T.maint;
+    document.getElementById('sim-maint-t').textContent = bq ? 'Boutique suivie, 2 h de modifs par mois, ' + pm + ' €/mois' : 'Site suivi et 1 h de modifs par mois, ' + pm + ' €/mois';
+    var g = coche('sim-google'), dom = coche('sim-dom'), maint = coche('sim-maint');
+    var gal = !bq && coche('sim-gal'), blog = coche('sim-blog'), resa = coche('sim-resa'), espace = coche('sim-espace'), mesure = coche('sim-mesure');
     var three = sim.querySelector('[name=sim-pay]:checked').value === '3';
-    // le site (formule + options) se paie en 2 ou 3 fois ;
-    // le domaine (1re année) et le 1er mois de maintenance se paient à la mise en ligne
-    var site = base + (g ? 80 : 0) + lots * 80 + (promo ? 100 : 0), enLigne = (dom ? 15 : 0) + (maint ? pm : 0), total = site + enLigne;
+    // prestations chiffrées (les éléments « sur devis » ne sont pas comptés)
+    var P = [[bq ? 'Boutique en ligne · Premium Boutique (jusqu’à 20 produits)' : NOMS[type], 1, base]];
+    if (lots) P.push(['Produits supplémentaires (lot de 20)', lots, T.lotProduits]);
+    if (promo) P.push(['Codes promo et livraison offerte', 1, T.promo]);
+    if (nbPages) P.push(['Page supplémentaire', nbPages, T.page]);
+    if (gal) P.push(['Galerie photo', 1, T.galerie]);
+    if (blog) P.push(['Blog ou actualités, modifiable par vous', 1, T.blog]);
+    if (resa) P.push(['Réservation en ligne', 1, T.resa]);
+    if (g) P.push(['Fiche Google Business', 1, T.google]);
+    var sd = []; if (espace) sd.push('espace client'); if (mesure) sd.push('fonctionnalité sur mesure');
+    // le site se paie en 2 ou 3 fois ; le domaine (1re année) et le 1er mois de maintenance à la mise en ligne
+    var site = P.reduce(function(s, l){ return s + l[1] * l[2]; }, 0), enLigne = (dom ? T.domaine : 0) + (maint ? pm : 0), total = site + enLigne;
     var parts = three ? [['Au démarrage', .3], ['À la validation de la maquette', .4], ['À la mise en ligne', .3]] : [['Au démarrage', .5], ['À la mise en ligne', .5]];
     var extra = [dom ? 'domaine' : '', maint ? '1er mois de maintenance' : ''].filter(Boolean).join(' et ');
+    document.getElementById('sim-recap').innerHTML = P.map(function(l){ return '<li><span>' + l[0] + (l[1] > 1 ? ' × ' + l[1] : '') + '</span><b>' + eur(l[1] * l[2]) + ' €</b></li>'; }).join('') +
+      sd.map(function(x){ return '<li><span>' + x.charAt(0).toUpperCase() + x.slice(1) + '</span><b>sur devis</b></li>'; }).join('') +
+      '<li><span>Formulaire de contact, version mobile, référencement de base</span><b>inclus</b></li>';
+    document.getElementById('sim-sd').textContent = sd.length ? '+ ' + sd.join(' et ') + ' : chiffré sur devis' : '';
     document.getElementById('sim-steps').innerHTML = parts.map(function(p, i){
       var last = i === parts.length - 1, m = site * p[1] + (last ? enLigne : 0);
       return '<li><span>' + p[0] + (last && extra ? '<small>dont ' + extra + '</small>' : '') + '</span><b>' + eur(m) + ' €</b></li>';
     }).join('');
     var rec = [];
     if (maint) rec.push(pm + ' € par mois (6 mois minimum)');
-    if (dom) rec.push('environ 15 € par an pour le domaine');
+    if (dom) rec.push('environ ' + T.domaine + ' € par an pour le domaine');
     document.getElementById('sim-rec').textContent = (rec.length ? 'Ensuite : ' + rec.join(' et ') + '.' : 'Rien à payer ensuite.') + (bq ? ' Sur chaque vente, seuls les frais du service de paiement s’appliquent (environ 1,5 % + 0,25 € par carte européenne).' : '');
     tween(total);
-    var lignes = [{ des: bq ? 'Boutique en ligne · Premium Boutique (jusqu’à 20 produits)' : NOMS[type], qte: 1, pu: base }];
-    if (lots) lignes.push({ des: 'Produits supplémentaires (lot de 20)', qte: lots, pu: 80 });
-    if (promo) lignes.push({ des: 'Codes promo et livraison offerte', qte: 1, pu: 100 });
-    if (g) lignes.push({ des: 'Fiche Google Business', qte: 1, pu: 80 });
-    if (dom) lignes.push({ des: 'Nom de domaine (1re année)', qte: 1, pu: 15 });
+    var lignes = P.map(function(l){ return { des: l[0], qte: l[1], pu: l[2] }; });
+    sd.forEach(function(x){ lignes.push({ des: x.charAt(0).toUpperCase() + x.slice(1) + ' (sur devis)', qte: 1, pu: 0 }); });
+    if (dom) lignes.push({ des: 'Nom de domaine (1re année)', qte: 1, pu: T.domaine });
     if (maint) lignes.push({ des: 'Maintenance' + (bq ? ' boutique' : '') + ', 1er mois (' + pm + ' €/mois, 6 mois minimum)', qte: 1, pu: pm });
-    return { type: type, total: total, three: three, g: g, dom: dom, maint: maint, lots: lots, promo: promo, nb: nbProd, lignes: lignes };
+    var opts = [];
+    if (lots) opts.push(nbProd + ' produits'); if (promo) opts.push('codes promo'); if (nbPages) opts.push(nbPages + ' page(s) en plus');
+    if (gal) opts.push('galerie'); if (blog) opts.push('blog'); if (resa) opts.push('réservation'); sd.forEach(function(x){ opts.push(x + ' (sur devis)'); });
+    if (g) opts.push('fiche Google'); if (dom) opts.push('nom de domaine'); if (maint) opts.push('maintenance');
+    return { type: type, total: total, three: three, opts: opts, sd: sd, lignes: lignes };
   }
   sim.addEventListener('change', simCalc); simCalc();
   document.getElementById('sim-go').addEventListener('click', function(){
     var r = simCalc(), f = document.getElementById('devis-form');
     f.formule.value = NOMS[r.type];
-    var opts = [];
-    if (r.lots) opts.push(r.nb + ' produits');
-    if (r.promo) opts.push('codes promo');
-    if (r.g) opts.push('fiche Google');
-    if (r.dom) opts.push('nom de domaine');
-    if (r.maint) opts.push('maintenance');
     // le détail part avec la demande : mail et admin affichent les mêmes lignes et le même total
-    window.simDevis = { formule: NOMS[r.type], lignes: r.lignes, total: r.total, opts: opts };
-    f.message.value = 'Estimation du simulateur : ' + eur(r.total) + ' €, paiement en ' + (r.three ? '3' : '2') + ' fois' + (opts.length ? ', avec ' + opts.join(', ') : '') + '.\n\n';
+    window.simDevis = { formule: NOMS[r.type], lignes: r.lignes, total: r.total, opts: r.opts };
+    f.message.value = 'Estimation du simulateur : ' + eur(r.total) + ' €' + (r.sd.length ? ' + ' + r.sd.join(' et ') + ' sur devis' : '') + ', paiement en ' + (r.three ? '3' : '2') + ' fois' + (r.opts.length ? ', avec ' + r.opts.join(', ') : '') + '.\n\n';
     go('contact');
     setTimeout(function(){ f.nom.focus({ preventScroll: true }); }, 450);
   });
@@ -1817,5 +2082,296 @@ rdvForm.addEventListener("submit", async e => {
 });
 rdvForm.addEventListener("reset-done", () => document.dispatchEvent(new Event("creneaux")));
 </script>
+<script>
+// ================= OUTILS GRATUITS =================
+(function(){
+  var T = window.TARIFS, calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $ = function(id){ return document.getElementById(id); };
+  var eur = function(n){ return Math.round(n).toLocaleString('fr-FR') + ' €'; };
+  var esc = function(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+
+  // ---- envoi vers le formulaire de contact (le visiteur relit puis envoie lui-même) ----
+  function versContact(texte, formule){
+    var f = $('devis-form');
+    if (formule && f.formule.querySelector('option[value="' + formule + '"]')) f.formule.value = formule;
+    f.message.value = texte.trim() + '\n\n';
+    window.simDevis = null;
+    window.goPage('contact');
+    setTimeout(function(){ f.nom.focus({ preventScroll: true }); }, 450);
+  }
+
+  // ---- onglets ----
+  var tabs = document.querySelectorAll('[data-tool]');
+  function ouvrir(k){
+    tabs.forEach(function(b){ var on = b.dataset.tool === k; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
+    document.querySelectorAll('[data-pane-tool]').forEach(function(p){ var on = p.dataset.paneTool === k; p.hidden = !on; p.classList.toggle('in', on && !calm); });
+  }
+  tabs.forEach(function(b){ b.addEventListener('click', function(){ ouvrir(b.dataset.tool); }); });
+
+  // ---- moteur de questionnaire ----
+  function quiz(el, questions, fin){
+    var rep = {}, i = 0;
+    function rendre(){
+      if (i >= questions.length) { el.innerHTML = '<div class="q-step q-res">' + fin(rep) + '</div>'; brancherFin(); return; }
+      var q = questions[i];
+      el.innerHTML = '<div class="q-step"><div class="q-top"><div class="q-bar"><i style="width:' + (i / questions.length * 100) + '%"></i></div><small>Question ' + (i + 1) + ' sur ' + questions.length + '</small></div>' +
+        '<h3 class="q-h">' + q.t + '</h3><div class="q-ch">' + q.c.map(function(c, k){ return '<button type="button" data-k="' + k + '">' + c[1] + (c[2] ? '<small>' + c[2] + '</small>' : '') + '</button>'; }).join('') + '</div>' +
+        (i ? '<div class="q-nav"><button type="button" class="btn btn-sm btn-ghost" data-back>Retour</button></div>' : '') + '</div>';
+      el.querySelectorAll('[data-k]').forEach(function(b){ b.addEventListener('click', function(){ rep[q.id] = q.c[+b.dataset.k][0]; i++; rendre(); }); });
+      var bk = el.querySelector('[data-back]'); if (bk) bk.addEventListener('click', function(){ i--; rendre(); });
+      var first = el.querySelector('[data-k]'); if (first && i) first.focus({ preventScroll: true });
+    }
+    function brancherFin(){
+      var r = el.querySelector('[data-redo]'); if (r) r.addEventListener('click', function(){ rep = {}; i = 0; rendre(); });
+      var s = el.querySelector('[data-send]'); if (s) s.addEventListener('click', function(){ versContact(s.dataset.txt, s.dataset.formule); });
+      el.querySelectorAll('[data-go-tool]').forEach(function(b){ b.addEventListener('click', function(){ ouvrir(b.dataset.goTool); }); });
+    }
+    rendre();
+  }
+  var li = function(a){ return a.map(function(x){ return '<li>' + x + '</li>'; }).join(''); };
+
+  // ---- 1. Trouve ton site idéal ----
+  var METIERS = {
+    artisan: { nom: 'Artisan', f: ['Galerie de chantiers avant/après', 'Zone d’intervention', 'Demande de devis rapide', 'Bouton d’appel sur mobile'], p: ['Accueil', 'Services', 'Réalisations', 'À propos', 'Contact et devis'], da: 'Moderne et rassurante : photos de chantiers en grand, couleurs franches, gros boutons d’appel.', at: 'moderne' },
+    restaurant: { nom: 'Restaurant', f: ['Carte et menus faciles à mettre à jour', 'Horaires et accès', 'Réservation en ligne', 'Photos des plats'], p: ['Accueil', 'La carte', 'Réserver', 'Le lieu', 'Contact'], da: 'Chaleureuse et appétissante : grandes photos, typographie élégante, tons chauds.', at: 'elegante' },
+    paysagiste: { nom: 'Paysagiste', f: ['Galerie de jardins avant/après', 'Zone d’intervention', 'Services d’entretien', 'Demande de devis'], p: ['Accueil', 'Création', 'Entretien', 'Réalisations', 'Contact'], da: 'Naturelle : verts profonds, beaucoup d’espace, photos plein écran.', at: 'minimaliste' },
+    photographe: { nom: 'Photographe', f: ['Portfolio plein écran', 'Galeries par thème', 'Tarifs des séances', 'Prise de rendez-vous'], p: ['Accueil', 'Portfolio', 'Prestations', 'À propos', 'Contact'], da: 'Minimaliste : fond neutre, les photos font tout le travail.', at: 'minimaliste' },
+    commerce: { nom: 'Commerce', f: ['Présentation des produits', 'Horaires et plan d’accès', 'Fiche Google à jour', 'Boutique en ligne si vous vendez à distance'], p: ['Accueil', 'Produits', 'La boutique', 'Contact'], da: 'Vivante : couleurs de votre enseigne, produits mis en avant.', at: 'audacieuse' },
+    independant: { nom: 'Indépendant', f: ['Présentation claire de vos services', 'Avis clients', 'Prise de rendez-vous', 'Formulaire de contact'], p: ['Accueil', 'Services', 'À propos', 'Contact'], da: 'Personnelle et pro : votre photo, un ton direct, une couleur signature.', at: 'premium' },
+    services: { nom: 'Entreprise de services', f: ['Services détaillés', 'Chiffres clés et références', 'Équipe', 'Demande de devis'], p: ['Accueil', 'Services', 'Références', 'Équipe', 'Contact'], da: 'Sérieuse et technologique : bleus profonds, structure nette, chiffres en avant.', at: 'techno' }
+  };
+  quiz($('q-ideal'), [
+    { id: 'm', t: 'Quel est votre métier ?', c: Object.keys(METIERS).map(function(k){ return [k, METIERS[k].nom]; }) },
+    { id: 'o', t: 'Qu’attendez-vous d’abord de votre site ?', c: [['appel', 'Être trouvé et recevoir des appels'], ['montrer', 'Montrer mon travail'], ['vendre', 'Vendre en ligne'], ['resa', 'Prendre des réservations']] },
+    { id: 's', t: 'Avez-vous déjà un site ?', c: [['non', 'Non, pas encore'], ['vieux', 'Oui, mais il est daté'], ['ok', 'Oui, il est correct']] },
+    { id: 'w', t: 'Quel effet voulez-vous produire ?', c: [['simple', 'Clair et efficace', 'L’essentiel, bien fait'], ['waouh', 'Marquer les esprits', 'Animations, effet waouh']] },
+    { id: 'n', t: 'Voulez-vous vendre des produits en ligne ?', c: [['0', 'Non'], ['20', 'Oui, moins de 20 produits'], ['60', 'Oui, entre 20 et 60'], ['100', 'Oui, plus de 60']] }
+  ], function(r){
+    var m = METIERS[r.m], fo, base, plus = [];
+    if (r.o === 'vendre' || r.n !== '0') { fo = ['Boutique en ligne', 'Premium Boutique']; base = T.boutique; var n = +r.n; if (n > 20) plus.push([Math.ceil((n - 20) / 20) + ' lot(s) de 20 produits en plus', Math.ceil((n - 20) / 20) * T.lotProduits]); }
+    else if (r.w === 'waouh') { fo = ['Site Premium', 'Premium vitrine']; base = T.premium; }
+    else if (r.s === 'vieux') { fo = ['Refonte de site', 'Refonte']; base = T.refonte; }
+    else { fo = ['Création de site vitrine', 'Création']; base = T.creation; }
+    if (r.o === 'resa' && fo[0] !== 'Boutique en ligne') plus.push(['Réservation en ligne', T.resa]);
+    if (r.s === 'non') plus.push(['Fiche Google, pour apparaître sur la carte', T.google]);
+    var tot = base + plus.reduce(function(s, x){ return s + x[1]; }, 0);
+    var feats = m.f.slice(); if (r.o === 'vendre' && feats.indexOf('Boutique en ligne si vous vendez à distance') < 0) feats.push('Panier et paiement sécurisé');
+    var txt = 'Résultat de « Trouve ton site idéal » : ' + m.nom + ', formule ' + fo[1] + (plus.length ? ' + ' + plus.map(function(x){ return x[0]; }).join(' + ') : '') + ', estimation ' + eur(tot) + '.';
+    return '<p class="q-k">Notre recommandation</p><h3>' + fo[1] + ' pour ' + m.nom.toLowerCase() + '</h3>' +
+      '<div class="q-price"><b>' + (fo[0] === 'Boutique en ligne' ? 'dès ' : '') + eur(tot) + '</b><small>Estimation indicative, tarifs de lancement' + (plus.length ? ', options comprises' : '') + '</small></div>' +
+      '<div class="q-grid"><div class="q-box"><h4>Fonctionnalités utiles</h4><ul>' + li(feats) + '</ul></div>' +
+      '<div class="q-box"><h4>Pages proposées</h4><ol>' + li(m.p) + '</ol></div>' +
+      '<div class="q-box"><h4>Direction artistique</h4><p style="margin:0;color:var(--muted);font-size:14.5px;line-height:1.5">' + m.da + '</p><button type="button" class="inline-link" style="margin-top:10px" data-go-tool="atelier" onclick="window.atelierPreset && window.atelierPreset(\'' + m.at + '\')">L’essayer dans l’Atelier</button></div></div>' +
+      '<div class="q-act"><button type="button" class="btn btn-lg btn-primary" data-send data-formule="' + fo[0] + '" data-txt="' + esc(txt) + '">Envoyer à Studio Mel</button><button type="button" class="btn btn-lg btn-ghost" data-redo>Recommencer</button></div>';
+  });
+
+  // ---- 2. Diagnostic de présence digitale ----
+  var D = [
+    { id: 'site', t: 'Avez-vous un site internet ?', w: 25, ok: 'Vous avez un site internet.', ko: 'Pas de site : une partie de vos futurs clients ne vous trouve pas.', reco: ['Créer un site vitrine', 'Création']},
+    { id: 'mob', t: 'Votre site s’affiche-t-il bien sur téléphone ?', w: 20, ok: 'Votre site est adapté aux téléphones.', ko: 'Un site mal affiché sur téléphone fait fuir la majorité des visiteurs.', reco: ['Refaire le site pour le mobile', 'Refonte'], si: 'site' },
+    { id: 'form', t: 'Peut-on vous contacter directement depuis le site ?', w: 10, ok: 'On peut vous contacter depuis le site.', ko: 'Sans formulaire ni bouton d’appel, vous perdez des demandes.', reco: ['Ajouter un formulaire et un bouton d’appel', 'Refonte'], si: 'site' },
+    { id: 'gbp', t: 'Avez-vous une fiche Google (Google Maps) ?', w: 20, ok: 'Vous êtes sur Google Maps.', ko: 'Sans fiche Google, vous êtes invisible dans les recherches « près de moi ».', reco: ['Créer votre fiche Google', 'Fiche Google'] },
+    { id: 'goo', t: 'Quand on tape votre nom et votre ville sur Google, vous apparaissez ?', w: 10, ok: 'On vous trouve en tapant votre nom.', ko: 'Même avec votre nom, on ne vous trouve pas facilement.', reco: ['Travailler le référencement de base', 'Création'] },
+    { id: 'soc', t: 'Êtes-vous actif sur au moins un réseau social ?', w: 5, ok: 'Vous êtes présent sur les réseaux.', ko: 'Pas de réseau social : c’est secondaire, mais utile pour montrer votre travail.', reco: null },
+    { id: 'id', t: 'Logo, couleurs, cartes de visite : votre image est-elle la même partout ?', w: 10, ok: 'Votre image est cohérente.', ko: 'Une image différente d’un support à l’autre brouille votre message.', reco: ['Harmoniser votre identité sur le site', 'Création'] }
+  ];
+  quiz($('q-diag'), D.map(function(q){ return { id: q.id, t: q.t, c: [['oui', 'Oui'], ['non', 'Non'], ['nsp', 'Je ne sais pas']] }; }), function(r){
+    var pts = 0, max = 0, forts = [], faibles = [], recos = [], nsp = [];
+    D.forEach(function(q){
+      if (q.si && r[q.si] === 'non') return; // question sans objet sans site
+      max += q.w;
+      if (r[q.id] === 'oui') { pts += q.w; forts.push(q.ok); }
+      else { faibles.push(q.ko); if (r[q.id] === 'nsp') nsp.push(q.t); if (q.reco && !recos.some(function(x){ return x[0] === q.reco[0]; })) recos.push(q.reco); }
+    });
+    var sc = Math.round(pts / max * 100), cl = sc >= 75 ? 'g' : sc >= 45 ? 'o' : 'r';
+    var mot = sc >= 75 ? 'Bonne présence en ligne' : sc >= 45 ? 'Présence en ligne à renforcer' : 'Présence en ligne faible';
+    var PR = { 'Création': ['Création de site vitrine', 'dès ' + eur(T.creation)], 'Refonte': ['Refonte de site', 'dès ' + eur(T.refonte)], 'Fiche Google': ['Fiche Google Business', eur(T.google)] };
+    var serv = []; recos.forEach(function(x){ if (PR[x[1]] && serv.indexOf(x[1]) < 0) serv.push(x[1]); });
+    var txt = 'Résultat du diagnostic de présence : ' + sc + '/100. À améliorer : ' + (recos.map(function(x){ return x[0].toLowerCase(); }).join(', ') || 'rien de prioritaire') + '.';
+    return '<p class="q-k">Votre diagnostic</p><div class="score"><div class="ring ' + cl + '" style="--v:' + sc + '"><b>' + sc + '</b></div><div><h3>' + mot + '</h3><p class="t-note" style="margin:6px 0 0">Score calculé à partir de vos réponses, sur ' + max + ' points possibles. Un repère, pas une mesure de votre trafic.</p></div></div>' +
+      '<div class="q-grid">' + (forts.length ? '<div class="q-box ok"><h4>Points forts</h4><ul>' + li(forts) + '</ul></div>' : '') +
+      (faibles.length ? '<div class="q-box ko"><h4>À améliorer</h4><ul>' + li(faibles) + '</ul></div>' : '') +
+      (recos.length ? '<div class="q-box"><h4>Par quoi commencer</h4><ol>' + li(recos.map(function(x){ return x[0]; })) + '</ol></div>' : '') + '</div>' +
+      (nsp.length ? '<p class="t-note">Vous ne saviez pas pour ' + nsp.length + ' question' + (nsp.length > 1 ? 's' : '') + ' : l’<button type="button" class="inline-link" data-go-tool="perf">outil de test de vitesse</button> ou l’audit gratuit peuvent vous aider à y voir clair.</p>' : '') +
+      (serv.length ? '<div class="q-box" style="margin-top:12px"><h4>Ce que Studio Mel peut faire</h4><ul>' + li(serv.map(function(k){ return PR[k][0] + ' · ' + PR[k][1]; })) + '</ul></div>' : '') +
+      '<div class="q-act"><button type="button" class="btn btn-lg btn-primary" data-send data-formule="' + (serv[0] ? PR[serv[0]][0] : '') + '" data-txt="' + esc(txt) + '">Envoyer à Studio Mel</button><button type="button" class="btn btn-lg btn-ghost" data-redo>Recommencer</button></div>';
+  });
+
+  // ---- 3. L’Atelier ----
+  var PAL = {
+    nuit: ['Nuit', '#0B0D17', '#F2F4FA', '#2F5BFF', '#B4C6FF', '#A2A8BA', '#161A2B'],
+    sable: ['Sable', '#F7F2EA', '#2A2420', '#B5704A', '#E3C9A8', '#7C7067', '#EFE6D8'],
+    foret: ['Forêt', '#F4F6F1', '#18261C', '#2F6B45', '#A8C9A0', '#5F6E62', '#E6ECE2'],
+    corail: ['Corail', '#FFF8F5', '#251715', '#F0604D', '#FFC2A8', '#866F6A', '#FDEAE3'],
+    encre: ['Encre', '#FFFFFF', '#111111', '#111111', '#C9C9C9', '#6B6B6B', '#F2F2F2'],
+    lilas: ['Lilas', '#14111F', '#F4F0FF', '#8B6CFF', '#E0A9FF', '#ABA3C2', '#1F1A30'],
+    or: ['Or', '#0F0E0C', '#F6F0E3', '#C9A45C', '#EAD7A8', '#A9A290', '#1B1915']
+  };
+  var FONTS = {
+    jakarta: ['Plus Jakarta Sans', "'Plus Jakarta Sans',sans-serif", "'Plus Jakarta Sans',sans-serif", ''],
+    playfair: ['Playfair + Inter', "'Playfair Display',serif", "'Inter',sans-serif", 'Playfair+Display:wght@600;700&family=Inter:wght@400;600'],
+    grotesk: ['Space Grotesk', "'Space Grotesk',sans-serif", "'Inter',sans-serif", 'Space+Grotesk:wght@500;700&family=Inter:wght@400;600'],
+    dmserif: ['DM Serif + DM Sans', "'DM Serif Display',serif", "'DM Sans',sans-serif", 'DM+Serif+Display&family=DM+Sans:wght@400;600'],
+    syne: ['Syne + Manrope', "'Syne',sans-serif", "'Manrope',sans-serif", 'Syne:wght@700;800&family=Manrope:wght@400;600'],
+    cormorant: ['Cormorant + Montserrat', "'Cormorant Garamond',serif", "'Montserrat',sans-serif", 'Cormorant+Garamond:wght@600;700&family=Montserrat:wght@400;600']
+  };
+  var AMB = {
+    minimaliste: { n: 'Minimaliste', pal: 'encre', font: 'grotesk', btn: 'carre', lay: 'centre', card: 'bord' },
+    premium: { n: 'Premium', pal: 'or', font: 'cormorant', btn: 'pilule', lay: 'split', card: 'bord' },
+    moderne: { n: 'Moderne', pal: 'foret', font: 'jakarta', btn: 'arrondi', lay: 'split', card: 'ombre' },
+    elegante: { n: 'Élégante', pal: 'sable', font: 'playfair', btn: 'pilule', lay: 'plein', card: 'plein' },
+    audacieuse: { n: 'Audacieuse', pal: 'corail', font: 'syne', btn: 'carre', lay: 'split', card: 'plein' },
+    techno: { n: 'Technologique', pal: 'nuit', font: 'jakarta', btn: 'pilule', lay: 'split', card: 'verre' }
+  };
+  var SECT = {
+    artisan: ['Bernard Rénovation', 'Votre maison, entre de bonnes mains.', 'Plâtrerie, peinture et isolation à Tarare et alentours. Devis gratuit sous 48 h.', ['Rénovation', 'Isolation', 'Peinture']],
+    resto: ['La Table du Marché', 'Une cuisine de saison, faite maison.', 'Produits locaux, carte courte qui change chaque semaine. Réservez votre table.', ['La carte', 'Le lieu', 'Réserver']],
+    jardin: ['Vert Horizon', 'Des jardins qui vous ressemblent.', 'Création, entretien et élagage dans les Monts du Lyonnais.', ['Création', 'Entretien', 'Élagage']],
+    coiffure: ['Atelier Mèche', 'Votre coupe, votre style.', 'Salon de coiffure mixte, sur rendez-vous du mardi au samedi.', ['Coupes', 'Couleurs', 'Rendez-vous']],
+    boutique: ['Maison Cire', 'Bougies coulées à la main.', 'Créations artisanales et personnalisables, livrées chez vous.', ['Bougies', 'Coffrets', 'Sur mesure']],
+    services: ['Nova Conseil', 'Vos projets, notre méthode.', 'Accompagnement des TPE dans leur organisation et leur gestion.', ['Conseil', 'Formation', 'Références']]
+  };
+  var st = { amb: 'techno', pal: 'nuit', font: 'jakarta', btn: 'pilule', bstyle: 'plein', lay: 'split', card: 'verre', sect: 'artisan', ac: '' };
+  try { var q0 = new URLSearchParams(location.search).get('atelier'); if (q0) { var o = JSON.parse(atob(q0)); Object.keys(st).forEach(function(k){ if (typeof o[k] === 'string') st[k] = o[k]; }); } } catch (e) {}
+  var fontsCharges = {};
+  function chargerFont(k){
+    var f = FONTS[k]; if (!f || !f[3] || fontsCharges[k]) return; fontsCharges[k] = 1;
+    var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=' + f[3] + '&display=swap'; document.head.appendChild(l);
+  }
+  function groupe(titre, cle, opts){
+    return '<div class="at-g"><h4>' + titre + '</h4><div class="chips">' + opts.map(function(o){ return '<button type="button" data-at="' + cle + '" data-v="' + o[0] + '" aria-pressed="' + (st[cle] === o[0]) + '">' + (o[2] || '') + o[1] + '</button>'; }).join('') + '</div></div>';
+  }
+  function rendreCtl(){
+    $('at-ctl').innerHTML =
+      groupe('Ambiance', 'amb', Object.keys(AMB).map(function(k){ return [k, AMB[k].n]; })) +
+      groupe('Secteur de l’aperçu', 'sect', [['artisan', 'Artisan'], ['resto', 'Restaurant'], ['jardin', 'Paysagiste'], ['coiffure', 'Coiffure'], ['boutique', 'Boutique'], ['services', 'Services']]) +
+      groupe('Palette', 'pal', Object.keys(PAL).map(function(k){ var p = PAL[k]; return [k, p[0], '<span class="sw3"><i style="background:' + p[1] + '"></i><i style="background:' + p[3] + '"></i><i style="background:' + p[4] + '"></i></span>']; })) +
+      '<div class="at-g"><label class="at-col">Ou votre couleur principale <input type="color" id="at-ac" value="' + (st.ac || PAL[st.pal][3]) + '" aria-label="Couleur principale"></label>' + (st.ac ? ' <button type="button" class="inline-link" id="at-ac0" style="font-size:13px;margin-left:8px">Revenir à la palette</button>' : '') + '</div>' +
+      groupe('Typographies', 'font', Object.keys(FONTS).map(function(k){ return [k, FONTS[k][0]]; })) +
+      groupe('Boutons', 'btn', [['carre', 'Carrés'], ['arrondi', 'Arrondis'], ['pilule', 'Pilule']]) +
+      groupe('Remplissage des boutons', 'bstyle', [['plein', 'Pleins'], ['contour', 'Contour']]) +
+      groupe('Page d’accueil', 'lay', [['split', 'Texte et image'], ['centre', 'Centrée'], ['plein', 'Image plein écran']]) +
+      groupe('Cartes', 'card', [['ombre', 'Ombre'], ['bord', 'Bordure'], ['plein', 'Fond coloré'], ['verre', 'Verre']]);
+    $('at-ctl').querySelectorAll('[data-at]').forEach(function(b){ b.addEventListener('click', function(){
+      var k = b.dataset.at, v = b.dataset.v;
+      if (k === 'amb') { var a = AMB[v]; st.amb = v; st.pal = a.pal; st.font = a.font; st.btn = a.btn; st.lay = a.lay; st.card = a.card; st.ac = ''; }
+      else { st[k] = v; if (k === 'pal') st.ac = ''; }
+      rendreCtl(); rendrePrev();
+    }); });
+    $('at-ac').addEventListener('input', function(e){ st.ac = e.target.value; rendrePrev(); if (!$('at-ac0')) rendreCtl(); });
+    if ($('at-ac0')) $('at-ac0').addEventListener('click', function(){ st.ac = ''; rendreCtl(); rendrePrev(); });
+  }
+  function couleurs(){ var p = PAL[st.pal].slice(); if (st.ac) p[3] = st.ac; return p; }
+  function rendrePrev(){
+    var p = couleurs(), f = FONTS[st.font], s = SECT[st.sect]; chargerFont(st.font);
+    var el = $('at-prev');
+    el.className = 'at-prev lay-' + st.lay + ' cd-' + st.card + ' bt-' + st.bstyle;
+    el.style.cssText = '--bg:' + p[1] + ';--tx:' + p[2] + ';--ac:' + p[3] + ';--ac2:' + p[4] + ';--mu:' + p[5] + ';--sf:' + p[6] + ';--hf:' + f[1] + ';--bf:' + f[2] + ';--btnr:' + ({ carre: '4px', arrondi: '10px', pilule: '99px' })[st.btn] + ';--rad:' + ({ carre: '4px', arrondi: '12px', pilule: '18px' })[st.btn];
+    el.innerHTML = '<div class="ap-nav"><b>' + s[0] + '</b><span><i>Accueil</i><i>' + s[3][0] + '</i><i>Contact</i></span></div>' +
+      '<div class="ap-hero"><div style="display:grid;gap:12px"><h5>' + s[1] + '</h5><p>' + s[2] + '</p><div class="ap-btns"><span class="ap-b">Demander un devis</span><span class="ap-b s">Découvrir</span></div></div><div class="ap-img" aria-hidden="true"></div></div>' +
+      '<div class="ap-cards">' + s[3].map(function(c, i){ return '<div class="ap-c"><b>' + c + '</b><span>' + ['Un savoir-faire local, expliqué simplement.', 'Des réalisations à découvrir en photos.', 'Une réponse rapide à chaque demande.'][i] + '</span></div>'; }).join('') + '</div>';
+    var noms = ['Fond', 'Texte', 'Principale', 'Secondaire'];
+    $('at-pal').innerHTML = [p[1], p[2], p[3], p[4]].map(function(c, i){ return '<button type="button" data-copy="' + c + '" title="Copier ' + c + '"><i style="background:' + c + '"></i>' + noms[i] + ' ' + c.toUpperCase() + '</button>'; }).join('');
+    $('at-pal').querySelectorAll('[data-copy]').forEach(function(b){ b.addEventListener('click', function(){ copier(b.dataset.copy.toUpperCase(), 'Code ' + b.dataset.copy.toUpperCase() + ' copié.'); }); });
+  }
+  function copier(t, ok){
+    var m = $('at-msg');
+    (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function(){ m.textContent = ok; }, function(){ m.textContent = 'Copie impossible ici : ' + t; });
+    clearTimeout(copier.t); copier.t = setTimeout(function(){ m.textContent = ''; }, 4000);
+  }
+  function resume(){ var p = couleurs(); return 'ambiance ' + AMB[st.amb].n + ', palette ' + PAL[st.pal][0] + (st.ac ? ' (couleur ' + st.ac.toUpperCase() + ')' : '') + ', typographies ' + FONTS[st.font][0] + ', boutons ' + st.btn + ', accueil « ' + ({ split: 'texte et image', centre: 'centrée', plein: 'image plein écran' })[st.lay] + ' », couleurs ' + [p[1], p[2], p[3], p[4]].join(' ').toUpperCase(); }
+  $('at-share').addEventListener('click', function(){
+    var u = location.origin + location.pathname + '?atelier=' + encodeURIComponent(btoa(JSON.stringify(st))) + '#outils';
+    copier(u, 'Lien copié : il ouvre l’Atelier avec ce style.');
+  });
+  $('at-send').addEventListener('click', function(){ versContact('Style imaginé dans l’Atelier : ' + resume() + '.\nLien : ' + location.origin + location.pathname + '?atelier=' + encodeURIComponent(btoa(JSON.stringify(st))) + '#outils'); });
+  window.atelierPreset = function(k){ var a = AMB[k]; if (!a) return; st.amb = k; st.pal = a.pal; st.font = a.font; st.btn = a.btn; st.lay = a.lay; st.card = a.card; st.ac = ''; rendreCtl(); rendrePrev(); };
+  rendreCtl(); rendrePrev();
+  if (new URLSearchParams(location.search).get('atelier')) ouvrir('atelier');
+
+  // ---- adresse saisie : vérification commune ----
+  function urlValide(v){
+    v = v.trim(); if (!v) return null;
+    if (!/^https?:\/\//i.test(v)) v = 'https://' + v;
+    try { var u = new URL(v); } catch (e) { return null; }
+    var h = u.hostname.toLowerCase();
+    if (!/\./.test(h) || /^(localhost|.*\.local|.*\.internal)$/.test(h) || /^\d+\.\d+\.\d+\.\d+$/.test(h) || h.indexOf(':') >= 0) return null;
+    return u.href;
+  }
+  function erreur(input, msg){ var e = input.closest('.fld').querySelector('.err'); e.textContent = msg; input.setAttribute('aria-invalid', msg ? 'true' : 'false'); if (msg) input.focus(); }
+
+  // ---- 4. Test de vitesse (Google PageSpeed Insights) ----
+  var PSI_KEY = window.PSI_KEY || '';
+  var NOMS_CAT = { performance: 'Performance', accessibility: 'Accessibilité', 'best-practices': 'Bonnes pratiques', seo: 'SEO' };
+  $('perf-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    var inp = $('perf-url'), url = urlValide(inp.value), out = $('perf-out'), btn = this.querySelector('button[type=submit]');
+    if (!url) return erreur(inp, 'Indiquez une adresse de site valide, par exemple www.monsite.fr');
+    erreur(inp, '');
+    var strat = this.querySelector('[name=perf-st]:checked').value;
+    var api = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=' + encodeURIComponent(url) + '&strategy=' + strat + '&locale=fr' + ['performance', 'accessibility', 'best-practices', 'seo'].map(function(c){ return '&category=' + c; }).join('') + (PSI_KEY ? '&key=' + PSI_KEY : '');
+    btn.disabled = true; btn.textContent = 'Test en cours…';
+    out.innerHTML = '<div class="loading-bar"><i></i></div><p class="t-note">Google charge votre site et le mesure. Comptez 20 à 40 secondes.</p>';
+    var ctrl = window.AbortController ? new AbortController() : null, to = setTimeout(function(){ if (ctrl) ctrl.abort(); }, 90000);
+    fetch(api, ctrl ? { signal: ctrl.signal } : {}).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, s: r.status, j: j }; }); }).then(function(x){
+      if (!x.ok) {
+        var m = x.s === 429 ? 'Trop de tests en ce moment, le quota gratuit de Google est atteint. Réessayez dans quelques minutes.' : x.s === 400 || x.s === 500 ? 'Google n’a pas pu charger ce site. Vérifiez l’adresse, ou le site bloque peut-être les robots.' : 'Le test a échoué (erreur ' + x.s + '). Réessayez plus tard.';
+        out.innerHTML = '<p class="statut ko" style="margin-top:20px">' + m + '</p>'; return;
+      }
+      var L = x.j.lighthouseResult, C = L.categories, A = L.audits, F = x.j.loadingExperience && x.j.loadingExperience.metrics;
+      var cl = function(s){ return s >= 90 ? 'g' : s >= 50 ? 'o' : 'r'; };
+      var rings = Object.keys(NOMS_CAT).map(function(k){ var s = C[k] && C[k].score != null ? Math.round(C[k].score * 100) : null;
+        return '<div class="q-box">' + (s == null ? '<div class="ring"><b>—</b></div>' : '<div class="ring ' + cl(s) + '" style="--v:' + s + '"><b>' + s + '</b></div>') + '<small>' + NOMS_CAT[k] + '</small></div>'; }).join('');
+      var mesure = function(id, nom){ var a = A[id]; if (!a || !a.displayValue) return ''; var s = a.score; return '<div class="' + (s >= .9 ? 'g' : s >= .5 ? 'o' : 'r') + '"><small>' + nom + '</small><b>' + esc(a.displayValue) + '</b></div>'; };
+      var labo = mesure('largest-contentful-paint', 'Plus grand affichage (LCP)') + mesure('cumulative-layout-shift', 'Stabilité visuelle (CLS)') + mesure('total-blocking-time', 'Temps de blocage (TBT)') + mesure('first-contentful-paint', 'Premier affichage (FCP)') + mesure('speed-index', 'Indice de vitesse');
+      var terrain = '';
+      if (F && (F.LARGEST_CONTENTFUL_PAINT_MS || F.INTERACTION_TO_NEXT_PAINT || F.CUMULATIVE_LAYOUT_SHIFT_SCORE)) {
+        var cat = function(m){ return m && m.category === 'FAST' ? 'g' : m && m.category === 'AVERAGE' ? 'o' : 'r'; };
+        var v = function(m, f){ return m ? f(m.percentile) : null; };
+        var items = [['LCP', v(F.LARGEST_CONTENTFUL_PAINT_MS, function(p){ return (p / 1000).toLocaleString('fr-FR', { maximumFractionDigits: 1 }) + ' s'; }), F.LARGEST_CONTENTFUL_PAINT_MS],
+          ['INP', v(F.INTERACTION_TO_NEXT_PAINT, function(p){ return p + ' ms'; }), F.INTERACTION_TO_NEXT_PAINT],
+          ['CLS', v(F.CUMULATIVE_LAYOUT_SHIFT_SCORE, function(p){ return (p / 100).toLocaleString('fr-FR'); }), F.CUMULATIVE_LAYOUT_SHIFT_SCORE]].filter(function(x){ return x[1] != null; });
+        terrain = '<div class="q-box" style="margin-top:12px"><h4>Core Web Vitals · vrais visiteurs Chrome (28 derniers jours)</h4><div class="vit">' + items.map(function(x){ return '<div class="' + cat(x[2]) + '"><small>' + x[0] + '</small><b>' + x[1] + '</b></div>'; }).join('') + '</div></div>';
+      } else terrain = '<p class="t-note">Core Web Vitals des vrais visiteurs : non disponibles, ce site n’a pas encore assez de trafic pour que Google les publie.</p>';
+      var recos = Object.keys(A).map(function(k){ return A[k]; }).filter(function(a){ return a.details && a.details.type === 'opportunity' && a.score != null && a.score < .9 && (a.details.overallSavingsMs || 0) > 100; })
+        .sort(function(a, b){ return (b.details.overallSavingsMs || 0) - (a.details.overallSavingsMs || 0); }).slice(0, 5);
+      var date = new Date(L.fetchTime || Date.now()).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' });
+      out.innerHTML = '<div class="res-h"><b>' + esc(L.finalDisplayedUrl || L.finalUrl || url) + '</b><span>Test ' + (strat === 'mobile' ? 'téléphone' : 'ordinateur') + ' du ' + date + ' · Lighthouse ' + esc(L.lighthouseVersion || '') + '</span></div>' +
+        '<div class="rings">' + rings + '</div>' +
+        (labo ? '<div class="q-box" style="margin-top:12px"><h4>Mesures du test</h4><div class="vit">' + labo + '</div></div>' : '') + terrain +
+        (recos.length ? '<div class="q-box" style="margin-top:12px"><h4>Ce qui ralentit le plus votre site</h4><ul class="chk-l">' + recos.map(function(a){ return '<li class="' + (a.score < .5 ? 'ko' : 'warn') + '"><span>' + esc(a.title) + '<small>Gain possible : environ ' + (Math.round(a.details.overallSavingsMs / 100) / 10).toLocaleString('fr-FR') + ' s</small></span></li>'; }).join('') + '</ul></div>' : '') +
+        '<div class="q-act"><button type="button" class="btn btn-lg btn-primary" id="perf-send">Faire analyser mon site par Studio Mel</button></div>';
+      var sc = Object.keys(NOMS_CAT).map(function(k){ return NOMS_CAT[k] + ' ' + (C[k] && C[k].score != null ? Math.round(C[k].score * 100) : '—'); }).join(', ');
+      $('perf-send').addEventListener('click', function(){ versContact('Test de vitesse de ' + url + ' (' + (strat === 'mobile' ? 'téléphone' : 'ordinateur') + ', ' + date + ') : ' + sc + '. J’aimerais un avis sur mon site.'); });
+    }).catch(function(err){
+      out.innerHTML = '<p class="statut ko" style="margin-top:20px">' + (err && err.name === 'AbortError' ? 'Le test a pris trop de temps. Réessayez dans un instant.' : 'Impossible de joindre le service de test de Google. Vérifiez votre connexion et réessayez.') + '</p>';
+    }).then(function(){ clearTimeout(to); btn.disabled = false; btn.textContent = 'Lancer le test'; });
+  });
+
+  // ---- 5. Audit SEO express (relais Cloudflare, voir worker-audit-seo.js) ----
+  var AUDIT_API = window.AUDIT_API || '';
+  if (AUDIT_API) $('tool-seo-btn').hidden = false;
+  $('seo-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    var inp = $('seo-url'), url = urlValide(inp.value), out = $('seo-out'), btn = this.querySelector('button[type=submit]');
+    if (!url) return erreur(inp, 'Indiquez une adresse de site valide, par exemple www.monsite.fr');
+    erreur(inp, '');
+    btn.disabled = true; btn.textContent = 'Analyse en cours…';
+    out.innerHTML = '<div class="loading-bar"><i></i></div>';
+    fetch(AUDIT_API + '?url=' + encodeURIComponent(url)).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); }).then(function(x){
+      if (!x.ok) { out.innerHTML = '<p class="statut ko" style="margin-top:20px">' + esc(x.j.erreur || 'L’analyse a échoué.') + '</p>'; return; }
+      var R = x.j, groupes = { ok: [], warn: [], ko: [], nv: [] };
+      R.controles.forEach(function(c){ (groupes[c.etat] || groupes.nv).push(c); });
+      var bloc = function(k, t){ return groupes[k].length ? '<div class="q-box ' + (k === 'ok' ? 'ok' : k === 'nv' ? '' : 'ko') + '"><h4>' + t + '</h4><ul class="chk-l">' + groupes[k].map(function(c){ return '<li class="' + k + '"><span>' + esc(c.titre) + (c.detail ? '<small>' + esc(c.detail) + '</small>' : '') + '</span></li>'; }).join('') + '</ul></div>' : ''; };
+      out.innerHTML = '<div class="res-h"><b>' + esc(R.url) + '</b><span>Analyse du ' + new Date(R.date).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' }) + '</span></div>' +
+        '<div class="q-grid">' + bloc('ko', 'Problèmes détectés') + bloc('warn', 'Points à améliorer') + bloc('ok', 'Points positifs') + bloc('nv', 'Non vérifié') + '</div>' +
+        '<div class="q-act"><button type="button" class="btn btn-lg btn-primary" id="seo-send">Me faire aider sur ces points</button></div>';
+      $('seo-send').addEventListener('click', function(){ versContact('Audit SEO express de ' + R.url + ' : ' + groupes.ko.length + ' problème(s), ' + groupes.warn.length + ' point(s) à améliorer. J’aimerais votre avis.'); });
+    }).catch(function(){ out.innerHTML = '<p class="statut ko" style="margin-top:20px">Le service d’analyse ne répond pas. Réessayez plus tard.</p>'; })
+      .then(function(){ btn.disabled = false; btn.textContent = 'Analyser'; });
+  });
+})();
+</script>
+
 </body>
 </html>
