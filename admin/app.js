@@ -32,6 +32,21 @@ const STATUTS = {
   avoirs: { emis: "Émis", rembourse: "Remboursé", impute: "Déduit d'une facture" }
 };
 const COND_DEVIS = "Paiement : 50 % à la signature, 50 % à la mise en ligne (ou 30 % / 40 % / 30 % sur accord). 2 tours de retouches inclus, retouches supplémentaires 30 €/h. Délai : 1 à 3 semaines après réception des contenus. Le site et le nom de domaine appartiennent au client après paiement complet. Devis valable 30 jours. TVA non applicable, art. 293 B du CGI.";
+// prestations proposées sur le site (mêmes prix que la page Formules)
+const CATALOGUE = [
+  { des: "Refonte de site (jusqu'à 5 pages)", pu: 500 },
+  { des: "Création de site vitrine (jusqu'à 5 pages)", pu: 750 },
+  { des: "Site Premium vitrine (jusqu'à 8 pages)", pu: 1200 },
+  { des: "Boutique en ligne · Premium Boutique (jusqu'à 20 produits)", pu: 1900, boutique: true },
+  { des: "Produits supplémentaires (lot de 20)", pu: 80, boutique: true },
+  { des: "Codes promo et livraison offerte", pu: 100, boutique: true },
+  { des: "Fiche Google Business", pu: 80 },
+  { des: "Nom de domaine (1re année)", pu: 15 },
+  { des: "Maintenance, 1er mois (40 €/mois, 6 mois minimum)", pu: 40 },
+  { des: "Maintenance boutique, 1er mois (70 €/mois, 6 mois minimum)", pu: 70, boutique: true },
+  { des: "Heure de modifications hors maintenance", pu: 30 }
+];
+const COND_BOUTIQUE = "Boutique en ligne : les frais du service de paiement (Stripe, compte ouvert au nom du client) restent à la charge du client, Studio Mel ne prend aucune commission sur les ventes. Les CGV et pages légales sont rédigées à partir des informations fournies par le client, qui les valide.";
 const COND_AVOIR = "Avoir à valoir sur une prochaine facture ou remboursé par virement. TVA non applicable, art. 293 B du CGI.";
 const COND_FACT = "Paiement par virement à réception. IBAN : [à compléter]. Pénalités de retard : 3 fois le taux d'intérêt légal. Indemnité forfaitaire pour frais de recouvrement : 40 € (professionnels). Pas d'escompte pour paiement anticipé. TVA non applicable, art. 293 B du CGI.";
 
@@ -323,8 +338,8 @@ function renderDash(){
 
   // répartition des ventes (devis acceptés)
   const famille = d => { const s = ((d.lignes && d.lignes[0] && d.lignes[0].des) || d.formule || "").toLowerCase();
-    return /premium/.test(s) ? "Premium" : /refonte/.test(s) ? "Refonte" : /cr[ée]ation|vitrine/.test(s) ? "Création" : /google/.test(s) ? "Fiche Google" : "Autre"; };
-  const COUL = { "Création": "#2F5BFF", "Refonte": "#7f9bff", "Premium": "#B4C6FF", "Fiche Google": "#3DD68C", "Autre": "#5f6578" };
+    return /boutique/.test(s) ? "Boutique" : /premium/.test(s) ? "Premium" : /refonte/.test(s) ? "Refonte" : /cr[ée]ation|vitrine/.test(s) ? "Création" : /google/.test(s) ? "Fiche Google" : "Autre"; };
+  const COUL = { "Création": "#2F5BFF", "Refonte": "#7f9bff", "Premium": "#B4C6FF", "Boutique": "#F5B451", "Fiche Google": "#3DD68C", "Autre": "#5f6578" };
   const rep = {}; acceptes.forEach(d => { const f = famille(d); rep[f] = (rep[f] || 0) + total(d); });
   const repL = Object.entries(rep).sort((a, b) => b[1] - a[1]), repT = repL.reduce((s, x) => s + x[1], 0);
 
@@ -658,8 +673,11 @@ const COUL_P = { demarrage: "t-nouveau", maquette: "t-nouveau", dev: "t-nouveau"
 let projetPreset = null;
 function tachesDefaut(devis){
   const s = devis ? (devis.lignes || []).map(l => l.des || "").join(" ").toLowerCase() + " " + (devis.formule || "").toLowerCase() : "";
-  const t = ["Contenus reçus (textes, photos, logo)", "Maquette validée par le client", "Pages intégrées", "Retouches · tour 1", "Retouches · tour 2"];
-  if (/premium/.test(s)) t.push("Retouches · tour 3");
+  const bq = /boutique/.test(s);
+  const t = ["Contenus reçus (textes, photos, logo)", "Maquette validée par le client", "Pages intégrées"];
+  if (bq) t.push("Fiches produits (photos, prix, descriptions, options)", "Compte Stripe du client activé", "Panier et paiement branchés", "E-mails de confirmation de commande", "Pages CGV, livraison et retours en ligne (validées par le client)", "Commande test réelle et remboursement");
+  t.push("Retouches · tour 1", "Retouches · tour 2");
+  if (/premium|boutique/.test(s)) t.push("Retouches · tour 3");
   t.push("Référencement de base", "Nom de domaine branché", "Mise en ligne");
   if (/google/.test(s)) t.push("Fiche Google créée");
   t.push("Accès remis au client");
@@ -1159,7 +1177,8 @@ function renderEditor() {
       <thead><tr><th>Désignation</th><th class="n">Qté</th><th class="n">Prix unitaire</th><th class="n">Total</th><th class="x noprint"></th></tr></thead>
       <tbody id="lines"></tbody>
     </table></div>
-    <button class="add noprint" id="addL">Ajouter une ligne</button>
+    <div class="addrow noprint"><button class="add" id="addL">Ajouter une ligne</button>
+      <select id="cata" aria-label="Ajouter une prestation du catalogue"><option value="">+ Prestation du catalogue</option>${CATALOGUE.map((c, i) => `<option value="${i}">${esc(c.des)} · ${eur(c.pu)}</option>`).join("")}</select></div>
     <div class="tot" id="tot"></div>
     ${isF ? `<div class="pay noprint" id="pay"></div>` : ""}
     ${d.message ? `<div class="cm"><strong>Message du client :</strong> ${esc(d.message)}</div>` : ""}
@@ -1181,6 +1200,18 @@ function renderEditor() {
   $("print").onclick = () => { const t = document.title; document.title = cur.d.numero + " " + (cur.d.entreprise || ""); window.print(); document.title = t; };
   if ($("pay")) renderPaiements();
   $("addL").onclick = () => { cur.d.lignes.push({ des: "", qte: 1, pu: 0 }); renderLines(); };
+  $("cata").onchange = e => {
+    const c = CATALOGUE[+e.target.value]; e.target.value = ""; if (!c) return;
+    const L = cur.d.lignes;
+    // remplace la ligne vide de départ plutôt que d'en ajouter une
+    if (L.length === 1 && !L[0].des && !num(L[0].pu)) L.splice(0, 1);
+    L.push({ des: c.des, qte: 1, pu: c.pu });
+    if (c.boutique && cur.kind === "devis" && !String(cur.d.conditions || "").includes(COND_BOUTIQUE)) {
+      cur.d.conditions = (cur.d.conditions ? cur.d.conditions + " " : "") + COND_BOUTIQUE;
+      const ta = document.querySelector('[data-k="conditions"]'); if (ta) ta.value = cur.d.conditions;
+    }
+    renderLines();
+  };
   if ($("del")) $("del").onclick = remove;
   if ($("toF")) $("toF").onclick = toFacture;
   if ($("toP")) $("toP").onclick = () => {
