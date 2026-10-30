@@ -7,7 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232F5BFF'/%3E%3Cpath d='M17 46V19h6l9 13 9-13h6v27h-7V31l-8 11-8-11v15z' fill='white'/%3E%3C/svg%3E">
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
-<meta name="description" content="Création et refonte de sites internet pour artisans et petites entreprises à Tarare, L’Arbresle, Sain-Bel et Lyon. Site vitrine dès 750 €, refonte dès 500 €, devis gratuit sous 48 h.">
+<meta name="description" content="Création et refonte de sites internet et de boutiques en ligne pour artisans et petites entreprises à Tarare, L’Arbresle, Sain-Bel et Lyon. Site vitrine dès 750 €, refonte dès 500 €, boutique dès 1 900 €. Devis gratuit sous 48 h.">
 <link rel="canonical" href="https://studio-mel.github.io/Studio-Mel/">
 <meta name="robots" content="index, follow">
 <meta property="og:type" content="website">
@@ -33,13 +33,14 @@
   "telephone": "+33604159858",
   "founder": {"@type": "Person", "name": "Melvyn Clouzet"},
   "description": "Création et refonte de sites internet pour les artisans et petites entreprises de la région lyonnaise.",
-  "priceRange": "500 € - 1 200 €",
-  "knowsAbout": ["Création de site internet", "Refonte de site internet", "Site vitrine pour artisans", "Référencement local"],
+  "priceRange": "500 € - 1 900 €",
+  "knowsAbout": ["Création de site internet", "Refonte de site internet", "Site vitrine pour artisans", "Création de boutique en ligne", "Référencement local"],
   "areaServed": [{"@type": "City", "name": "Tarare"}, {"@type": "City", "name": "L’Arbresle"}, {"@type": "City", "name": "Sain-Bel"}, {"@type": "City", "name": "Lyon"}, {"@type": "AdministrativeArea", "name": "Rhône"}],
   "makesOffer": [
     {"@type": "Offer", "name": "Création de site vitrine", "price": "750", "priceCurrency": "EUR"},
     {"@type": "Offer", "name": "Refonte de site", "price": "500", "priceCurrency": "EUR"},
-    {"@type": "Offer", "name": "Site Premium", "price": "1200", "priceCurrency": "EUR"},
+    {"@type": "Offer", "name": "Site Premium vitrine", "price": "1200", "priceCurrency": "EUR"},
+    {"@type": "Offer", "name": "Boutique en ligne (Premium Boutique)", "priceSpecification": {"@type": "PriceSpecification", "minPrice": "1900", "priceCurrency": "EUR"}},
     {"@type": "Offer", "name": "Fiche Google Business", "price": "80", "priceCurrency": "EUR"}
   ]
 }
@@ -510,7 +511,25 @@ html{scrollbar-color:#2a2c36 #000}
 @keyframes ang{to{--ang:360deg}}
 .plan.premium .badge{background:linear-gradient(90deg,#2F5BFF,#7f9bff);color:#fff}
 .plan-hint{margin:-4px 0 0;color:var(--blue-hi);font-size:14px;font-weight:400}
-.extras{grid-template-columns:repeat(3,1fr)}
+.pm-sw{display:flex;padding:3px;margin:2px 0 6px;border:1px solid var(--line);border-radius:99px;background:rgba(255,255,255,.03)}
+.pm-sw button{flex:1;height:34px;padding:0 10px;border:0;border-radius:99px;background:none;color:var(--muted);font:inherit;font-size:13.5px;font-weight:500;cursor:pointer;transition:background .25s ease,color .25s ease}
+.pm-sw button[aria-selected="true"]{background:var(--blue);color:#fff;box-shadow:0 6px 20px -8px rgba(47,91,255,.9)}
+.pm-pane{display:flex;flex-direction:column;gap:12px;flex:1}
+.pm-pane[hidden]{display:none}
+.pm-pane.in{animation:pmIn .45s cubic-bezier(.16,1,.3,1)}
+@keyframes pmIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.pm-pane .btn{margin-top:auto}
+.price small{font-size:.45em;font-weight:500;color:var(--muted);margin-right:4px;letter-spacing:0}
+.extra strong small{display:block;font-size:12.5px;font-weight:400;color:var(--muted);margin-top:2px}
+.sim-bq{display:grid;gap:10px}
+.sim-bq[hidden]{display:none}
+.opt.step{cursor:default;justify-content:space-between}
+.stp{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:99px;padding:3px}
+.stp button{width:32px;height:32px;border-radius:50%;border:0;background:rgba(255,255,255,.06);color:#fff;font-size:17px;cursor:pointer}
+.stp button:hover{background:var(--blue)}
+.stp output{min-width:34px;text-align:center;font-weight:600;font-variant-numeric:tabular-nums}
+.extras{grid-template-columns:repeat(4,1fr)}
+@media (max-width:1240px){.extras{grid-template-columns:repeat(2,1fr)}}
 .extra{flex-direction:column;align-items:flex-start;justify-content:space-between}
 .extra strong{font-size:20px}
 
@@ -581,6 +600,10 @@ html.anim.go .hero .args{animation:liftIn .6s var(--e-soft) 1.08s both}
 .case .tag{display:inline-block;font-size:12px;font-weight:500;border-radius:99px;padding:3px 10px;border:1px solid var(--line);color:var(--muted)}
 .case .tag.real{color:#7FE3B0;border-color:rgba(61,214,140,.45)}
 .case .tag.prop{color:var(--blue-hi);border-color:rgba(47,91,255,.5)}
+.case .tag.cours{color:#F5C77E;border-color:rgba(245,180,81,.45)}
+.web-sc iframe{display:block;width:1200px;height:100%;border:0;pointer-events:none;background:#fff}
+.dm-web{display:block;width:100%;height:100%;min-height:70vh;border:0;background:#fff}
+.dm-view:has(.dm-web){overflow:hidden;display:flex}
 .case .tag.concept{color:#cfd2da;border-color:rgba(255,255,255,.22)}
 #realisations .work.cta{margin-top:18px}
 
@@ -790,19 +813,32 @@ document.documentElement.classList.add('js');
           <ul><li>Jusqu’à 5 pages, créées de zéro</li><li>Design personnalisé à votre image</li><li>Adapté au mobile et à la tablette</li><li>Formulaire de contact</li><li>Référencement de base</li><li>Mise en ligne, domaine et hébergement configurés</li><li>2 tours de retouches</li></ul>
           <button class="btn btn-lg btn-primary" data-go="contact" data-formule="Création de site vitrine">Choisir la création</button>
         </div>
-        <div class="plan glass premium">
+        <div class="plan glass premium" id="plan-premium">
           <span class="badge">Effet waouh</span>
           <h3>Premium</h3>
-          <div class="price">1 200 €</div>
-          <ul><li>Jusqu’à 8 pages</li><li>Tout ce qu’inclut la Création</li><li>Animations sur mesure : 3D, transitions, défilement</li><li>Un outil interactif : simulateur, carte, avant/après</li><li>3 tours de retouches</li></ul>
-          <p class="plan-hint">Le site que vous visitez en est un exemple.</p>
-          <button class="btn btn-lg btn-blue" data-go="contact" data-formule="Site Premium">Choisir le Premium</button>
+          <div class="pm-sw" role="tablist" aria-label="Version du Premium">
+            <button role="tab" aria-selected="true" data-pm="vitrine">Site vitrine</button>
+            <button role="tab" aria-selected="false" data-pm="boutique">Boutique en ligne</button>
+          </div>
+          <div class="pm-pane" data-pane="vitrine">
+            <div class="price">1 200 €</div>
+            <ul><li>Jusqu’à 8 pages</li><li>Tout ce qu’inclut la Création</li><li>Animations sur mesure : 3D, transitions, défilement</li><li>Un outil interactif : simulateur, carte, avant/après</li><li>3 tours de retouches</li></ul>
+            <p class="plan-hint">Le site que vous visitez en est un exemple.</p>
+            <button class="btn btn-lg btn-blue" data-go="contact" data-formule="Site Premium">Choisir le Premium</button>
+          </div>
+          <div class="pm-pane" data-pane="boutique" hidden>
+            <div class="price"><small>dès</small> 1 900 €</div>
+            <ul><li>Jusqu’à 20 produits mis en ligne</li><li>Panier et paiement sécurisé : carte, Apple Pay, Google Pay</li><li>Options produit : taille, couleur, personnalisation</li><li>E-mail de confirmation à chaque commande</li><li>Pages CGV, livraison et retours, rédigées à partir de vos informations</li><li>Le design et les animations du Premium</li><li>3 tours de retouches et prise en main expliquée</li></ul>
+            <p class="plan-hint">Pas d’abonnement à une plateforme : l’argent des ventes arrive directement sur votre compte. <button type="button" class="inline-link" data-go="realisations">Voir l’exemple ANYAE</button></p>
+            <button class="btn btn-lg btn-blue" data-go="contact" data-formule="Boutique en ligne">Choisir la boutique</button>
+          </div>
         </div>
       </div>
       <div class="extras">
-        <div class="extra glass"><div><h3>Maintenance</h3><p>Après la mise en ligne, je m’occupe de tout : le site reste en ligne, sécurisé et à jour, et je fais jusqu’à 1 h de changements par mois pour vous (horaires, photos, prix, textes). Sans engagement au-delà de 6 mois.</p></div><strong>40 € / mois</strong></div>
+        <div class="extra glass"><div><h3>Maintenance</h3><p>Après la mise en ligne, je m’occupe de tout : le site reste en ligne, sécurisé et à jour, et je fais jusqu’à 1 h de changements par mois pour vous (horaires, photos, prix, textes). Pour une boutique : 2 h par mois, ajout de produits et suivi technique des commandes. Sans engagement au-delà de 6 mois.</p></div><strong>40 € / mois<small>70 € / mois pour une boutique</small></strong></div>
         <div class="extra glass"><div><h3>Fiche Google</h3><p>Création ou optimisation de votre fiche Google Maps.</p></div><strong>80 €</strong></div>
         <div class="extra glass"><div><h3>Nom de domaine</h3><p>Votre adresse en .fr, achetée à votre nom. Je m’occupe de l’acheter et de la renouveler.</p></div><strong>≈ 15 € / an</strong></div>
+        <div class="extra glass"><div><h3>Options boutique</h3><p>Plus de 20 produits : 80 € par lot de 20 produits mis en ligne. Codes promo et livraison offerte dès un montant : 100 €.</p></div><strong>dès 80 €</strong></div>
       </div>
       <div class="sim glass" id="sim">
         <div class="sim-in">
@@ -811,10 +847,16 @@ document.documentElement.classList.add('js');
             <label><input type="radio" name="sim-type" value="refonte"><span>Refonte</span></label>
             <label><input type="radio" name="sim-type" value="creation" checked><span>Création</span></label>
             <label><input type="radio" name="sim-type" value="premium"><span>Premium</span></label>
+            <label><input type="radio" name="sim-type" value="boutique"><span>Boutique</span></label>
           </fieldset>
+          <div class="sim-bq" hidden>
+            <div class="opt step"><span class="ot">Nombre de produits<small>20 inclus, puis 80 € par lot de 20</small></span>
+              <span class="stp"><button type="button" data-np="-1" aria-label="Moins de produits">−</button><output id="sim-np">20</output><button type="button" data-np="1" aria-label="Plus de produits">+</button></span></div>
+            <label class="opt"><input type="checkbox" name="sim-promo"><span class="sw" aria-hidden="true"></span><span class="ot">Codes promo et livraison offerte<small>100 €</small></span></label>
+          </div>
           <label class="opt"><input type="checkbox" name="sim-google"><span class="sw" aria-hidden="true"></span><span class="ot">Fiche Google Maps<small>Pour apparaître sur la carte, 80 €</small></span></label>
           <label class="opt"><input type="checkbox" name="sim-dom" checked><span class="sw" aria-hidden="true"></span><span class="ot">Nom de domaine à votre nom<small>Environ 15 € par an</small></span></label>
-          <label class="opt"><input type="checkbox" name="sim-maint"><span class="sw" aria-hidden="true"></span><span class="ot">Maintenance<small>Site suivi et 1 h de modifs par mois, 40 €/mois</small></span></label>
+          <label class="opt"><input type="checkbox" name="sim-maint"><span class="sw" aria-hidden="true"></span><span class="ot">Maintenance<small id="sim-maint-t">Site suivi et 1 h de modifs par mois, 40 €/mois</small></span></label>
           <fieldset class="seg" aria-label="Paiement">
             <label><input type="radio" name="sim-pay" value="2" checked><span>En 2 fois</span></label>
             <label><input type="radio" name="sim-pay" value="3"><span>En 3 fois</span></label>
@@ -834,11 +876,13 @@ document.documentElement.classList.add('js');
         <div class="faq">
           <details class="glass"><summary>Qu’est-ce que le référencement de base ?</summary><p>Tout ce qui aide Google à comprendre votre site : un titre et une description pour chaque page, votre ville et votre métier bien indiqués, un aperçu propre quand on partage votre lien. C’est inclus dans toutes les formules. Pour apparaître sur Google Maps, il y a l’option Fiche Google.</p></details>
           <details class="glass"><summary>Combien coûte le nom de domaine ?</summary><p>Environ 15 € par an. Il est acheté à votre nom : l’adresse vous appartient. Je m’occupe de l’acheter et de le renouveler, et je vous le refacture.</p></details>
-          <details class="glass"><summary>Et l’hébergement, je dois le payer ?</summary><p>Non. Votre site est hébergé gratuitement sur un service de Google, sur un compte à votre nom. Pas d’abonnement obligatoire : seul le nom de domaine se paie chaque année.</p></details>
-          <details class="glass"><summary>La maintenance est-elle obligatoire ?</summary><p>Non. Sans maintenance, votre site reste en ligne et les modifications sont facturées 30 € de l’heure. Avec la maintenance à 40 € par mois, je surveille le site et je fais jusqu’à 1 h de changements par mois pour vous. Elle s’engage sur 6 mois minimum.</p></details>
+          <details class="glass"><summary>Et l’hébergement, je dois le payer ?</summary><p>Non. Votre site est hébergé gratuitement sur un service de Google, sur un compte à votre nom. Pas d’abonnement obligatoire : seul le nom de domaine se paie chaque année. Pour une boutique, l’hébergement reste gratuit dans la plupart des cas ; si votre volume de commandes demande un petit service payant, c’est indiqué dans le devis avant de commencer.</p></details>
+          <details class="glass"><summary>Combien coûte une boutique en ligne ?</summary><p>À partir de 1 900 € avec jusqu’à 20 produits, le panier, le paiement sécurisé et les pages CGV, livraison et retours. Au-delà, c’est 80 € par lot de 20 produits. Comptez 3 à 5 semaines de réalisation.</p></details>
+          <details class="glass"><summary>Y a-t-il des frais sur les ventes ?</summary><p>Je ne prends aucune commission. Le paiement passe par Stripe, sur un compte à votre nom : l’argent arrive directement chez vous, et Stripe prélève ses propres frais, environ 1,5 % + 0,25 € par paiement avec une carte européenne. Pas d’abonnement mensuel à une plateforme comme Shopify.</p></details>
+          <details class="glass"><summary>La maintenance est-elle obligatoire ?</summary><p>Non. Sans maintenance, votre site reste en ligne et les modifications sont facturées 30 € de l’heure. Avec la maintenance à 40 € par mois, je surveille le site et je fais jusqu’à 1 h de changements par mois pour vous. Pour une boutique, elle est à 70 € par mois avec 2 h de changements, l’ajout de produits et le suivi technique des commandes. Elle s’engage sur 6 mois minimum.</p></details>
           <details class="glass"><summary>Comment se passe le paiement ?</summary><p>En 2 fois : 50 % au démarrage, 50 % à la mise en ligne. Ou en 3 fois : 30 % au démarrage, 40 % à la validation de la maquette, 30 % à la mise en ligne. Sans frais.</p></details>
-          <details class="glass"><summary>Et si j’ai besoin de plus de pages ?</summary><p>La Refonte et la Création vont jusqu’à 5 pages, le Premium jusqu’à 8. Au-delà, on en parle et je vous fais un devis.</p></details>
-          <details class="glass"><summary>Y a-t-il des frais cachés ?</summary><p>Non. Vous payez la formule, les options que vous choisissez et le nom de domaine, rien d’autre. TVA non applicable.</p></details>
+          <details class="glass"><summary>Et si j’ai besoin de plus de pages ?</summary><p>La Refonte et la Création vont jusqu’à 5 pages, le Premium jusqu’à 8. Une boutique comprend jusqu’à 20 produits, puis 80 € par lot de 20. Au-delà, on en parle et je vous fais un devis.</p></details>
+          <details class="glass"><summary>Y a-t-il des frais cachés ?</summary><p>Non. Vous payez la formule, les options que vous choisissez et le nom de domaine, rien d’autre. Pour une boutique, seuls les frais du service de paiement s’ajoutent sur chaque vente. TVA non applicable.</p></details>
         </div>
       </div>
 
@@ -954,10 +998,11 @@ document.documentElement.classList.add('js');
           <select id="d-form" name="formule" required>
             <option value="Création de site vitrine">Création · 750 €</option>
             <option value="Refonte de site">Refonte · 500 €</option>
-            <option value="Site Premium">Premium · 1 200 €</option>
+            <option value="Site Premium">Premium vitrine · 1 200 €</option>
+            <option value="Boutique en ligne">Boutique en ligne · dès 1 900 €</option>
             <option value="Fiche Google Business">Fiche Google · 80 €</option>
           </select></div>
-          <div class="fld"><label for="d-msg">Votre projet <em>(facultatif)</em></label><textarea id="d-msg" name="message" maxlength="2000" placeholder="Votre métier, votre site actuel s’il existe, ce que vous attendez…"></textarea></div>
+          <div class="fld"><label for="d-msg">Votre projet <em>(facultatif)</em></label><textarea id="d-msg" name="message" maxlength="2000" placeholder="Votre métier, votre site actuel s’il existe, ce que vous attendez… Pour une boutique : ce que vous vendez et combien de produits."></textarea></div>
           <button type="submit" class="btn btn-lg btn-primary">Demander un devis gratuit
             <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
@@ -1158,6 +1203,15 @@ document.documentElement.classList.add('js');
   // apercu : une maquette intégrée (demo: 'dupuis' ou 'jardin') ou une capture d'écran (image: 'mon-projet.jpg').
   var REALISATIONS = [
     {
+      site: 'https://studio-mel.github.io/Anyae/', adresse: 'studio-mel.github.io/Anyae', statut: 'encours',
+      nom: 'ANYAE', metier: 'Bougies personnalisées et bijoux artisanaux',
+      entreprise: 'Une créatrice qui fabrique à la main des bougies personnalisées et des bijoux, et qui voulait une vraie boutique à son image.',
+      besoin: 'Vendre ses créations en ligne avec un site haut de gamme, à la hauteur du soin apporté à chaque pièce.',
+      objectifs: ['Créer un univers de marque élégant', 'Présenter les bougies et les bijoux comme en boutique', 'Permettre de commander en ligne simplement'],
+      solutions: ['Boutique en ligne sur mesure, pensée d’abord pour le téléphone', 'Catalogue bougies et bijoux avec fiches produits soignées', 'Mise en avant de la personnalisation', 'Espace de gestion pour la créatrice'],
+      url: 'https://studio-mel.github.io/Anyae/'
+    },
+    {
       demo: 'dupuis', adresse: 'sasfabiendupuis.fr', statut: 'proposition',
       nom: 'Fabien Dupuis', metier: 'Plâtrier peintre à Villechenève',
       entreprise: 'Une entreprise de plâtrerie et peinture qui coordonne tous les corps de métier, pour les particuliers comme pour les professionnels.',
@@ -1176,10 +1230,12 @@ document.documentElement.classList.add('js');
       url: ''
     }
   ];
-  var STATUTS_R = { livre: ['Site livré', 'real'], proposition: ['Proposition de refonte', 'prop'], concept: ['Concept', 'concept'] };
+  var STATUTS_R = { livre: ['Site livré', 'real'], encours: ['Boutique en ligne · en création', 'cours'], proposition: ['Proposition de refonte', 'prop'], concept: ['Concept', 'concept'] };
   document.getElementById('cases').innerHTML = REALISATIONS.map(function(r){
     var st = STATUTS_R[r.statut] || STATUTS_R.concept;
-    var apercu = r.demo
+    var apercu = r.site
+      ? '<button class="shot live web" data-site="' + r.site + '" aria-label="Ouvrir l’aperçu ' + r.nom + '"><div class="chrome"><i></i><i></i><i></i><span>' + (r.adresse || '') + '</span></div><div class="vp"><div class="ds-scaler web-sc"><iframe src="' + r.site + '" title="Aperçu du site ' + r.nom + '" loading="lazy" tabindex="-1" scrolling="no"></iframe></div></div></button>'
+      : r.demo
       ? '<button class="shot live" data-demo="' + r.demo + '" aria-label="Ouvrir l’aperçu ' + r.nom + '"><div class="chrome"><i></i><i></i><i></i><span>' + (r.adresse || '') + '</span></div><div class="vp"><div class="ds-scaler"></div></div></button>'
       : '<div class="shot"><div class="chrome"><i></i><i></i><i></i><span>' + (r.adresse || '') + '</span></div><img src="' + r.image + '" alt="Capture du site ' + r.nom + '" loading="lazy"></div>';
     var li = function(a){ return a.map(function(x){ return '<li>' + x + '</li>'; }).join(''); };
@@ -1188,8 +1244,8 @@ document.documentElement.classList.add('js');
       '<p>' + r.entreprise + '</p>' +
       (r.besoin ? '<h4>Le besoin</h4><p>' + r.besoin + '</p>' : '') +
       '<h4>Les objectifs</h4><ul>' + li(r.objectifs) + '</ul>' +
-      '<h4>' + (r.statut === 'livre' ? 'Ce que j’ai mis en place' : 'Ce que je propose') + '</h4><ul>' + li(r.solutions) + '</ul>' +
-      (r.url ? '<a class="btn btn-sm btn-primary" href="' + r.url + '" target="_blank" rel="noopener">Voir le site en ligne</a>' : '') +
+      '<h4>' + (r.statut === 'livre' ? 'Ce que j’ai mis en place' : r.statut === 'encours' ? 'Ce que je mets en place' : 'Ce que je propose') + '</h4><ul>' + li(r.solutions) + '</ul>' +
+      (r.url ? '<a class="btn btn-sm btn-primary" href="' + r.url + '" target="_blank" rel="noopener">' + (r.statut === 'livre' ? 'Voir le site en ligne' : 'Voir la boutique') + '</a>' : '') +
       '</div></article>';
   }).join('');
 
@@ -1228,15 +1284,19 @@ document.documentElement.classList.add('js');
     var el = e.target; if (el.getAttribute && el.getAttribute('aria-invalid') === 'true') { el.setAttribute('aria-invalid', 'false'); var box = el.closest('.fld'), err = box && box.querySelector('.err'); if (err) err.textContent = ''; }
   });
 
-  var DEMOS = {}; REALISATIONS.forEach(function(r){ if (r.demo) DEMOS[r.demo] = [r.nom, r.adresse]; });
+  var DEMOS = {}; REALISATIONS.forEach(function(r){ if (r.demo) DEMOS[r.demo] = [r.nom, r.adresse]; if (r.site) DEMOS[r.site] = [r.nom, r.adresse, r.site]; });
   var dm = document.getElementById('dm'), view = dm.querySelector('.dm-view'), frameEl = dm.querySelector('.dm-frame'), opener = null;
-  function tpl(k){ return document.getElementById('tpl-' + k).content.cloneNode(true); }
-  document.querySelectorAll('.shot.live').forEach(function(s){ s.querySelector('.ds-scaler').appendChild(tpl(s.dataset.demo)); });
+  function tpl(k){
+    if (DEMOS[k] && DEMOS[k][2]) { var f = document.createElement('iframe'); f.src = DEMOS[k][2]; f.title = 'Site ' + DEMOS[k][0]; f.className = 'dm-web'; return f; }
+    return document.getElementById('tpl-' + k).content.cloneNode(true);
+  }
+  document.querySelectorAll('.shot.live:not(.web)').forEach(function(s){ s.querySelector('.ds-scaler').appendChild(tpl(s.dataset.demo)); });
   function fit(){
     document.querySelectorAll('.shot.live').forEach(function(s){
       var vp = s.querySelector('.vp'), sc = s.querySelector('.ds-scaler'), w = vp.clientWidth;
       if (!w) return;
       var k = w / 1200; sc.style.setProperty('--s', k);
+      if (s.classList.contains('web')) { sc.style.height = (vp.clientHeight / k) + 'px'; sc.style.setProperty('--h', 0); return; }
       sc.style.setProperty('--h', Math.max(0, sc.scrollHeight - vp.clientHeight / k));
     });
   }
@@ -1260,6 +1320,7 @@ document.documentElement.classList.add('js');
     if (opener) opener.focus();
   }
   document.querySelectorAll('[data-demo]').forEach(function(b){ b.addEventListener('click', function(){ openDemo(b.dataset.demo, b); }); });
+  document.querySelectorAll('[data-site]').forEach(function(b){ b.addEventListener('click', function(){ openDemo(b.dataset.site, b); }); });
   dm.querySelector('.dm-x').addEventListener('click', closeDemo);
   dm.addEventListener('click', function(e){ if (e.target === dm) closeDemo(); });
   dm.querySelectorAll('.dm-sw button').forEach(function(b){ b.addEventListener('click', function(){ setW(b.dataset.w); }); });
@@ -1292,6 +1353,12 @@ document.documentElement.classList.add('js');
 
 
   // ---- Simulateur de prix ----
+  // ---- Premium : version site vitrine ou boutique en ligne ----
+  var pmBtns = document.querySelectorAll('[data-pm]');
+  pmBtns.forEach(function(b){ b.addEventListener('click', function(){
+    pmBtns.forEach(function(x){ x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
+    document.querySelectorAll('.pm-pane').forEach(function(p){ var on = p.dataset.pane === b.dataset.pm; p.hidden = !on; p.classList.toggle('in', on && !calm); });
+  }); });
   var sim = document.getElementById('sim'), shown = 750, tw = null;
   function eur(n){ return Math.round(n).toLocaleString('fr-FR'); }
   function tween(to){
@@ -1300,15 +1367,21 @@ document.documentElement.classList.add('js');
     if (calm) { el.textContent = eur(to); return; }
     (function step(now){ var k = Math.min((now - t0) / 450, 1), e = 1 - Math.pow(1 - k, 3); el.textContent = eur(from + (to - from) * e); if (k < 1) tw = requestAnimationFrame(step); })(t0);
   }
-  var NOMS = { refonte: 'Refonte de site', creation: 'Création de site vitrine', premium: 'Site Premium' };
+  var NOMS = { refonte: 'Refonte de site', creation: 'Création de site vitrine', premium: 'Site Premium', boutique: 'Boutique en ligne' };
+  var nbProd = 20;
+  sim.querySelectorAll('[data-np]').forEach(function(b){ b.addEventListener('click', function(){ nbProd = Math.max(20, Math.min(200, nbProd + 20 * +b.dataset.np)); document.getElementById('sim-np').textContent = nbProd; simCalc(); }); });
   function simCalc(){
-    var type = sim.querySelector('[name=sim-type]:checked').value;
-    var base = { refonte: 500, creation: 750, premium: 1200 }[type];
+    var type = sim.querySelector('[name=sim-type]:checked').value, bq = type === 'boutique';
+    var base = { refonte: 500, creation: 750, premium: 1200, boutique: 1900 }[type];
+    sim.querySelector('.sim-bq').hidden = !bq;
+    var lots = bq ? (nbProd - 20) / 20 : 0, promo = bq && sim.querySelector('[name=sim-promo]').checked;
+    var pm = bq ? 70 : 40;
+    document.getElementById('sim-maint-t').textContent = bq ? 'Boutique suivie, 2 h de modifs par mois, 70 €/mois' : 'Site suivi et 1 h de modifs par mois, 40 €/mois';
     var g = sim.querySelector('[name=sim-google]').checked, dom = sim.querySelector('[name=sim-dom]').checked, maint = sim.querySelector('[name=sim-maint]').checked;
     var three = sim.querySelector('[name=sim-pay]:checked').value === '3';
-    // le site (formule + fiche Google) se paie en 2 ou 3 fois ;
+    // le site (formule + options) se paie en 2 ou 3 fois ;
     // le domaine (1re année) et le 1er mois de maintenance se paient à la mise en ligne
-    var site = base + (g ? 80 : 0), enLigne = (dom ? 15 : 0) + (maint ? 40 : 0), total = site + enLigne;
+    var site = base + (g ? 80 : 0) + lots * 80 + (promo ? 100 : 0), enLigne = (dom ? 15 : 0) + (maint ? pm : 0), total = site + enLigne;
     var parts = three ? [['Au démarrage', .3], ['À la validation de la maquette', .4], ['À la mise en ligne', .3]] : [['Au démarrage', .5], ['À la mise en ligne', .5]];
     var extra = [dom ? 'domaine' : '', maint ? '1er mois de maintenance' : ''].filter(Boolean).join(' et ');
     document.getElementById('sim-steps').innerHTML = parts.map(function(p, i){
@@ -1316,21 +1389,25 @@ document.documentElement.classList.add('js');
       return '<li><span>' + p[0] + (last && extra ? '<small>dont ' + extra + '</small>' : '') + '</span><b>' + eur(m) + ' €</b></li>';
     }).join('');
     var rec = [];
-    if (maint) rec.push('40 € par mois (6 mois minimum)');
+    if (maint) rec.push(pm + ' € par mois (6 mois minimum)');
     if (dom) rec.push('environ 15 € par an pour le domaine');
-    document.getElementById('sim-rec').textContent = rec.length ? 'Ensuite : ' + rec.join(' et ') + '.' : 'Rien à payer ensuite.';
+    document.getElementById('sim-rec').textContent = (rec.length ? 'Ensuite : ' + rec.join(' et ') + '.' : 'Rien à payer ensuite.') + (bq ? ' Sur chaque vente, seuls les frais du service de paiement s’appliquent (environ 1,5 % + 0,25 € par carte européenne).' : '');
     tween(total);
-    var lignes = [{ des: NOMS[type], qte: 1, pu: base }];
+    var lignes = [{ des: bq ? 'Boutique en ligne · Premium Boutique (jusqu’à 20 produits)' : NOMS[type], qte: 1, pu: base }];
+    if (lots) lignes.push({ des: 'Produits supplémentaires (lot de 20)', qte: lots, pu: 80 });
+    if (promo) lignes.push({ des: 'Codes promo et livraison offerte', qte: 1, pu: 100 });
     if (g) lignes.push({ des: 'Fiche Google Business', qte: 1, pu: 80 });
     if (dom) lignes.push({ des: 'Nom de domaine (1re année)', qte: 1, pu: 15 });
-    if (maint) lignes.push({ des: 'Maintenance, 1er mois (40 €/mois, 6 mois minimum)', qte: 1, pu: 40 });
-    return { type: type, total: total, three: three, g: g, dom: dom, maint: maint, lignes: lignes };
+    if (maint) lignes.push({ des: 'Maintenance' + (bq ? ' boutique' : '') + ', 1er mois (' + pm + ' €/mois, 6 mois minimum)', qte: 1, pu: pm });
+    return { type: type, total: total, three: three, g: g, dom: dom, maint: maint, lots: lots, promo: promo, nb: nbProd, lignes: lignes };
   }
   sim.addEventListener('change', simCalc); simCalc();
   document.getElementById('sim-go').addEventListener('click', function(){
     var r = simCalc(), f = document.getElementById('devis-form');
     f.formule.value = NOMS[r.type];
     var opts = [];
+    if (r.lots) opts.push(r.nb + ' produits');
+    if (r.promo) opts.push('codes promo');
     if (r.g) opts.push('fiche Google');
     if (r.dom) opts.push('nom de domaine');
     if (r.maint) opts.push('maintenance');
@@ -1677,7 +1754,7 @@ async function envoyer(form, statutId, demande, merci){
   btn.disabled = false; btn.classList.remove("loading"); btn.removeAttribute("aria-busy");
 }
 
-const prix = { "Création de site vitrine": "750 €", "Refonte de site": "500 €", "Site Premium": "1 200 €", "Fiche Google Business": "80 €" };
+const prix = { "Création de site vitrine": "750 €", "Refonte de site": "500 €", "Site Premium": "1 200 €", "Boutique en ligne": "dès 1 900 €", "Fiche Google Business": "80 €" };
 
 document.getElementById("devis-form").addEventListener("submit", e => {
   e.preventDefault(); const f = e.target;
