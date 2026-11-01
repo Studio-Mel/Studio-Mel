@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /admin.html
-Disallow: /admin/
-
-Sitemap: https://studiomel.eu/sitemap.xml
