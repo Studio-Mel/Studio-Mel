@@ -88,6 +88,6 @@
   window.versContact = function(texte, formule, detail){
     try { sessionStorage.setItem('sm-contact', JSON.stringify({ texte: texte || '', formule: formule || '', detail: detail || null })); } catch (e) {}
     var q = formule ? '?formule=' + encodeURIComponent(formule) : '';
-    location.href = '/contact/' + q + '#formulaire';
+    location.href = '/contact' + q + '#formulaire';
   };
 })();

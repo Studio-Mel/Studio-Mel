@@ -52,7 +52,7 @@
         pm.querySelectorAll('[data-pm]').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
         card.querySelectorAll('[data-pane]').forEach(function(p){ p.hidden = p.dataset.pane !== k; });
         card.querySelector('.fcard-price').innerHTML = (d.pre ? '<small>' + d.pre + '</small>' : '') + d.prix;
-        var a = card.querySelector('.fcard-inner > .btn'); a.textContent = d.btn; a.href = '/contact/?formule=' + encodeURIComponent(d.nom) + '#formulaire';
+        var a = card.querySelector('.fcard-inner > .btn'); a.textContent = d.btn; a.href = '/contact?formule=' + encodeURIComponent(d.nom) + '#formulaire';
         card.querySelectorAll('[data-pane]:not([hidden]) li').forEach(function(li, i){ li.style.setProperty('--i', i); });
       });
     }

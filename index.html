@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Réalisations : sites internet d’artisans et de commerçants | Studio Mel</title>
-<meta name="description" content="Sites vitrines, refontes et boutique en ligne pour des artisans et commerçants de la région lyonnaise : le besoin, la solution et les fonctionnalités de chaque projet.">
-<link rel="canonical" href="https://studiomel.eu/realisations/">
+<title>Création de site internet pour artisans à Tarare, L’Arbresle et Lyon | Studio Mel</title>
+<meta name="description" content="Création, refonte et suivi de sites internet pour artisans et petites entreprises autour de Tarare, L’Arbresle, Sain-Bel et Lyon. Site vitrine dès 750 €, refonte dès 500 €. Devis gratuit sous 48 h.">
+<link rel="canonical" href="https://studiomel.eu/">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
@@ -14,121 +14,236 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="Studio Mel">
-<meta property="og:url" content="https://studiomel.eu/realisations/">
-<meta property="og:title" content="Réalisations : sites internet d’artisans et de commerçants | Studio Mel">
-<meta property="og:description" content="Sites vitrines, refontes et boutique en ligne pour des artisans et commerçants de la région lyonnaise : le besoin, la solution et les fonctionnalités de chaque projet.">
+<meta property="og:url" content="https://studiomel.eu/">
+<meta property="og:title" content="Création de site internet pour artisans à Tarare, L’Arbresle et Lyon | Studio Mel">
+<meta property="og:description" content="Création, refonte et suivi de sites internet pour artisans et petites entreprises autour de Tarare, L’Arbresle, Sain-Bel et Lyon. Site vitrine dès 750 €, refonte dès 500 €. Devis gratuit sous 48 h.">
 <meta property="og:image" content="https://studiomel.eu/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Studio Mel, création de sites internet pour artisans et petites entreprises">
 <meta name="twitter:card" content="summary_large_image">
 <!-- Google Search Console : colle ici la balise de validation que Google te donne -->
-<link rel="preload" href="/assets/fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/plus-jakarta-sans.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/components.css?v=2">
-<link rel="stylesheet" href="/assets/css/site.css?v=2">
+<link rel="preload" href="/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/plus-jakarta-sans.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/components.css?v=2">
+<link rel="stylesheet" href="/site.css?v=2">
 <script>document.documentElement.classList.add('js')</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://studiomel.eu/"}, {"@type": "ListItem", "position": 2, "name": "Réalisations", "item": "https://studiomel.eu/realisations/"}]}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ItemList", "name": "Réalisations Studio Mel", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "ANYAE · Bougies personnalisées et bijoux artisanaux", "url": "https://studiomel.eu/realisations/#anyae"}, {"@type": "ListItem", "position": 2, "name": "Fabien Dupuis · Plâtrier peintre à Villechenève", "url": "https://studiomel.eu/realisations/#fabien-dupuis"}, {"@type": "ListItem", "position": 3, "name": "Dorne Jardins · Paysagiste à Sain-Bel", "url": "https://studiomel.eu/realisations/#dorne-jardins"}, {"@type": "ListItem", "position": 4, "name": "Maison Ombelle · Concept fictif · restaurant", "url": "https://studiomel.eu/realisations/#maison-ombelle"}, {"@type": "ListItem", "position": 5, "name": "Studio Lignes · Concept fictif · salon de coiffure", "url": "https://studiomel.eu/realisations/#studio-lignes"}, {"@type": "ListItem", "position": 6, "name": "Le Fournil des Coteaux · Concept fictif · boulangerie", "url": "https://studiomel.eu/realisations/#fournil-des-coteaux"}]}</script>
+<script>
+/* anciennes adresses de la V1 (#formules, #contact…) : on redirige vers les nouvelles pages */
+(function(){var h=location.hash.slice(1),q=location.search,M={contact:'/contact',realisations:'/realisations',apropos:'/a-propos',journal:'/journal',outils:'/outils',lab:'/',methode:'/',faq:'/contact#faq',mentions:'/mentions-legales'};
+if(/[?&]atelier=/.test(q)){location.replace('/outils'+q+'#atelier');return;}
+if(M[h]&&M[h]!=='/'){location.replace(M[h]);}else if(h==='lab'||h==='methode'){history.replaceState(null,'','/');}})();
+</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfessionalService", "@id": "https://studiomel.eu/#studio", "name": "Studio Mel", "url": "https://studiomel.eu/", "logo": "https://studiomel.eu/logo-mark.svg", "image": "https://studiomel.eu/og-image.jpg", "email": "studio-mel@outlook.fr", "telephone": "+33604159858", "founder": {"@type": "Person", "name": "Melvyn Clouzet"}, "description": "Création, refonte et suivi de sites internet pour les artisans et petites entreprises de la région lyonnaise.", "priceRange": "500 € - 1 900 €", "knowsAbout": ["Création de site internet", "Création de site web pour artisans", "Refonte de site internet", "Création de boutique en ligne", "Référencement local", "Maintenance de site internet"], "areaServed": [{"@type": "City", "name": "Tarare"}, {"@type": "City", "name": "L’Arbresle"}, {"@type": "City", "name": "Sain-Bel"}, {"@type": "City", "name": "Lyon"}, {"@type": "AdministrativeArea", "name": "Rhône"}], "makesOffer": [{"@type": "Offer", "name": "Refonte de site internet", "price": "500", "priceCurrency": "EUR"}, {"@type": "Offer", "name": "Création de site vitrine", "price": "750", "priceCurrency": "EUR"}, {"@type": "Offer", "name": "Site Premium vitrine", "price": "1200", "priceCurrency": "EUR"}, {"@type": "Offer", "name": "Boutique en ligne", "priceSpecification": {"@type": "PriceSpecification", "minPrice": "1900", "priceCurrency": "EUR"}}, {"@type": "Offer", "name": "Maintenance de site", "priceSpecification": {"@type": "UnitPriceSpecification", "price": "40", "priceCurrency": "EUR", "unitText": "MONTH"}}, {"@type": "Offer", "name": "Fiche Google Business", "price": "80", "priceCurrency": "EUR"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Studio Mel", "url": "https://studiomel.eu/", "inLanguage": "fr-FR", "publisher": {"@id": "https://studiomel.eu/#studio"}}</script>
 </head>
 <body>
 <a class="skip" href="#contenu">Aller au contenu</a>
 <header class="nav">
   <div class="wrap nav-in">
     <a class="brand" href="/" aria-label="Studio Mel, accueil"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#2F5BFF"/><path d="M17 45V21.5L32 36l15-14.5V38" fill="none" stroke="#fff" stroke-width="5.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="47" cy="46" r="3.6" fill="#B4C6FF"/></svg><span>Studio <em>Mel</em></span></a>
-    <ul class="nav-links"><li><a href="/">Accueil</a></li><li><a href="/realisations/" aria-current="page">Réalisations</a></li><li><a href="/a-propos/">À propos</a></li></ul>
-    <a class="btn btn-sm btn-primary nav-cta" href="/contact/">Parlons de votre projet</a>
+    <ul class="nav-links"><li><a href="/" aria-current="page">Accueil</a></li><li><a href="/realisations">Réalisations</a></li><li><a href="/a-propos">À propos</a></li></ul>
+    <a class="btn btn-sm btn-primary nav-cta" href="/contact">Parlons de votre projet</a>
     <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="menu"><span></span></button>
   </div>
 </header>
 <nav class="menu" id="menu" aria-label="Menu">
-  <ul><li><a href="/">Accueil</a></li><li><a href="/realisations/" aria-current="page">Réalisations</a></li><li><a href="/a-propos/">À propos</a></li><li><a href="/contact/">Contact</a></li></ul>
-  <a class="btn btn-lg btn-primary" href="/contact/">Parlons de votre projet <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  <ul><li><a href="/" aria-current="page">Accueil</a></li><li><a href="/realisations">Réalisations</a></li><li><a href="/a-propos">À propos</a></li><li><a href="/contact">Contact</a></li></ul>
+  <a class="btn btn-lg btn-primary" href="/contact">Parlons de votre projet <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 </nav>
 <main id="contenu">
-<section class="page-head"><div class="wrap">
-  <ol class="crumbs" aria-label="Fil d’Ariane"><li><a href="/">Accueil</a></li><li aria-current="page">Réalisations</li></ol>
-  <h1 data-reveal>Réalisations</h1>
-  <p class="lede" data-reveal style="--d:1">Des sites conçus pour des artisans et commerçants de la région. Chaque fiche dit clairement s’il s’agit d’un site livré, d’un projet en cours, d’une proposition ou d’un concept. Touchez un aperçu pour le parcourir en version ordinateur ou téléphone.</p>
-</div></section>
-<div class="page-body"><div class="wrap">
-  <div>
-    <div class="rf" id="rf" role="group" aria-label="Filtrer les réalisations" hidden><button type="button" data-f="tous" aria-pressed="true">Tous<span>6</span></button><button type="button" data-f="vitrine" aria-pressed="false">Sites vitrines<span>5</span></button><button type="button" data-f="boutique" aria-pressed="false">Boutiques en ligne<span>1</span></button><button type="button" data-f="artisan" aria-pressed="false">Artisans<span>2</span></button><button type="button" data-f="commerce" aria-pressed="false">Commerces<span>2</span></button><button type="button" data-f="restauration" aria-pressed="false">Restauration<span>1</span></button><button type="button" data-f="beaute" aria-pressed="false">Beauté<span>1</span></button><button type="button" data-f="concept" aria-pressed="false">Concepts et propositions<span>5</span></button></div>
-    <div class="cases" id="cases">
-<article class="case glass" id="anyae" data-cats="boutique commerce encours" data-reveal>
-  <button class="shot live web" data-site="https://studio-mel.github.io/Anyae/" data-nom="ANYAE" data-adresse="studio-mel.github.io/Anyae" aria-label="Ouvrir l’aperçu du site ANYAE"><div class="chrome" aria-hidden="true"><i></i><i></i><i></i><span>studio-mel.github.io/Anyae</span></div><div class="vp"><div class="ds-scaler web-sc"><iframe src="https://studio-mel.github.io/Anyae/" title="Aperçu du site ANYAE" loading="lazy" tabindex="-1" scrolling="no"></iframe></div></div></button>
-  <div class="case-txt"><span class="tag cours">Boutique en ligne · en création</span><h2 class="h3">ANYAE</h2><p class="case-m">Bougies personnalisées et bijoux artisanaux</p>
-    <p>Une créatrice qui fabrique à la main des bougies personnalisées et des bijoux, et qui voulait une vraie boutique à son image.</p>
-    <h3 class="h4">Le besoin</h3><p>Vendre ses créations en ligne avec un site haut de gamme, à la hauteur du soin apporté à chaque pièce.</p>
-    <h3 class="h4">Les objectifs</h3><ul><li>Créer un univers de marque élégant</li><li>Présenter les bougies et les bijoux comme en boutique</li><li>Permettre de commander en ligne simplement</li></ul>
-    <h3 class="h4">Ce que je mets en place</h3><ul><li>Boutique pensée d’abord pour le téléphone</li><li>Catalogue avec fiches produits soignées</li><li>Mise en avant de la personnalisation</li><li>Espace de gestion pour la créatrice</li></ul>
-    <a class="btn btn-sm btn-primary" href="https://studio-mel.github.io/Anyae/" target="_blank" rel="noopener">Voir la boutique</a>
+
+<section class="hero" aria-labelledby="titre">
+  <canvas id="globe" aria-hidden="true"></canvas>
+  <div class="hero-in">
+    <svg class="hero-mark" viewBox="0 0 64 64" role="img" aria-label="Studio Mel"><rect width="64" height="64" rx="16" fill="#2F5BFF"/><path class="m-stroke" pathLength="100" d="M17 45V21.5L32 36l15-14.5V38" fill="none" stroke="#fff" stroke-width="5.6" stroke-linecap="round" stroke-linejoin="round"/><circle class="m-dot" cx="47" cy="46" r="3.6" fill="#B4C6FF"/></svg>
+    <h1 id="titre"><span class="l">Un site à la hauteur</span> <span class="l">de votre savoir-faire.</span></h1>
+    <p class="sub">Création et suivi de sites internet pour artisans, près de Lyon.</p>
+    <a class="btn btn-lg btn-primary" href="/contact">Parlons de votre projet <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <p class="hero-note">Devis gratuit, réponse sous 48 h · <a href="/outils">Faire auditer mon site</a></p>
+  </div>
+</section>
+
+<section class="sec" id="realisations" aria-labelledby="t-real">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="t-real" data-reveal>Des projets où vous allez vous reconnaître</h2>
+      <p class="lede" data-reveal style="--d:1">Un artisan du bâtiment, un paysagiste, une créatrice : pour chacun, je pars de son métier et de ses clients. Chaque projet indique honnêtement s’il est en ligne, en cours ou proposé.</p>
+    </div>
+    <div class="stories">
+<article class="story">
+  <div class="story-visual" data-reveal><button class="shot live web" data-site="https://studio-mel.github.io/Anyae/" data-nom="ANYAE" data-adresse="studio-mel.github.io/Anyae" aria-label="Ouvrir l’aperçu du site ANYAE"><div class="chrome" aria-hidden="true"><i></i><i></i><i></i><span>studio-mel.github.io/Anyae</span></div><div class="vp"><div class="ds-scaler web-sc"><iframe src="https://studio-mel.github.io/Anyae/" title="Aperçu du site ANYAE" loading="lazy" tabindex="-1" scrolling="no"></iframe></div></div></button></div>
+  <div class="story-txt" data-reveal>
+    <span class="tag cours">Boutique en ligne · en création</span>
+    <h3>ANYAE</h3>
+    <p class="story-sector">Créatrice artisanale · boutique en ligne</p>
+    <div class="story-block"><h4>Le besoin</h4><p>Vendre ses créations en ligne avec un site haut de gamme, à la hauteur du soin apporté à chaque pièce.</p></div>
+    <div class="story-block"><h4>Ce que je mets en place</h4><p>Une boutique sur mesure qui présente bougies et bijoux comme en magasin, et se commande simplement depuis un téléphone.</p></div>
+    <div class="story-block"><h4>Fonctionnalités</h4><ul class="chips"><li>Boutique pensée d’abord pour le téléphone</li><li>Catalogue avec fiches produits soignées</li><li>Mise en avant de la personnalisation</li><li>Espace de gestion pour la créatrice</li></ul></div>
+    <div class="story-act"><a class="btn btn-sm btn-primary" href="https://studio-mel.github.io/Anyae/" target="_blank" rel="noopener">Voir la boutique</a><a class="btn btn-sm btn-ghost" href="/realisations#anyae">Voir le projet en détail</a></div>
   </div>
 </article>
-<article class="case glass" id="fabien-dupuis" data-cats="vitrine artisan proposition" data-reveal>
-  <button class="shot live" data-demo="dupuis" data-nom="Fabien Dupuis" data-adresse="sasfabiendupuis.fr" aria-label="Ouvrir la maquette Fabien Dupuis en grand"><div class="chrome" aria-hidden="true"><i></i><i></i><i></i><span>sasfabiendupuis.fr</span></div><div class="vp"><div class="ds-scaler"></div></div></button>
-  <div class="case-txt"><span class="tag prop">Proposition de refonte</span><h2 class="h3">Fabien Dupuis</h2><p class="case-m">Plâtrier peintre à Villechenève</p>
-    <p>Une entreprise de plâtrerie et peinture qui coordonne tous les corps de métier, pour les particuliers comme pour les professionnels.</p>
-    <h3 class="h4">Le besoin</h3><p>Un site existant peu moderne et mal organisé, qui ne mettait pas en valeur le savoir-faire de l’équipe.</p>
-    <h3 class="h4">Les objectifs</h3><ul><li>Présenter clairement les services</li><li>Montrer l’équipe et les chantiers</li><li>Rendre la demande de devis évidente</li></ul>
-    <h3 class="h4">Ce que je propose</h3><ul><li>Photo de chantier et téléphone visibles dès l’accueil</li><li>Chiffres clés et certification RGE en avant</li><li>Galerie de chantiers récents</li><li>Étapes d’un chantier expliquées simplement</li></ul>
-    
+<article class="story">
+  <div class="story-visual" data-reveal><button class="shot live" data-demo="dupuis" data-nom="Fabien Dupuis" data-adresse="sasfabiendupuis.fr" aria-label="Ouvrir la maquette Fabien Dupuis en grand"><div class="chrome" aria-hidden="true"><i></i><i></i><i></i><span>sasfabiendupuis.fr</span></div><div class="vp"><div class="ds-scaler"></div></div></button></div>
+  <div class="story-txt" data-reveal>
+    <span class="tag prop">Proposition de refonte</span>
+    <h3>Fabien Dupuis</h3>
+    <p class="story-sector">Artisan du bâtiment · refonte de site</p>
+    <div class="story-block"><h4>Le besoin</h4><p>Un site existant peu moderne et mal organisé, qui ne mettait pas en valeur le savoir-faire de l’équipe.</p></div>
+    <div class="story-block"><h4>Ce que je propose</h4><p>Une refonte qui met les chantiers et l’équipe au premier plan, avec la demande de devis toujours à portée de main.</p></div>
+    <div class="story-block"><h4>Fonctionnalités</h4><ul class="chips"><li>Photo de chantier et téléphone visibles dès l’accueil</li><li>Chiffres clés et certification RGE en avant</li><li>Galerie de chantiers récents</li><li>Étapes d’un chantier expliquées simplement</li></ul></div>
+    <div class="story-act"><a class="btn btn-sm btn-ghost" href="/realisations#fabien-dupuis">Voir le projet en détail</a></div>
   </div>
 </article>
-<article class="case glass" id="dorne-jardins" data-cats="vitrine artisan concept" data-reveal>
-  <button class="shot live" data-demo="jardin" data-nom="Dorne Jardins" data-adresse="dornejardins.fr" aria-label="Ouvrir la maquette Dorne Jardins en grand"><div class="chrome" aria-hidden="true"><i></i><i></i><i></i><span>dornejardins.fr</span></div><div class="vp"><div class="ds-scaler"></div></div></button>
-  <div class="case-txt"><span class="tag concept">Concept</span><h2 class="h3">Dorne Jardins</h2><p class="case-m">Paysagiste à Sain-Bel</p>
-    <p>Un paysagiste des Monts du Lyonnais : création, entretien, taille et élagage.</p>
-    
-    <h3 class="h4">Les objectifs</h3><ul><li>Montrer les jardins réalisés</li><li>Recevoir des demandes de devis</li></ul>
-    <h3 class="h4">Ce que je propose</h3><ul><li>Présentation claire des services</li><li>Galerie de réalisations</li><li>Demande de devis sur chaque page</li></ul>
-    
-  </div>
-</article>
-<article class="case glass" id="maison-ombelle" data-cats="vitrine restauration concept" data-reveal>
-  <button class="shot live" data-demo="resto" data-nom="Maison Ombelle" data-adresse="concept · restaurant" aria-label="Ouvrir la maquette Maison Ombelle en grand"><div class="chrome" aria-hidden="true"><i></i><i></i><i></i><span>concept · restaurant</span></div><div class="vp"><div class="ds-scaler"></div></div></button>
-  <div class="case-txt"><span class="tag concept">Concept</span><h2 class="h3">Maison Ombelle</h2><p class="case-m">Concept fictif · restaurant</p>
-    <p>Un bistrot imaginaire, pour montrer ce que pourrait être le site d’un restaurant.</p>
-    
-    <h3 class="h4">Les objectifs</h3><ul><li>Donner envie dès la première image</li><li>Remplir les tables en semaine</li><li>Mettre la carte à jour facilement</li></ul>
-    <h3 class="h4">Ce que je propose</h3><ul><li>Ambiance sombre et chaleureuse</li><li>Bouton de réservation toujours visible</li><li>Carte et formules en un coup d’œil</li></ul>
-    
-  </div>
-</article>
-<article class="case glass" id="studio-lignes" data-cats="vitrine beaute concept" data-reveal>
-  <button class="shot live" data-demo="coiffure" data-nom="Studio Lignes" data-adresse="concept · salon de coiffure" aria-label="Ouvrir la maquette Studio Lignes en grand"><div class="chrome" aria-hidden="true"><i></i><i></i><i></i><span>concept · salon de coiffure</span></div><div class="vp"><div class="ds-scaler"></div></div></button>
-  <div class="case-txt"><span class="tag concept">Concept</span><h2 class="h3">Studio Lignes</h2><p class="case-m">Concept fictif · salon de coiffure</p>
-    <p>Un salon imaginaire, pour montrer un site de coiffure moderne avec prise de rendez-vous.</p>
-    
-    <h3 class="h4">Les objectifs</h3><ul><li>Afficher un style affirmé</li><li>Faire réserver en ligne, même le soir</li><li>Présenter les prestations clairement</li></ul>
-    <h3 class="h4">Ce que je propose</h3><ul><li>Design minimaliste noir et rose poudré</li><li>Rendez-vous en ligne en deux clics</li><li>Prestations détaillées par catégorie</li></ul>
-    
-  </div>
-</article>
-<article class="case glass" id="fournil-des-coteaux" data-cats="vitrine commerce concept" data-reveal>
-  <button class="shot live" data-demo="fournil" data-nom="Le Fournil des Coteaux" data-adresse="concept · boulangerie" aria-label="Ouvrir la maquette Le Fournil des Coteaux en grand"><div class="chrome" aria-hidden="true"><i></i><i></i><i></i><span>concept · boulangerie</span></div><div class="vp"><div class="ds-scaler"></div></div></button>
-  <div class="case-txt"><span class="tag concept">Concept</span><h2 class="h3">Le Fournil des Coteaux</h2><p class="case-m">Concept fictif · boulangerie</p>
-    <p>Une boulangerie imaginaire, pour montrer un site de commerce de proximité.</p>
-    
-    <h3 class="h4">Les objectifs</h3><ul><li>Mettre en valeur le fait maison</li><li>Prendre les commandes la veille</li><li>Afficher les horaires partout</li></ul>
-    <h3 class="h4">Ce que je propose</h3><ul><li>Identité chaleureuse et typographie affirmée</li><li>Commande en ligne avec heure de retrait</li><li>Horaires et produits du jour en avant</li></ul>
-    
+<article class="story">
+  <div class="story-visual" data-reveal><button class="shot live" data-demo="jardin" data-nom="Dorne Jardins" data-adresse="dornejardins.fr" aria-label="Ouvrir la maquette Dorne Jardins en grand"><div class="chrome" aria-hidden="true"><i></i><i></i><i></i><span>dornejardins.fr</span></div><div class="vp"><div class="ds-scaler"></div></div></button></div>
+  <div class="story-txt" data-reveal>
+    <span class="tag concept">Concept</span>
+    <h3>Dorne Jardins</h3>
+    <p class="story-sector">Paysagiste · maquette de site vitrine</p>
+    <div class="story-block"><h4>Les objectifs</h4><p>Montrer les jardins réalisés, Recevoir des demandes de devis.</p></div>
+    <div class="story-block"><h4>Ce que je propose</h4><p>Une maquette de site vitrine pour montrer les jardins réalisés et recevoir des demandes de devis.</p></div>
+    <div class="story-block"><h4>Fonctionnalités</h4><ul class="chips"><li>Présentation claire des services</li><li>Galerie de réalisations</li><li>Demande de devis sur chaque page</li></ul></div>
+    <div class="story-act"><a class="btn btn-sm btn-ghost" href="/realisations#dorne-jardins">Voir le projet en détail</a></div>
   </div>
 </article>
     </div>
-  </div>
-  <div class="ba-wrap" id="ba-wrap" hidden>
-    <h2 class="ba-title">Avant, après : le site de Fabien Dupuis</h2>
-    <div class="ba" id="ba" style="--p:50%">
-      <div class="ba-after"><div class="ds-scaler"></div></div>
-      <div class="ba-before"><img loading="lazy" decoding="async" src="/img/avant-dupuis.jpg" alt="Ancien site de Fabien Dupuis" id="ba-img" onerror="this.remove()"></div>
-      <span class="ba-lbl l">Avant</span><span class="ba-lbl r">Après</span>
-      <div class="ba-line" aria-hidden="true"><i></i></div>
-      <input type="range" min="0" max="100" value="50" aria-label="Comparer l’ancien et le nouveau site">
+    <div class="more-link" data-reveal>
+      <p>Restaurant, salon, boulangerie : d’autres maquettes vous attendent.</p>
+      <a class="btn btn-sm btn-ghost" href="/realisations">Toutes les réalisations <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </div>
   </div>
-  <div class="cta-band" data-reveal><div><h2>Votre projet pourrait être le prochain</h2><p>Dites-moi ce que vous faites, je vous montre ce que votre site pourrait être.</p></div><a class="btn btn-lg btn-primary" href="/contact/">Parlons de votre projet <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
-</div></div>
+</section>
+
+<section class="sec" id="formules" aria-labelledby="t-form">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="t-form" data-reveal>Des formules claires, des prix annoncés</h2>
+      <p class="lede" data-reveal style="--d:1">Chaque formule comprend le design, la version mobile, le référencement de base et la mise en ligne. Touchez une formule pour voir ce qu’elle contient.</p>
+    </div>
+    <div class="formules" id="formules-grid" data-sel="1">
+<article class="fcard" data-reveal style="--d:0">
+  <button class="fcard-head" type="button" aria-expanded="false" aria-controls="fc-0">
+    <span class="fcard-name">Refonte</span>
+    <span class="fcard-for">Vous avez déjà un site, mais il ne vous ressemble plus.</span>
+    <span class="fcard-price">500 €</span>
+    <span class="fcard-hint">Voir le détail</span>
+  </button>
+  <div class="fcard-body" id="fc-0"><div><div class="fcard-inner">
+    <ul><li>Jusqu’à 5 pages</li><li>Nouveau design personnalisé, à partir de votre site actuel</li><li>Adapté au mobile et à la tablette</li><li>Formulaire de contact</li><li>Référencement de base</li><li>Mise en ligne et hébergement configurés</li><li>2 tours de retouches</li></ul>
+    <a class="btn btn-lg btn-primary" href="/contact?formule=Refonte%20de%20site#formulaire">Choisir la refonte</a>
+  </div></div></div>
+</article>
+<article class="fcard" data-reveal style="--d:1">
+  <button class="fcard-head" type="button" aria-expanded="false" aria-controls="fc-1">
+    <span class="fcard-name">Création<span class="fcard-badge">Le plus demandé</span></span>
+    <span class="fcard-for">Vous partez de zéro et voulez un site à votre image.</span>
+    <span class="fcard-price">750 €</span>
+    <span class="fcard-hint">Voir le détail</span>
+  </button>
+  <div class="fcard-body" id="fc-1"><div><div class="fcard-inner">
+    <ul><li>Jusqu’à 5 pages, créées de zéro</li><li>Design personnalisé à votre image</li><li>Adapté au mobile et à la tablette</li><li>Formulaire de contact</li><li>Référencement de base</li><li>Mise en ligne, domaine et hébergement configurés</li><li>2 tours de retouches</li></ul>
+    <a class="btn btn-lg btn-primary" href="/contact?formule=Création%20de%20site%20vitrine#formulaire">Choisir la création</a>
+  </div></div></div>
+</article>
+<article class="fcard" data-reveal style="--d:2">
+  <button class="fcard-head" type="button" aria-expanded="false" aria-controls="fc-2">
+    <span class="fcard-name">Premium</span>
+    <span class="fcard-for">Vous voulez marquer les esprits, ou vendre en ligne.</span>
+    <span class="fcard-price">1 200 €</span>
+    <span class="fcard-hint">Voir le détail</span>
+  </button>
+  <div class="fcard-body" id="fc-2"><div><div class="fcard-inner">
+    <div class="pm-sw" id="pm-sw" role="group" aria-label="Version du Premium"><button type="button" data-pm="vitrine" aria-pressed="true">Site vitrine</button><button type="button" data-pm="boutique" aria-pressed="false">Boutique en ligne</button></div><div data-pane="vitrine"><ul><li>Jusqu’à 8 pages</li><li>Tout ce qu’inclut la Création</li><li>Animations sur mesure : 3D, transitions, défilement</li><li>Un outil interactif : simulateur, carte, avant/après</li><li>3 tours de retouches</li></ul></div><div data-pane="boutique" hidden><ul><li>Jusqu’à 20 produits mis en ligne</li><li>Panier et paiement sécurisé : carte, Apple Pay, Google Pay</li><li>Options produit : taille, couleur, personnalisation</li><li>E-mail de confirmation à chaque commande</li><li>Pages CGV, livraison et retours, rédigées à partir de vos informations</li><li>Le design et les animations du Premium</li><li>3 tours de retouches et prise en main expliquée</li></ul><p class="fcard-note">Pas d’abonnement à une plateforme : l’argent des ventes arrive directement sur votre compte.</p></div>
+    <a class="btn btn-lg btn-primary" href="/contact?formule=Site%20Premium#formulaire">Choisir le Premium vitrine</a>
+  </div></div></div>
+</article>
+    </div>
+    <p class="price-notes"><span><b>Tarifs de lancement</b> réservés à mes premiers clients</span><span>Paiement en 2 ou 3 fois, sans frais</span><span>TVA non applicable, art. 293 B du CGI</span></p>
+    <details class="sim-wrap" data-reveal>
+      <summary><span>Estimer le prix avec vos options<small>Pages en plus, réservation, boutique, maintenance… le total se met à jour.</small></span></summary>
+            <div class="sim glass" id="sim">
+        <div class="sim-in">
+          <h3 class="sr-only">Vos options</h3>
+          <fieldset class="seg" aria-label="Votre besoin">
+            <label><input type="radio" name="sim-type" value="refonte"><span>Refonte</span></label>
+            <label><input type="radio" name="sim-type" value="creation" checked><span>Création</span></label>
+            <label><input type="radio" name="sim-type" value="premium"><span>Premium</span></label>
+            <label><input type="radio" name="sim-type" value="boutique"><span>Boutique</span></label>
+          </fieldset>
+          <div class="sim-bq" hidden>
+            <div class="opt step"><span class="ot">Nombre de produits<small>20 inclus, puis 80 € par lot de 20</small></span>
+              <span class="stp"><button type="button" data-np="-1" aria-label="Moins de produits">−</button><output id="sim-np">20</output><button type="button" data-np="1" aria-label="Plus de produits">+</button></span></div>
+            <label class="opt"><input type="checkbox" name="sim-promo"><span class="sw" aria-hidden="true"></span><span class="ot">Codes promo et livraison offerte<small>100 €</small></span></label>
+          </div>
+          <details class="sim-plus"><summary>Fonctionnalités en plus</summary><div>
+            <div class="opt step"><span class="ot">Pages en plus<small>60 € la page, au-delà de celles de la formule</small></span>
+              <span class="stp"><button type="button" data-pp="-1" aria-label="Moins de pages">−</button><output id="sim-pp">0</output><button type="button" data-pp="1" aria-label="Plus de pages">+</button></span></div>
+            <label class="opt"><input type="checkbox" name="sim-gal"><span class="sw" aria-hidden="true"></span><span class="ot">Galerie photo<small>Vos réalisations en grand, 60 €</small></span></label>
+            <label class="opt"><input type="checkbox" name="sim-blog"><span class="sw" aria-hidden="true"></span><span class="ot">Blog ou actualités<small>Que vous publiez vous-même, 150 €</small></span></label>
+            <label class="opt"><input type="checkbox" name="sim-resa"><span class="sw" aria-hidden="true"></span><span class="ot">Réservation en ligne<small>Vos clients choisissent un créneau, 150 €</small></span></label>
+            <label class="opt"><input type="checkbox" name="sim-espace"><span class="sw" aria-hidden="true"></span><span class="ot">Espace client<small>Sur devis</small></span></label>
+            <label class="opt"><input type="checkbox" name="sim-mesure"><span class="sw" aria-hidden="true"></span><span class="ot">Fonctionnalité sur mesure<small>Calculateur, carte, outil métier… sur devis</small></span></label>
+          </div></details>
+          <label class="opt"><input type="checkbox" name="sim-google"><span class="sw" aria-hidden="true"></span><span class="ot">Fiche Google Maps<small>Pour apparaître sur la carte, 80 €</small></span></label>
+          <label class="opt"><input type="checkbox" name="sim-dom" checked><span class="sw" aria-hidden="true"></span><span class="ot">Nom de domaine à votre nom<small>Environ 15 € par an</small></span></label>
+          <label class="opt"><input type="checkbox" name="sim-maint"><span class="sw" aria-hidden="true"></span><span class="ot">Maintenance<small id="sim-maint-t">Site suivi et 1 h de modifs par mois, 40 €/mois</small></span></label>
+          <fieldset class="seg" aria-label="Paiement">
+            <label><input type="radio" name="sim-pay" value="2" checked><span>En 2 fois</span></label>
+            <label><input type="radio" name="sim-pay" value="3"><span>En 3 fois</span></label>
+          </fieldset>
+        </div>
+        <div class="sim-out" aria-live="polite">
+          <small>Votre site</small>
+          <div class="sim-total"><span id="sim-total">750</span> €</div>
+          <p class="sim-sd" id="sim-sd"></p>
+          <ul class="sim-recap" id="sim-recap"></ul>
+          <ul id="sim-steps"></ul>
+          <p id="sim-rec"></p>
+          <button class="btn btn-lg btn-primary" id="sim-go">Demander ce devis</button>
+          <p class="sim-warn">Estimation indicative aux tarifs de lancement, pas un devis. Le prix final est confirmé par un devis gratuit.</p>
+        </div>
+      </div>
+
+    </details>
+  </div>
+</section>
+
+<section class="sec" id="accompagnement" aria-labelledby="t-acc">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="t-acc" data-reveal>Après la mise en ligne, je reste là</h2>
+      <p class="lede" data-reveal style="--d:1">Un site vit : vos horaires changent, vos chantiers se multiplient, vos clients cherchent autrement. La mise en ligne n’est qu’une étape.</p>
+    </div>
+    <div class="track" id="track" data-reveal="fade">
+      <div class="track-line" aria-hidden="true"><i></i></div>
+      <ol>
+        <li><b>On fait connaissance</b><span>On se voit ou on s’appelle, gratuitement.</span></li>
+        <li><b>La maquette</b><span>Vous validez l’accueil avant tout le reste.</span></li>
+        <li class="key"><b>Mise en ligne</b><span>Le site et le domaine sont à votre nom.</span></li>
+        <li><b>Suivi</b><span>Le site reste à jour, sécurisé, en ligne.</span></li>
+        <li><b>Évolutions</b><span>Il grandit avec votre activité.</span></li>
+      </ol>
+      <span class="track-after" aria-hidden="true">et la suite…</span>
+    </div>
+    <ul class="svc">
+      <li data-reveal><h3>Maintenance</h3><p>Je surveille le site, je le garde sécurisé et à jour. Sans engagement au-delà de 6 mois.</p><strong>40 € / mois<small>70 € / mois pour une boutique</small></strong></li>
+      <li data-reveal><h3>Mises à jour</h3><p>Horaires, photos, prix, textes : vous m’envoyez, je change. Jusqu’à 1 h par mois avec la maintenance (2 h pour une boutique).</p><strong>Inclus<small>sinon 30 € de l’heure</small></strong></li>
+      <li data-reveal><h3>Référencement</h3><p>Chaque site est préparé pour Google : titres, descriptions, ville et métier bien indiqués. Pour apparaître sur Google Maps, je crée ou j’optimise votre fiche.</p><strong>80 €<small>fiche Google, une fois</small></strong></li>
+      <li data-reveal><h3>Évolutions</h3><p>Une page en plus, un blog que vous alimentez, la réservation en ligne, un outil sur mesure : le site s’adapte à votre activité.</p><strong>dès 60 €<small>outil sur mesure sur devis</small></strong></li>
+      <li data-reveal><h3>Conseils</h3><p>Un doute, une idée, un site qui ne rapporte rien ? On en parle 15 minutes, ou je regarde votre site actuel avec un <a href="/outils">audit gratuit</a>.</p><strong>Gratuit<small>sans engagement</small></strong></li>
+    </ul>
+  </div>
+</section>
+
+<section class="final" aria-labelledby="t-fin">
+  <div class="wrap" data-reveal>
+    <h2 id="t-fin">Et si on donnait vie à votre projet ?</h2>
+    <p>Devis gratuit et sans engagement, réponse sous 48 h.</p>
+    <a class="btn btn-lg btn-primary" id="final-btn" href="/contact">Parlons de votre projet <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <div class="final-alt"><a href="tel:+33604159858">06 04 15 98 58</a><a href="mailto:studio-mel@outlook.fr">studio-mel@outlook.fr</a><a href="/contact#rdv">Réserver un appel de 15 min</a></div>
+  </div>
+</section>
 <div class="dm" id="dm" hidden role="dialog" aria-modal="true" aria-labelledby="dm-title">
   <div class="dm-top"><strong id="dm-title"></strong>
     <div class="dm-sw" role="group" aria-label="Affichage"><button class="on" data-w="pc" aria-pressed="true">Ordinateur</button><button data-w="mob" aria-pressed="false">Téléphone</button></div>
@@ -138,7 +253,7 @@
 <template id="tpl-dupuis">
 <div class="ds fd">
   <div class="fd-nav"><div class="fd-logo"><svg viewBox="0 0 40 40" fill="none" stroke="#2F7D32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="5" width="24" height="9" rx="2"/><path d="M30 9.5h4v8H20v6"/><path d="M20 23.5v12"/></svg><span><b>FABIEN DUPUIS</b><small>Plâtrier – peintre depuis Villechenève</small></span></div><nav><span>Services</span><span>Réalisations</span><span>L’équipe</span><span>Avis clients</span></nav><span class="fd-out">06 87 84 38 35</span><span class="fd-btn">Demander un devis</span></div>
-  <header class="fd-hero" style="background-image:linear-gradient(90deg,rgba(14,22,18,.88) 0%,rgba(14,22,18,.62) 48%,rgba(14,22,18,.2) 100%),url(/img/photo-1.webp)">
+  <header class="fd-hero" style="background-image:linear-gradient(90deg,rgba(14,22,18,.88) 0%,rgba(14,22,18,.62) 48%,rgba(14,22,18,.2) 100%),url(/photo-1.webp)">
     <div class="fd-txt"><p class="fd-k">Rénovation, agrandissement, construction</p><h3>Vos chantiers,<br>de A à Z.</h3><p>Plâtrerie, isolation, peinture, plomberie, électricité : une seule entreprise coordonne tous les corps de métier, pour les particuliers comme pour les professionnels.</p><div class="fd-row"><span class="fd-lime">Demander un devis gratuit</span><span class="fd-ghost">Voir nos chantiers</span></div></div>
     <div class="fd-card"><svg viewBox="0 0 380 34" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H380V10C260 30 120 4 0 26Z" fill="#2F7D32"/><path d="M0 26C120 4 260 30 380 10V16C260 36 120 10 0 32Z" fill="#7CC24A"/></svg><div><p class="fd-c1">Un projet ? On se déplace.</p><p class="fd-tel">06 87 84 38 35</p><p class="fd-c2">Bureau : 04 78 47 80 52</p><p class="fd-rge"><b>Certifié RGE Qualibat</b><br>Lyon et sa périphérie, France entière sur devis</p></div></div>
   </header>
@@ -150,9 +265,9 @@
     <div><b>Plomberie, électricité, énergie</b><p>Salles de bain, climatisation, chauffage et panneaux solaires.</p></div>
   </div></section>
   <section class="fd-sec"><h4>Nos chantiers récents</h4><div class="fd-gal">
-    <figure><img loading="lazy" decoding="async" src="/img/photo-2.webp" alt="Hall d’accueil avec banque ronde et plafond bleu"><figcaption><b>Hall d’accueil professionnel</b>Plâtrerie, peinture, électricité</figcaption></figure>
-    <figure><img loading="lazy" decoding="async" src="/img/photo-3.webp" alt="Boutique de luxe avec étagères rétroéclairées"><figcaption><b>Boutique de luxe</b>Aménagement intérieur complet</figcaption></figure>
-    <figure><img loading="lazy" decoding="async" src="/img/photo-4.webp" alt="Cuisine rénovée sous une voûte en pierre"><figcaption><b>Cuisine sous voûte en pierre</b>Rénovation, peinture</figcaption></figure>
+    <figure><img loading="lazy" decoding="async" src="/photo-2.webp" alt="Hall d’accueil avec banque ronde et plafond bleu"><figcaption><b>Hall d’accueil professionnel</b>Plâtrerie, peinture, électricité</figcaption></figure>
+    <figure><img loading="lazy" decoding="async" src="/photo-3.webp" alt="Boutique de luxe avec étagères rétroéclairées"><figcaption><b>Boutique de luxe</b>Aménagement intérieur complet</figcaption></figure>
+    <figure><img loading="lazy" decoding="async" src="/photo-4.webp" alt="Cuisine rénovée sous une voûte en pierre"><figcaption><b>Cuisine sous voûte en pierre</b>Rénovation, peinture</figcaption></figure>
   </div></section>
   <section class="fd-sec"><h4>Comment se passe votre chantier</h4><ol class="fd-steps"><li><b>Visite sur place</b>Un chargé d’affaires vient voir les lieux.</li><li><b>Devis détaillé</b>Chaque poste est chiffré, métier par métier.</li><li><b>Travaux coordonnés</b>Nos équipes s’enchaînent dans le bon ordre.</li><li><b>Réception</b>On fait le tour du chantier avec vous.</li></ol></section>
   <section class="fd-sec"><h4>Ils nous ont confié leur chantier</h4><div class="fd-avis"><blockquote>« Enfin une entreprise avec un gérant disponible et arrangeant ! Merci Fabien pour ton super travail. »<cite>Nicolas Cayrol</cite></blockquote><blockquote>« Professionnel sérieux, travail de très bonne qualité avec de bons conseils. »<cite>Chantal B.</cite></blockquote><blockquote>« L’équipe est intervenue pendant 6 semaines pour rénover les peintures intérieures. »<cite>Thierry Bonnet</cite></blockquote></div></section>
@@ -179,63 +294,6 @@
   <footer class="ds-foot">Dorne Jardins, maquette proposée par Studio Mel</footer>
 </div>
 </template>
-<template id="tpl-resto">
-<div class="ds ds-resto">
-  <div class="ds-nav"><div class="ds-logo"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 17h20a10 10 0 0 1-20 0ZM4 17h24M13 11c0-2 2-2 2-4M18 11c0-2 2-2 2-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Maison Ombelle</div><nav><span>La carte</span><span>Le lieu</span><span>Contact</span></nav><span class="ds-btn">Réserver</span></div>
-  <header class="ds-hero">
-    <div class="ds-txt"><p class="ds-k">Bistrot de saison</p><h3>Une cuisine de marché, faite maison chaque jour.</h3><p>Produits des fermes voisines, carte courte qui change chaque semaine, et une terrasse ombragée aux beaux jours.</p><div class="ds-row"><span class="ds-btn">Réserver une table</span><span class="ds-btn2">Voir la carte</span></div></div>
-    <svg class="ds-art" viewBox="0 0 420 340" aria-hidden="true"><circle cx="210" cy="190" r="128" fill="#2A1F1A"/><circle cx="210" cy="190" r="104" fill="#F3E9DC"/><circle cx="210" cy="190" r="74" fill="#EADBC6"/><path d="M168 196c10-30 72-34 86 0-10 22-74 26-86 0Z" fill="#C8553D"/><circle cx="192" cy="180" r="9" fill="#7A9A54"/><circle cx="226" cy="186" r="7" fill="#7A9A54"/><circle cx="210" cy="204" r="6" fill="#E9B44C"/><path d="M58 110v170M48 110v40c0 10 20 10 20 0v-40M372 110c-18 20-18 60 0 70v100" fill="none" stroke="#F3E9DC" stroke-width="7" stroke-linecap="round"/><path d="M180 60c0-14 14-14 14-28M210 64c0-14 14-14 14-28M240 60c0-14 14-14 14-28" fill="none" stroke="#C8553D" stroke-width="5" stroke-linecap="round" opacity=".7"/></svg>
-  </header>
-  <div class="ds-strip"><span>Du mardi au samedi</span><span>Produits locaux</span><span>Réservation en ligne</span></div>
-  <section class="ds-sec"><h4>À table</h4><div class="ds-cards">
-    <div><b>Le midi</b><p>Une formule entrée, plat, dessert, renouvelée chaque semaine.</p></div>
-    <div><b>Le soir</b><p>La carte complète, à partager ou non, avec une sélection de vins de la région.</p></div>
-    <div><b>Privatisation</b><p>Le bistrot rien que pour vous, pour un anniversaire ou un repas d'équipe.</p></div>
-  </div></section>
-  <section class="ds-sec"><h4>Dans l'assiette</h4><div class="ds-gal"><i style="--g:#C8553D,#E9B44C"><span>Plat du jour</span></i><i style="--g:#4E6B3A,#A9C27C"><span>Légumes du marché</span></i><i style="--g:#5B3A2E,#C89F7A"><span>Desserts maison</span></i></div></section>
-  <section class="ds-quote"><p>On s'y sent comme à la maison, et la tarte du jour vaut le détour à elle seule.</p><small>Exemple d’avis client</small></section>
-  <section class="ds-call"><h4>Une table ce soir ?</h4><p>Réservez en ligne en quelques secondes, ou appelez-nous.</p><span class="ds-btn">Réserver une table</span></section>
-  <footer class="ds-foot">Maison Ombelle est un concept fictif imaginé par Studio Mel</footer>
-</div>
-</template>
-<template id="tpl-coiffure">
-<div class="ds ds-coiffure">
-  <div class="ds-nav"><div class="ds-logo"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="9" cy="23" r="4" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="23" cy="23" r="4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M11.5 20 24 5M20.5 20 8 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Studio Lignes</div><nav><span>Prestations</span><span>L'équipe</span><span>Contact</span></nav><span class="ds-btn">Prendre rendez-vous</span></div>
-  <header class="ds-hero">
-    <div class="ds-txt"><p class="ds-k">Salon de coiffure mixte</p><h3>Votre coupe. Votre style. Sans attendre.</h3><p>Coupes, couleurs et soins dans un salon lumineux. Réservez votre créneau en ligne, 24 h sur 24.</p><div class="ds-row"><span class="ds-btn">Prendre rendez-vous</span><span class="ds-btn2">Nos prestations</span></div></div>
-    <svg class="ds-art" viewBox="0 0 420 340" aria-hidden="true"><rect x="70" y="30" width="280" height="290" rx="140" fill="#E8C9C1"/><path d="M150 300c0-60 25-96 60-96s60 36 60 96Z" fill="#141414"/><circle cx="210" cy="150" r="46" fill="#F6F1EE"/><path d="M160 150c0-50 30-76 56-76 40 0 58 34 50 74-14-22-40-34-64-30-18 3-32 14-42 32Z" fill="#141414"/><path d="M300 70 360 40M300 90l70-10" stroke="#141414" stroke-width="5" stroke-linecap="round"/></svg>
-  </header>
-  <div class="ds-strip"><span>Rendez-vous en ligne</span><span>Du mardi au samedi</span><span>Femmes, hommes, enfants</span></div>
-  <section class="ds-sec"><h4>Prestations</h4><div class="ds-cards">
-    <div><b>Coupe</b><p>Shampoing, coupe et coiffage, pour femmes, hommes et enfants.</p></div>
-    <div><b>Couleur</b><p>Couleur, balayage ou reflets, avec un diagnostic avant chaque prestation.</p></div>
-    <div><b>Soins</b><p>Des soins profonds pour des cheveux qui restent beaux plus longtemps.</p></div>
-  </div></section>
-  <section class="ds-sec"><h4>Le salon</h4><div class="ds-gal"><i style="--g:#141414,#6B6B6B"><span>Espace coupe</span></i><i style="--g:#E8C9C1,#F6F1EE"><span>Bar à couleurs</span></i><i style="--g:#B98B7E,#E8C9C1"><span>Coin détente</span></i></div></section>
-  <section class="ds-quote"><p>Rendez-vous pris en deux clics, et une coupe exactement comme je la voulais.</p><small>Exemple d’avis client</small></section>
-  <section class="ds-call"><h4>Envie de changement ?</h4><p>Choisissez votre prestation et votre créneau en ligne.</p><span class="ds-btn">Prendre rendez-vous</span></section>
-  <footer class="ds-foot">Studio Lignes est un concept fictif imaginé par Studio Mel</footer>
-</div>
-</template>
-<template id="tpl-fournil">
-<div class="ds ds-fournil">
-  <div class="ds-nav"><div class="ds-logo"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 20c0-8 5-13 11-13s11 5 11 13c0 3-2 5-5 5H10c-3 0-5-2-5-5Z" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M11 12l2 5M16 10v6M21 12l-2 5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Le Fournil des Coteaux</div><nav><span>Nos pains</span><span>Commandes</span><span>Horaires</span></nav><span class="ds-btn">Commander</span></div>
-  <header class="ds-hero">
-    <div class="ds-txt"><p class="ds-k">Boulangerie et pâtisserie artisanales</p><h3>Du pain au levain, cuit chaque matin.</h3><p>Farines locales, longues fermentations et viennoiseries pur beurre. Commandez la veille, récupérez le matin.</p><div class="ds-row"><span class="ds-btn">Commander en ligne</span><span class="ds-btn2">Nos horaires</span></div></div>
-    <svg class="ds-art" viewBox="0 0 420 340" aria-hidden="true"><ellipse cx="210" cy="300" rx="170" ry="18" fill="#E6D6BF"/><path d="M60 230c0-80 70-130 150-130s150 50 150 130c0 30-20 50-50 50H110c-30 0-50-20-50-50Z" fill="#C27A3E"/><path d="M70 228c4-66 64-112 140-112s136 46 140 112" fill="none" stroke="#8A4B1F" stroke-width="6"/><path d="M130 150l24 50M190 128l14 60M250 132l-6 58M300 156l-22 46" stroke="#F4EBDD" stroke-width="10" stroke-linecap="round"/><circle cx="350" cy="70" r="30" fill="#E9B44C" opacity=".6"/></svg>
-  </header>
-  <div class="ds-strip"><span>Ouvert dès 6 h 30</span><span>Commande la veille</span><span>Farines locales</span></div>
-  <section class="ds-sec"><h4>Au fournil</h4><div class="ds-cards">
-    <div><b>Pains</b><p>Levain naturel, campagne, seigle, céréales : une dizaine de pains chaque jour.</p></div>
-    <div><b>Viennoiseries</b><p>Croissants et pains au chocolat pur beurre, feuilletés sur place.</p></div>
-    <div><b>Pâtisseries</b><p>Tartes de saison et gâteaux sur commande pour vos fêtes.</p></div>
-  </div></section>
-  <section class="ds-sec"><h4>De la farine au four</h4><div class="ds-gal"><i style="--g:#8A4B1F,#E9B44C"><span>La miche au levain</span></i><i style="--g:#C27A3E,#F4D9A8"><span>Viennoiseries</span></i><i style="--g:#5A3418,#B9875A"><span>Tarte de saison</span></i></div></section>
-  <section class="ds-quote"><p>Le meilleur pain du coin, et la commande en ligne m'évite la queue le dimanche.</p><small>Exemple d’avis client</small></section>
-  <section class="ds-call"><h4>Votre commande pour demain ?</h4><p>Choisissez vos pains et l'heure de retrait.</p><span class="ds-btn">Commander en ligne</span></section>
-  <footer class="ds-foot">Le Fournil des Coteaux est un concept fictif imaginé par Studio Mel</footer>
-</div>
-</template>
 </main>
 <footer class="foot">
   <div class="wrap">
@@ -249,27 +307,27 @@
         <ul>
           <li><a href="tel:+33604159858">06 04 15 98 58</a></li>
           <li><a href="mailto:studio-mel@outlook.fr">studio-mel@outlook.fr</a></li>
-          <li><a href="/contact/#rdv">Réserver un appel</a></li>
+          <li><a href="/contact#rdv">Réserver un appel</a></li>
           <li>Région lyonnaise (Rhône)</li>
         </ul>
       </div>
       <div>
         <h2>Le site</h2>
         <ul>
-          <li><a href="/realisations/">Réalisations</a></li>
+          <li><a href="/realisations">Réalisations</a></li>
           <li><a href="/#formules">Formules et tarifs</a></li>
           <li><a href="/#accompagnement">Accompagnement</a></li>
-          <li><a href="/a-propos/">À propos</a></li>
-          <li><a href="/outils/">Audit et outils gratuits</a></li>
-          <li><a href="/journal/">Le Journal</a></li>
+          <li><a href="/a-propos">À propos</a></li>
+          <li><a href="/outils">Audit et outils gratuits</a></li>
+          <li><a href="/journal">Le Journal</a></li>
         </ul>
       </div>
       <div>
         <h2>Informations</h2>
         <ul>
-          <li><a href="/mentions-legales/">Mentions légales</a></li>
-          <li><a href="/confidentialite/">Confidentialité et cookies</a></li>
-          <li><a href="/contact/#faq">Questions fréquentes</a></li>
+          <li><a href="/mentions-legales">Mentions légales</a></li>
+          <li><a href="/confidentialite">Confidentialité et cookies</a></li>
+          <li><a href="/contact#faq">Questions fréquentes</a></li>
         </ul>
       </div>
     </div>
@@ -286,9 +344,11 @@
   <div class="as-log" id="as-log" aria-live="polite"></div>
   <div class="as-ch" id="as-ch"></div>
 </div>
-<script src="/assets/js/config.js?v=2" defer></script>
-<script src="/assets/js/site.js?v=2" defer></script>
-<script src="/assets/js/realisations.js?v=2" defer></script>
-<script src="/assets/js/assistant.js?v=2" defer></script>
+<script src="/config.js?v=2" defer></script>
+<script src="/site.js?v=2" defer></script>
+<script src="/realisations.js?v=2" defer></script>
+<script src="/home.js?v=2" defer></script>
+<script src="/globe.js?v=2" defer></script>
+<script src="/assistant.js?v=2" defer></script>
 </body>
 </html>

@@ -192,10 +192,10 @@
   }
   function resume(){ var p = couleurs(); return 'ambiance ' + AMB[st.amb].n + ', palette ' + PAL[st.pal][0] + (st.ac ? ' (couleur ' + st.ac.toUpperCase() + ')' : '') + ', typographies ' + FONTS[st.font][0] + ', boutons ' + st.btn + ', accueil « ' + ({ split: 'texte et image', centre: 'centrée', plein: 'image plein écran' })[st.lay] + ' », couleurs ' + [p[1], p[2], p[3], p[4]].join(' ').toUpperCase(); }
   $('at-share').addEventListener('click', function(){
-    var u = location.origin + '/outils/?atelier=' + encodeURIComponent(btoa(JSON.stringify(st))) + '#atelier';
+    var u = location.origin + '/outils?atelier=' + encodeURIComponent(btoa(JSON.stringify(st))) + '#atelier';
     copier(u, 'Lien copié : il ouvre l’Atelier avec ce style.');
   });
-  $('at-send').addEventListener('click', function(){ versContact('Style imaginé dans l’Atelier : ' + resume() + '.\nLien : ' + location.origin + '/outils/?atelier=' + encodeURIComponent(btoa(JSON.stringify(st))) + '#atelier'); });
+  $('at-send').addEventListener('click', function(){ versContact('Style imaginé dans l’Atelier : ' + resume() + '.\nLien : ' + location.origin + '/outils?atelier=' + encodeURIComponent(btoa(JSON.stringify(st))) + '#atelier'); });
   window.atelierPreset = function(k){ var a = AMB[k]; if (!a) return; st.amb = k; st.pal = a.pal; st.font = a.font; st.btn = a.btn; st.lay = a.lay; st.card = a.card; st.ac = ''; rendreCtl(); rendrePrev(); };
   rendreCtl(); rendrePrev();
   if (new URLSearchParams(location.search).get('atelier')) ouvrir('atelier');
@@ -317,7 +317,7 @@
     }).then(function(){ clearTimeout(to); btn.disabled = false; btn.textContent = 'Analyser mon site'; });
   });
 
-  // ouvre l'onglet indiqué dans l'adresse (ex. /outils/#vitesse)
+  // ouvre l'onglet indiqué dans l'adresse (ex. /outils#vitesse)
   var H = { '#vitesse': 'perf', '#diagnostic': 'diag', '#site-ideal': 'ideal', '#atelier': 'atelier', '#seo': 'seo', '#audit-auto': 'ia' };
   if (H[location.hash]) { var bt = document.querySelector('[data-tool="' + H[location.hash] + '"]'); if (bt && !bt.hidden) ouvrir(H[location.hash]); }
 })();

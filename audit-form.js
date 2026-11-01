@@ -1,7 +1,7 @@
 /* =========================================================
    Studio Mel · demande d'audit fait à la main (page Audit et outils)
    ========================================================= */
-import { envoyer } from "/assets/js/firebase.js";
+import { envoyer } from "/firebase.js";
 document.getElementById("audit-form").addEventListener("submit", e => {
   e.preventDefault(); const f = e.target;
   if (!window.valider(f)) return;

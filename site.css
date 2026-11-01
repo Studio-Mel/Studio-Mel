@@ -4,15 +4,15 @@
    Polices hébergées sur le site (aucun appel à Google Fonts)
    ========================================================= */
 
-@font-face{font-family:'Bricolage Grotesque';src:url(/assets/fonts/bricolage-grotesque.woff2) format('woff2');font-weight:200 800;font-stretch:75% 100%;font-display:swap}
-@font-face{font-family:'Plus Jakarta Sans';src:url(/assets/fonts/plus-jakarta-sans.woff2) format('woff2');font-weight:200 800;font-display:swap}
+@font-face{font-family:'Bricolage Grotesque';src:url(/bricolage-grotesque.woff2) format('woff2');font-weight:200 800;font-stretch:75% 100%;font-display:swap}
+@font-face{font-family:'Plus Jakarta Sans';src:url(/plus-jakarta-sans.woff2) format('woff2');font-weight:200 800;font-display:swap}
 /* polices des maquettes de réalisations : téléchargées seulement si une maquette les affiche */
-@font-face{font-family:'Barlow';src:url(/assets/fonts/barlow-latin-400-normal.woff2) format('woff2');font-weight:400;font-display:swap}
-@font-face{font-family:'Barlow';src:url(/assets/fonts/barlow-latin-500-normal.woff2) format('woff2');font-weight:500;font-display:swap}
-@font-face{font-family:'Barlow';src:url(/assets/fonts/barlow-latin-600-normal.woff2) format('woff2');font-weight:600;font-display:swap}
-@font-face{font-family:'Barlow Condensed';src:url(/assets/fonts/barlow-condensed-latin-700-normal.woff2) format('woff2');font-weight:700;font-display:swap}
-@font-face{font-family:'Barlow Condensed';src:url(/assets/fonts/barlow-condensed-latin-800-normal.woff2) format('woff2');font-weight:800;font-display:swap}
-@font-face{font-family:'Fraunces';src:url(/assets/fonts/fraunces-latin-500-normal.woff2) format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'Barlow';src:url(/barlow-latin-400-normal.woff2) format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Barlow';src:url(/barlow-latin-500-normal.woff2) format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'Barlow';src:url(/barlow-latin-600-normal.woff2) format('woff2');font-weight:600;font-display:swap}
+@font-face{font-family:'Barlow Condensed';src:url(/barlow-condensed-latin-700-normal.woff2) format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'Barlow Condensed';src:url(/barlow-condensed-latin-800-normal.woff2) format('woff2');font-weight:800;font-display:swap}
+@font-face{font-family:'Fraunces';src:url(/fraunces-latin-500-normal.woff2) format('woff2');font-weight:500;font-display:swap}
 
 :root{
   --bg:#000;

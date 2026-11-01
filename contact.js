@@ -1,7 +1,7 @@
 /* =========================================================
    Studio Mel · page Contact : demande de devis et réservation d'un appel
    ========================================================= */
-import { load, chargerCreneaux, envoyer } from "/assets/js/firebase.js";
+import { load, chargerCreneaux, envoyer } from "/firebase.js";
 
 const calm = window.SM_CALM;
 
