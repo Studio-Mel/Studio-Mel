@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 64" role="img" aria-label="Studio Mel">
+  <rect width="64" height="64" rx="16" fill="#2F5BFF"/>
+  <path d="M17 45V21.5L32 36l15-14.5V38" fill="none" stroke="#fff" stroke-width="5.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="47" cy="46" r="3.6" fill="#B4C6FF"/>
+  <text x="80" y="43" font-family="'Bricolage Grotesque','Plus Jakarta Sans',Arial,sans-serif" font-size="34" font-weight="700" letter-spacing="-1" fill="#F3F4F8">Studio <tspan fill="#B4C6FF">Mel</tspan></text>
+</svg>

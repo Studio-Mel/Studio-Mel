@@ -1,0 +1,67 @@
+      <div class="tools" role="tablist" aria-label="Choisir un outil">
+        <button class="tool glass" role="tab" aria-selected="false" data-tool="ia" id="tool-ia-btn" hidden><b>Audit automatique</b><small>Vitesse, Google, mobile : résumé en clair par une IA</small></button>
+        <button class="tool glass on" role="tab" aria-selected="true" data-tool="ideal"><b>Trouve ton site idéal</b><small>5 questions pour savoir quel site vous correspond</small></button>
+        <button class="tool glass" role="tab" aria-selected="false" data-tool="diag"><b>Diagnostic de présence</b><small>Êtes-vous facile à trouver en ligne ?</small></button>
+        <button class="tool glass" role="tab" aria-selected="false" data-tool="atelier"><b>L’Atelier</b><small>Imaginez le style de votre futur site</small></button>
+        <button class="tool glass" role="tab" aria-selected="false" data-tool="perf"><b>Test de vitesse</b><small>Les vrais scores Google de votre site</small></button>
+        <button class="tool glass" role="tab" aria-selected="false" data-tool="seo" id="tool-seo-btn" hidden><b>Audit SEO express</b><small>Ce que Google voit de votre site</small></button>
+      </div>
+
+
+      <!-- AUDIT AUTOMATIQUE AVEC IA (visible seulement quand le relais AUDIT_IA_API est configuré) -->
+      <div class="tpane glass" data-pane-tool="ia" role="tabpanel" hidden>
+        <form class="t-form" id="ia-form" novalidate style="grid-template-columns:1fr auto">
+          <div class="fld"><label for="ia-url">Adresse de votre site</label><input id="ia-url" type="url" inputmode="url" placeholder="www.monsite.fr" required autocomplete="url"><small class="err" aria-live="polite"></small></div>
+          <button class="btn btn-lg btn-primary" type="submit">Analyser mon site</button>
+        </form>
+        <div id="ia-out" aria-live="polite"></div>
+        <p class="t-note">Analyse automatique de la page d’accueil, version téléphone : mesures Google PageSpeed et contrôles de base, résumés par une IA. Pour un vrai regard, demandez l’<a class="inline-link" href="#audit">audit fait à la main</a>.</p>
+      </div>
+
+      <!-- TROUVE TON SITE IDÉAL -->
+      <div class="tpane glass" data-pane-tool="ideal" role="tabpanel">
+        <div class="quiz" id="q-ideal"></div>
+      </div>
+
+      <!-- DIAGNOSTIC -->
+      <div class="tpane glass" data-pane-tool="diag" role="tabpanel" hidden>
+        <div class="quiz" id="q-diag"></div>
+      </div>
+
+      <!-- ATELIER -->
+      <div class="tpane glass" data-pane-tool="atelier" role="tabpanel" hidden>
+        <div class="at">
+          <div class="at-ctl" id="at-ctl"></div>
+          <div class="at-side">
+            <div class="at-prev" id="at-prev" aria-label="Aperçu du style choisi"></div>
+            <div class="at-pal" id="at-pal"></div>
+            <div class="at-act">
+              <button class="btn btn-sm btn-ghost" id="at-share">Copier le lien de ce style</button>
+              <button class="btn btn-sm btn-primary" id="at-send">Envoyer à Studio Mel</button>
+            </div>
+            <p class="t-note" id="at-msg" role="status"></p>
+          </div>
+        </div>
+        <p class="t-note">Une première idée d’ambiance, pas un site terminé. Les noms et textes de l’aperçu sont des exemples.</p>
+      </div>
+
+      <!-- TEST DE VITESSE -->
+      <div class="tpane glass" data-pane-tool="perf" role="tabpanel" hidden>
+        <form class="t-form" id="perf-form" novalidate>
+          <div class="fld"><label for="perf-url">Adresse du site à tester</label><input id="perf-url" type="url" inputmode="url" placeholder="www.monsite.fr" required autocomplete="url"><small class="err" aria-live="polite"></small></div>
+          <fieldset class="seg" aria-label="Appareil"><label><input type="radio" name="perf-st" value="mobile" checked><span>Téléphone</span></label><label><input type="radio" name="perf-st" value="desktop"><span>Ordinateur</span></label></fieldset>
+          <button class="btn btn-lg btn-primary" type="submit">Lancer le test</button>
+        </form>
+        <div id="perf-out" aria-live="polite"></div>
+        <p class="t-note">Résultats fournis par Google PageSpeed Insights (Lighthouse). Le test prend 20 à 40 secondes. Les scores varient légèrement d’un test à l’autre.</p>
+      </div>
+
+      <!-- AUDIT SEO (visible seulement quand le relais est configuré) -->
+      <div class="tpane glass" data-pane-tool="seo" role="tabpanel" hidden>
+        <form class="t-form" id="seo-form" novalidate>
+          <div class="fld"><label for="seo-url">Adresse de la page à analyser</label><input id="seo-url" type="url" inputmode="url" placeholder="www.monsite.fr" required autocomplete="url"><small class="err" aria-live="polite"></small></div>
+          <button class="btn btn-lg btn-primary" type="submit">Analyser</button>
+        </form>
+        <div id="seo-out" aria-live="polite"></div>
+        <p class="t-note">Analyse automatique des éléments visibles publiquement sur la page d’accueil. Ce n’est pas un audit SEO complet : pour un vrai regard, demandez l’<a class="inline-link" href="#audit">audit fait à la main</a>.</p>
+      </div>
