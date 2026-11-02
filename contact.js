@@ -1,7 +1,7 @@
 /* =========================================================
    Studio Mel · page Contact : demande de devis et réservation d'un appel
    ========================================================= */
-import { load, chargerCreneaux, envoyer } from "/firebase.js";
+import { load, chargerCreneaux, envoyer, robot } from "/firebase.js";
 
 const calm = window.SM_CALM;
 
@@ -109,6 +109,7 @@ rdvForm.addEventListener("submit", async e => {
   e.preventDefault(); const f = e.target, quand = window.rdvTexte();
   if (!quand) return;
   if (!window.valider(f)) return;
+  if (robot(f)) { const st = document.getElementById("rdv-statut"); st.className = "statut ok"; st.textContent = "Merci ! Votre demande de rendez-vous est bien partie."; return; }
   const jour = f.querySelector("[name=jour]:checked").value, heure = f.querySelector("[name=heure]:checked").value;
   const mode = f.querySelector("[name=mode]:checked").value, cle = jour + "_" + heure.replace(":", "h");
   const s = document.getElementById("rdv-statut"), btn = document.getElementById("rdv-btn");

@@ -712,3 +712,4 @@ html:not(.js) .scroll-hint{opacity:1}
 .case-txt ul.chips li{display:block;width:auto;padding:5px 12px;border:1px solid var(--line-2);border-radius:99px;font-size:13.5px;line-height:1.4;color:var(--soft)}
 .case-txt ul.chips li::before{display:none!important;content:none}
 @media (min-width:901px){.case>.shot{position:sticky;top:calc(var(--nav-h) + 24px);align-self:start}}
+.hp{position:absolute!important;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}

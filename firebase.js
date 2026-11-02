@@ -40,8 +40,16 @@ export async function chargerCreneaux(){
   } catch (err) { console.error(err); }
 }
 
+// Anti-spam : un robot remplit le champ invisible « hp_champ », ou envoie le formulaire
+// moins de 3 secondes après l'ouverture de la page. On fait semblant d'accepter, sans rien envoyer.
+export function robot(form){
+  const hp = form.querySelector('[name="hp_champ"]');
+  return !!(hp && hp.value) || (performance.now() < 3000);
+}
+
 export async function envoyer(form, statutId, demande, merci){
   const s = document.getElementById(statutId), btn = form.querySelector("button[type=submit]");
+  if (robot(form)) { s.className = "statut ok"; s.textContent = merci; form.reset(); return; }
   btn.disabled = true; btn.classList.add("loading"); btn.setAttribute("aria-busy", "true");
   s.className = "statut"; s.textContent = "Envoi en cours…";
   demande.date = new Date().toLocaleDateString("fr-FR");
