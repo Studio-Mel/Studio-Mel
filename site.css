@@ -432,3 +432,78 @@ html:not(.js) .track li::before{border-color:var(--blue-hi);background:var(--blu
 .tpane .h-sec{font-size:22px}
 .ja .ja-c{margin-top:6px}
 .ja h1{font-size:clamp(34px,5vw,58px);margin-top:12px}
+
+/* =========================================================
+   Animations ajoutées (V2.1) : tout respecte « mouvement réduit »
+   ========================================================= */
+
+/* transition douce entre les pages (navigateurs récents) */
+@view-transition{navigation:auto}
+.nav{view-transition-name:entete}
+::view-transition-old(root){animation:vtOut .28s ease both}
+::view-transition-new(root){animation:vtIn .5s var(--e-reveal) both}
+@keyframes vtOut{to{opacity:0;transform:translateY(-8px)}}
+@keyframes vtIn{from{opacity:0;transform:translateY(14px)}}
+
+/* barre de progression de lecture */
+.progress{position:fixed;left:0;right:0;top:0;height:2px;z-index:30;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--blue),var(--blue-hi));pointer-events:none}
+
+/* titres mot par mot */
+.split .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
+.split .w>span{display:inline-block}
+.js .split[data-reveal]{opacity:1;transform:none}
+.js .split .w>span{transform:translateY(105%);opacity:0;transition:transform .95s var(--e-reveal),opacity .6s ease;transition-delay:calc(var(--wi,0) * 55ms + var(--d,0) * 90ms)}
+.js .split.in .w>span{transform:none;opacity:1}
+
+/* aperçus des fiches projet : dévoilement */
+.js .case>.shot[data-reveal="clip"]{opacity:1;transform:none;clip-path:inset(6% 6% 6% 6% round 14px);transition:clip-path 1.2s var(--e-reveal)}
+.js .case>.shot[data-reveal="clip"].in{clip-path:inset(0 0 0 0 round 14px)}
+
+/* inclinaison au survol (spécificité renforcée pour passer après les apparitions) */
+.js .tilt.tilt,.js .tilt.tilt[data-reveal]{transition:transform .5s var(--e-soft),opacity .9s var(--e-reveal),border-color .4s ease,background .5s ease,box-shadow .6s ease,clip-path 1.3s var(--e-reveal)}
+.js .tilt.tilt:not([data-reveal]),.js .tilt.tilt[data-reveal].in{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}
+.js .tilt.tilt[data-reveal].in:hover,.js .tilt.tilt:not([data-reveal]):hover{transition:transform .12s linear,opacity .9s var(--e-reveal),border-color .4s ease,background .5s ease,box-shadow .6s ease,clip-path 1.3s var(--e-reveal)}
+.jc.tilt::after,.fcard.tilt::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(180,198,255,.10),transparent 45%);opacity:0;transition:opacity .4s ease}
+.jc.tilt:hover::after,.fcard.tilt:hover::after{opacity:1}
+.jc{position:relative}
+
+/* boutons aimantés + flèche qui avance */
+.magnet{transform:translate(var(--tx,0px),var(--ty,0px));transition:transform .35s var(--e-soft),background .2s ease,box-shadow .3s ease}
+.magnet:hover{transition:transform .1s linear,background .2s ease,box-shadow .3s ease}
+.btn .arw{transition:transform .35s var(--e-reveal)}
+.btn:hover .arw{transform:translateX(4px)}
+
+/* liens du menu : soulignement qui glisse */
+.nav-links a{position:relative}
+.nav-links a::after{content:"";position:absolute;left:14px;right:14px;bottom:4px;height:1.5px;background:var(--blue-hi);transform:scaleX(0);transform-origin:right;transition:transform .45s var(--e-reveal)}
+.nav-links a:hover::after{transform:scaleX(1);transform-origin:left}
+.nav-links a[aria-current="page"]::after{display:none}
+
+/* le point du logo s'anime au survol */
+.brand svg circle{transform-origin:47px 46px;transition:transform .5s var(--e-reveal)}
+.brand:hover svg circle{transform:scale(1.5)}
+
+/* halo qui flotte doucement derrière les titres des pages */
+.page-head{position:relative;overflow:hidden;isolation:isolate}
+.page-head::before{content:"";position:absolute;z-index:-1;width:min(720px,110vw);aspect-ratio:1;right:-12%;top:-30%;border-radius:50%;background:radial-gradient(circle,rgba(47,91,255,.24),rgba(47,91,255,0) 65%);animation:flotte 16s ease-in-out infinite alternate;pointer-events:none}
+@keyframes flotte{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-6%,8%) scale(1.08)}100%{transform:translate(4%,-4%) scale(.96)}}
+
+/* accueil : lueur de planète visible dès l'ouverture, avant la 3D */
+.hero::before{content:"";position:absolute;z-index:-3;left:50%;bottom:-62vh;width:min(150vh,170vw);aspect-ratio:1;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle at 50% 30%,rgba(47,91,255,.30),rgba(47,91,255,.08) 45%,rgba(0,0,0,0) 62%);box-shadow:0 -2px 80px -10px rgba(47,91,255,.35);animation:planeteIn 1.2s var(--e-reveal) both;pointer-events:none}
+@keyframes planeteIn{from{opacity:0;transform:translateX(-50%) translateY(6%)}}
+#globe{transition:opacity .7s ease}
+.hero-in{will-change:transform,opacity}
+
+/* questions fréquentes : la réponse glisse en douceur */
+.faq details[open] p{animation:liftIn .45s var(--e-reveal)}
+
+/* lignes de services : survol */
+.svc li{transition:background .4s ease,padding .4s var(--e-reveal)}
+.svc li:hover{background:linear-gradient(90deg,rgba(47,91,255,.07),transparent 70%);padding-left:14px}
+
+@media (prefers-reduced-motion:reduce){
+  @view-transition{navigation:none}
+  .page-head::before,.hero::before{animation:none}
+  .tilt,.magnet{transform:none!important}
+  .progress{display:none}
+}

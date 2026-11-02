@@ -25,9 +25,10 @@
 <!-- Google Search Console : colle ici la balise de validation que Google te donne -->
 <link rel="preload" href="/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/plus-jakarta-sans.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/components.css?v=2">
-<link rel="stylesheet" href="/site.css?v=2">
+<link rel="stylesheet" href="/components.css?v=3">
+<link rel="stylesheet" href="/site.css?v=3">
 <script>document.documentElement.classList.add('js')</script>
+<link rel="preload" href="/three.r128.min.js" as="script">
 <script>
 /* anciennes adresses de la V1 (#formules, #contact…) : on redirige vers les nouvelles pages */
 (function(){var h=location.hash.slice(1),q=location.search,M={contact:'/contact',realisations:'/realisations',apropos:'/a-propos',journal:'/journal',outils:'/outils',lab:'/',methode:'/',faq:'/contact#faq',mentions:'/mentions-legales'};
@@ -333,7 +334,7 @@ if(M[h]&&M[h]!=='/'){location.replace(M[h]);}else if(h==='lab'||h==='methode'){h
     </div>
     <div class="foot-legal">
       <span>© <span data-year>2026</span> Studio Mel · Melvyn Clouzet · Activité en cours d’immatriculation</span>
-      <span>Aucun cookie, aucun traceur</span>
+      <span>Aucun cookie, aucun traceur · <a href="/admin.html" rel="nofollow">Espace admin</a></span>
     </div>
   </div>
 </footer>
@@ -344,11 +345,11 @@ if(M[h]&&M[h]!=='/'){location.replace(M[h]);}else if(h==='lab'||h==='methode'){h
   <div class="as-log" id="as-log" aria-live="polite"></div>
   <div class="as-ch" id="as-ch"></div>
 </div>
-<script src="/config.js?v=2" defer></script>
-<script src="/site.js?v=2" defer></script>
-<script src="/realisations.js?v=2" defer></script>
-<script src="/home.js?v=2" defer></script>
-<script src="/globe.js?v=2" defer></script>
-<script src="/assistant.js?v=2" defer></script>
+<script src="/config.js?v=3" defer></script>
+<script src="/site.js?v=3" defer></script>
+<script src="/realisations.js?v=3" defer></script>
+<script src="/home.js?v=3" defer></script>
+<script src="/globe.js?v=3" defer></script>
+<script src="/assistant.js?v=3" defer></script>
 </body>
 </html>

@@ -15,6 +15,21 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(go, go); else go();
   })();
 
+  // ---------- accueil : le texte s'efface en douceur quand on descend ----------
+  var heroIn = document.querySelector('.hero-in'), globe = document.getElementById('globe');
+  if (heroIn && !calm) {
+    var hTick = false;
+    function heroScroll(){
+      hTick = false;
+      var y = scrollY, vh = innerHeight; if (y > vh * 1.1) return;
+      var k = Math.min(1, y / (vh * .75));
+      heroIn.style.transform = 'translateY(' + (y * .28).toFixed(1) + 'px)';
+      heroIn.style.opacity = (1 - k * .9).toFixed(3);
+      if (globe) globe.style.transform = 'translateY(' + (y * .12).toFixed(1) + 'px) scale(' + (1 + k * .06).toFixed(3) + ')';
+    }
+    addEventListener('scroll', function(){ if (!hTick) { hTick = true; requestAnimationFrame(heroScroll); } }, { passive: true });
+  }
+
   // ---------- formules : une carte sélectionnée à la fois ----------
   var grid = document.getElementById('formules-grid');
   if (grid) {

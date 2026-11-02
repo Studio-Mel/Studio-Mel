@@ -204,10 +204,9 @@ function initGlobe(){
 running = true; requestAnimationFrame(function(n){ last = n; loop(n); c.classList.add('on'); });
 }
 // three.js r128 (≈ 600 Ko, hébergé sur le site) ne se charge qu'après l'affichage de la page, au premier geste ou au bout de 3,5 s
-window.addEventListener('load',function(){
+// three.js est préchargé dès l'ouverture de l'accueil (balise preload) : la planète démarre tout de suite.
+(function(){
   if (!document.getElementById('globe')) return;
-  var go=function(){var s=document.createElement('script');s.src='/three.r128.min.js';s.onload=initGlobe;document.head.appendChild(s);};
-  var once=false,run=function(){if(once)return;once=true;go();};
-  ['scroll','pointerdown','keydown','touchstart'].forEach(function(t){addEventListener(t,run,{once:true,passive:true});});
-  setTimeout(run,3500);
-});
+  if (window.THREE) { initGlobe(); return; }
+  var s = document.createElement('script'); s.src = '/three.r128.min.js'; s.onload = initGlobe; document.head.appendChild(s);
+})();
