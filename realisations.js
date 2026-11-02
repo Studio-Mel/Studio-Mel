@@ -10,11 +10,11 @@
   function tpl(k){ var t = document.getElementById('tpl-' + k); return t ? t.content.cloneNode(true) : document.createTextNode(''); }
 
   // ---------- aperçus vivants ----------
-  document.querySelectorAll('.shot.live:not(.web)').forEach(function(s){ s.querySelector('.ds-scaler').appendChild(tpl(s.dataset.demo)); });
+  document.querySelectorAll('.shot.live:not(.web):not(.photo)').forEach(function(s){ s.querySelector('.ds-scaler').appendChild(tpl(s.dataset.demo)); });
   function fit(){
     document.querySelectorAll('.shot.live').forEach(function(s){
       var vp = s.querySelector('.vp'), sc = s.querySelector('.ds-scaler'), w = vp.clientWidth;
-      if (!w) return;
+      if (!w || !sc) return;
       var k = w / 1200; sc.style.setProperty('--s', k);
       if (s.classList.contains('web')) { sc.style.height = (vp.clientHeight / k) + 'px'; sc.style.setProperty('--h', 0); return; }
       sc.style.setProperty('--h', Math.max(0, sc.scrollHeight - vp.clientHeight / k));
