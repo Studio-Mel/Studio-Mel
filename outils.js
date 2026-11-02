@@ -103,7 +103,7 @@
       '<div class="q-grid">' + (forts.length ? '<div class="q-box ok"><h4>Points forts</h4><ul>' + li(forts) + '</ul></div>' : '') +
       (faibles.length ? '<div class="q-box ko"><h4>À améliorer</h4><ul>' + li(faibles) + '</ul></div>' : '') +
       (recos.length ? '<div class="q-box"><h4>Par quoi commencer</h4><ol>' + li(recos.map(function(x){ return x[0]; })) + '</ol></div>' : '') + '</div>' +
-      (nsp.length ? '<p class="t-note">Vous ne saviez pas pour ' + nsp.length + ' question' + (nsp.length > 1 ? 's' : '') + ' : l’<button type="button" class="inline-link" data-go-tool="perf">outil de test de vitesse</button> ou l’audit gratuit peuvent vous aider à y voir clair.</p>' : '') +
+      (nsp.length ? '<p class="t-note">Vous ne saviez pas pour ' + nsp.length + ' question' + (nsp.length > 1 ? 's' : '') + ' : l’<a class="inline-link" href="#analyse">audit automatique</a>, juste au-dessus, peut vous aider à y voir clair.</p>' : '') +
       (serv.length ? '<div class="q-box" style="margin-top:12px"><h4>Ce que Studio Mel peut faire</h4><ul>' + li(serv.map(function(k){ return PR[k][0] + ' · ' + PR[k][1]; })) + '</ul></div>' : '') +
       '<div class="q-act"><button type="button" class="btn btn-lg btn-primary" data-send data-formule="' + (serv[0] ? PR[serv[0]][0] : '') + '" data-txt="' + esc(txt) + '">Envoyer à Studio Mel</button><button type="button" class="btn btn-lg btn-ghost" data-redo>Recommencer</button></div>';
   });
@@ -192,132 +192,15 @@
   }
   function resume(){ var p = couleurs(); return 'ambiance ' + AMB[st.amb].n + ', palette ' + PAL[st.pal][0] + (st.ac ? ' (couleur ' + st.ac.toUpperCase() + ')' : '') + ', typographies ' + FONTS[st.font][0] + ', boutons ' + st.btn + ', accueil « ' + ({ split: 'texte et image', centre: 'centrée', plein: 'image plein écran' })[st.lay] + ' », couleurs ' + [p[1], p[2], p[3], p[4]].join(' ').toUpperCase(); }
   $('at-share').addEventListener('click', function(){
-    var u = location.origin + '/outils?atelier=' + encodeURIComponent(btoa(JSON.stringify(st))) + '#atelier';
+    var u = location.origin + '/audit?atelier=' + encodeURIComponent(btoa(JSON.stringify(st))) + '#atelier';
     copier(u, 'Lien copié : il ouvre l’Atelier avec ce style.');
   });
-  $('at-send').addEventListener('click', function(){ versContact('Style imaginé dans l’Atelier : ' + resume() + '.\nLien : ' + location.origin + '/outils?atelier=' + encodeURIComponent(btoa(JSON.stringify(st))) + '#atelier'); });
+  $('at-send').addEventListener('click', function(){ versContact('Style imaginé dans l’Atelier : ' + resume() + '.\nLien : ' + location.origin + '/audit?atelier=' + encodeURIComponent(btoa(JSON.stringify(st))) + '#atelier'); });
   window.atelierPreset = function(k){ var a = AMB[k]; if (!a) return; st.amb = k; st.pal = a.pal; st.font = a.font; st.btn = a.btn; st.lay = a.lay; st.card = a.card; st.ac = ''; rendreCtl(); rendrePrev(); };
   rendreCtl(); rendrePrev();
   if (new URLSearchParams(location.search).get('atelier')) ouvrir('atelier');
 
-  // ---- adresse saisie : vérification commune ----
-  function urlValide(v){
-    v = v.trim(); if (!v) return null;
-    if (!/^https?:\/\//i.test(v)) v = 'https://' + v;
-    try { var u = new URL(v); } catch (e) { return null; }
-    var h = u.hostname.toLowerCase();
-    if (!/\./.test(h) || /^(localhost|.*\.local|.*\.internal)$/.test(h) || /^\d+\.\d+\.\d+\.\d+$/.test(h) || h.indexOf(':') >= 0) return null;
-    return u.href;
-  }
-  function erreur(input, msg){ var e = input.closest('.fld').querySelector('.err'); e.textContent = msg; input.setAttribute('aria-invalid', msg ? 'true' : 'false'); if (msg) input.focus(); }
-
-  // ---- 4. Test de vitesse (Google PageSpeed Insights) ----
-  var PSI_KEY = window.PSI_KEY || '';
-  var NOMS_CAT = { performance: 'Performance', accessibility: 'Accessibilité', 'best-practices': 'Bonnes pratiques', seo: 'SEO' };
-  $('perf-form').addEventListener('submit', function(e){
-    e.preventDefault();
-    var inp = $('perf-url'), url = urlValide(inp.value), out = $('perf-out'), btn = this.querySelector('button[type=submit]');
-    if (!url) return erreur(inp, 'Indiquez une adresse de site valide, par exemple www.monsite.fr');
-    erreur(inp, '');
-    var strat = this.querySelector('[name=perf-st]:checked').value;
-    var api = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=' + encodeURIComponent(url) + '&strategy=' + strat + '&locale=fr' + ['performance', 'accessibility', 'best-practices', 'seo'].map(function(c){ return '&category=' + c; }).join('') + (PSI_KEY ? '&key=' + PSI_KEY : '');
-    btn.disabled = true; btn.textContent = 'Test en cours…';
-    out.innerHTML = '<div class="loading-bar"><i></i></div><p class="t-note">Google charge votre site et le mesure. Comptez 20 à 40 secondes.</p>';
-    var ctrl = window.AbortController ? new AbortController() : null, to = setTimeout(function(){ if (ctrl) ctrl.abort(); }, 90000);
-    fetch(api, ctrl ? { signal: ctrl.signal } : {}).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, s: r.status, j: j }; }); }).then(function(x){
-      if (!x.ok) {
-        var m = x.s === 429 ? 'Trop de tests en ce moment, le quota gratuit de Google est atteint. Réessayez dans quelques minutes.' : x.s === 400 || x.s === 500 ? 'Google n’a pas pu charger ce site. Vérifiez l’adresse, ou le site bloque peut-être les robots.' : 'Le test a échoué (erreur ' + x.s + '). Réessayez plus tard.';
-        out.innerHTML = '<p class="statut ko" style="margin-top:20px">' + m + '</p>'; return;
-      }
-      var L = x.j.lighthouseResult, C = L.categories, A = L.audits, F = x.j.loadingExperience && x.j.loadingExperience.metrics;
-      var cl = function(s){ return s >= 90 ? 'g' : s >= 50 ? 'o' : 'r'; };
-      var rings = Object.keys(NOMS_CAT).map(function(k){ var s = C[k] && C[k].score != null ? Math.round(C[k].score * 100) : null;
-        return '<div class="q-box">' + (s == null ? '<div class="ring"><b>—</b></div>' : '<div class="ring ' + cl(s) + '" style="--v:' + s + '"><b>' + s + '</b></div>') + '<small>' + NOMS_CAT[k] + '</small></div>'; }).join('');
-      var mesure = function(id, nom){ var a = A[id]; if (!a || !a.displayValue) return ''; var s = a.score; return '<div class="' + (s >= .9 ? 'g' : s >= .5 ? 'o' : 'r') + '"><small>' + nom + '</small><b>' + esc(a.displayValue) + '</b></div>'; };
-      var labo = mesure('largest-contentful-paint', 'Plus grand affichage (LCP)') + mesure('cumulative-layout-shift', 'Stabilité visuelle (CLS)') + mesure('total-blocking-time', 'Temps de blocage (TBT)') + mesure('first-contentful-paint', 'Premier affichage (FCP)') + mesure('speed-index', 'Indice de vitesse');
-      var terrain = '';
-      if (F && (F.LARGEST_CONTENTFUL_PAINT_MS || F.INTERACTION_TO_NEXT_PAINT || F.CUMULATIVE_LAYOUT_SHIFT_SCORE)) {
-        var cat = function(m){ return m && m.category === 'FAST' ? 'g' : m && m.category === 'AVERAGE' ? 'o' : 'r'; };
-        var v = function(m, f){ return m ? f(m.percentile) : null; };
-        var items = [['LCP', v(F.LARGEST_CONTENTFUL_PAINT_MS, function(p){ return (p / 1000).toLocaleString('fr-FR', { maximumFractionDigits: 1 }) + ' s'; }), F.LARGEST_CONTENTFUL_PAINT_MS],
-          ['INP', v(F.INTERACTION_TO_NEXT_PAINT, function(p){ return p + ' ms'; }), F.INTERACTION_TO_NEXT_PAINT],
-          ['CLS', v(F.CUMULATIVE_LAYOUT_SHIFT_SCORE, function(p){ return (p / 100).toLocaleString('fr-FR'); }), F.CUMULATIVE_LAYOUT_SHIFT_SCORE]].filter(function(x){ return x[1] != null; });
-        terrain = '<div class="q-box" style="margin-top:12px"><h4>Core Web Vitals · vrais visiteurs Chrome (28 derniers jours)</h4><div class="vit">' + items.map(function(x){ return '<div class="' + cat(x[2]) + '"><small>' + x[0] + '</small><b>' + x[1] + '</b></div>'; }).join('') + '</div></div>';
-      } else terrain = '<p class="t-note">Core Web Vitals des vrais visiteurs : non disponibles, ce site n’a pas encore assez de trafic pour que Google les publie.</p>';
-      var recos = Object.keys(A).map(function(k){ return A[k]; }).filter(function(a){ return a.details && a.details.type === 'opportunity' && a.score != null && a.score < .9 && (a.details.overallSavingsMs || 0) > 100; })
-        .sort(function(a, b){ return (b.details.overallSavingsMs || 0) - (a.details.overallSavingsMs || 0); }).slice(0, 5);
-      var date = new Date(L.fetchTime || Date.now()).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' });
-      out.innerHTML = '<div class="res-h"><b>' + esc(L.finalDisplayedUrl || L.finalUrl || url) + '</b><span>Test ' + (strat === 'mobile' ? 'téléphone' : 'ordinateur') + ' du ' + date + ' · Lighthouse ' + esc(L.lighthouseVersion || '') + '</span></div>' +
-        '<div class="rings">' + rings + '</div>' +
-        (labo ? '<div class="q-box" style="margin-top:12px"><h4>Mesures du test</h4><div class="vit">' + labo + '</div></div>' : '') + terrain +
-        (recos.length ? '<div class="q-box" style="margin-top:12px"><h4>Ce qui ralentit le plus votre site</h4><ul class="chk-l">' + recos.map(function(a){ return '<li class="' + (a.score < .5 ? 'ko' : 'warn') + '"><span>' + esc(a.title) + '<small>Gain possible : environ ' + (Math.round(a.details.overallSavingsMs / 100) / 10).toLocaleString('fr-FR') + ' s</small></span></li>'; }).join('') + '</ul></div>' : '') +
-        '<div class="q-act"><button type="button" class="btn btn-lg btn-primary" id="perf-send">Faire analyser mon site par Studio Mel</button></div>';
-      var sc = Object.keys(NOMS_CAT).map(function(k){ return NOMS_CAT[k] + ' ' + (C[k] && C[k].score != null ? Math.round(C[k].score * 100) : '—'); }).join(', ');
-      $('perf-send').addEventListener('click', function(){ versContact('Test de vitesse de ' + url + ' (' + (strat === 'mobile' ? 'téléphone' : 'ordinateur') + ', ' + date + ') : ' + sc + '. J’aimerais un avis sur mon site.'); });
-    }).catch(function(err){
-      out.innerHTML = '<p class="statut ko" style="margin-top:20px">' + (err && err.name === 'AbortError' ? 'Le test a pris trop de temps. Réessayez dans un instant.' : 'Impossible de joindre le service de test de Google. Vérifiez votre connexion et réessayez.') + '</p>';
-    }).then(function(){ clearTimeout(to); btn.disabled = false; btn.textContent = 'Lancer le test'; });
-  });
-
-  // ---- 5. Audit SEO express (relais Cloudflare, voir worker-audit-seo.js) ----
-  var AUDIT_API = window.AUDIT_API || '';
-  if (AUDIT_API) $('tool-seo-btn').hidden = false;
-  $('seo-form').addEventListener('submit', function(e){
-    e.preventDefault();
-    var inp = $('seo-url'), url = urlValide(inp.value), out = $('seo-out'), btn = this.querySelector('button[type=submit]');
-    if (!url) return erreur(inp, 'Indiquez une adresse de site valide, par exemple www.monsite.fr');
-    erreur(inp, '');
-    btn.disabled = true; btn.textContent = 'Analyse en cours…';
-    out.innerHTML = '<div class="loading-bar"><i></i></div>';
-    fetch(AUDIT_API + '?url=' + encodeURIComponent(url)).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); }).then(function(x){
-      if (!x.ok) { out.innerHTML = '<p class="statut ko" style="margin-top:20px">' + esc(x.j.erreur || 'L’analyse a échoué.') + '</p>'; return; }
-      var R = x.j, groupes = { ok: [], warn: [], ko: [], nv: [] };
-      R.controles.forEach(function(c){ (groupes[c.etat] || groupes.nv).push(c); });
-      var bloc = function(k, t){ return groupes[k].length ? '<div class="q-box ' + (k === 'ok' ? 'ok' : k === 'nv' ? '' : 'ko') + '"><h4>' + t + '</h4><ul class="chk-l">' + groupes[k].map(function(c){ return '<li class="' + k + '"><span>' + esc(c.titre) + (c.detail ? '<small>' + esc(c.detail) + '</small>' : '') + '</span></li>'; }).join('') + '</ul></div>' : ''; };
-      out.innerHTML = '<div class="res-h"><b>' + esc(R.url) + '</b><span>Analyse du ' + new Date(R.date).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' }) + '</span></div>' +
-        '<div class="q-grid">' + bloc('ko', 'Problèmes détectés') + bloc('warn', 'Points à améliorer') + bloc('ok', 'Points positifs') + bloc('nv', 'Non vérifié') + '</div>' +
-        '<div class="q-act"><button type="button" class="btn btn-lg btn-primary" id="seo-send">Me faire aider sur ces points</button></div>';
-      $('seo-send').addEventListener('click', function(){ versContact('Audit SEO express de ' + R.url + ' : ' + groupes.ko.length + ' problème(s), ' + groupes.warn.length + ' point(s) à améliorer. J’aimerais votre avis.'); });
-    }).catch(function(){ out.innerHTML = '<p class="statut ko" style="margin-top:20px">Le service d’analyse ne répond pas. Réessayez plus tard.</p>'; })
-      .then(function(){ btn.disabled = false; btn.textContent = 'Analyser'; });
-  });
-
-  // ---- 6. Audit automatique avec IA (relais Cloudflare, voir _cloudflare/audit-ia) ----
-  var IA = window.AUDIT_IA_API || '';
-  if (IA) {
-    $('tool-ia-btn').hidden = false;
-    if (!location.hash && !new URLSearchParams(location.search).get('atelier')) ouvrir('ia');
-  }
-  var NOMS_SC = { performance: 'Vitesse', seo: 'Référencement', accessibilite: 'Accessibilité', bonnesPratiques: 'Bonnes pratiques' };
-  if ($('ia-form')) $('ia-form').addEventListener('submit', function(e){
-    e.preventDefault();
-    var inp = $('ia-url'), url = urlValide(inp.value), out = $('ia-out'), btn = this.querySelector('button[type=submit]');
-    if (!url) return erreur(inp, 'Indiquez une adresse de site valide, par exemple www.monsite.fr');
-    erreur(inp, '');
-    btn.disabled = true; btn.textContent = 'Analyse en cours…';
-    out.innerHTML = '<div class="loading-bar"><i></i></div><p class="t-note">Je charge votre site, Google le mesure, puis l’IA résume ce qu’il faut retenir. Comptez 30 à 60 secondes.</p>';
-    var ctrl = window.AbortController ? new AbortController() : null, to = setTimeout(function(){ if (ctrl) ctrl.abort(); }, 100000);
-    fetch(IA + '?url=' + encodeURIComponent(url), ctrl ? { signal: ctrl.signal } : {}).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); }).then(function(x){
-      if (!x.ok) { out.innerHTML = '<p class="statut ko" style="margin-top:20px">' + esc(x.j.erreur || 'L’analyse a échoué. Réessayez dans un instant.') + '</p>'; return; }
-      var R = x.j, S = R.scores || {}, cl = function(v){ return v >= 90 ? 'g' : v >= 50 ? 'o' : 'r'; };
-      var rings = Object.keys(NOMS_SC).map(function(k){ var v = S[k]; return '<div class="q-box">' + (v == null ? '<div class="ring"><b>—</b></div>' : '<div class="ring ' + cl(v) + '" style="--v:' + v + '"><b>' + v + '</b></div>') + '<small>' + NOMS_SC[k] + '</small></div>'; }).join('');
-      var groupes = { ko: [], warn: [], ok: [] };
-      (R.controles || []).forEach(function(c){ (groupes[c.etat] || groupes.warn).push(c); });
-      var bloc = function(k, t){ return groupes[k].length ? '<div class="q-box ' + (k === 'ok' ? 'ok' : 'ko') + '"><h4>' + t + '</h4><ul class="chk-l">' + groupes[k].map(function(c){ return '<li class="' + k + '"><span>' + esc(c.titre) + (c.detail ? '<small>' + esc(c.detail) + '</small>' : '') + '</span></li>'; }).join('') + '</ul></div>' : ''; };
-      var syn = R.synthese || {};
-      out.innerHTML = '<div class="res-h"><b>' + esc(R.url) + '</b><span>Analyse du ' + new Date(R.date).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' }) + ' · version téléphone</span></div>' +
-        (syn.resume ? '<div class="ia-sum"><h4>En résumé</h4><p>' + esc(syn.resume) + '</p>' + (syn.priorites && syn.priorites.length ? '<ol>' + syn.priorites.map(function(p){ return '<li>' + esc(p) + '</li>'; }).join('') + '</ol>' : '') + '<small>' + (R.ia ? 'Résumé rédigé par une IA à partir des mesures ci-dessous : il peut contenir des imprécisions.' : 'Résumé automatique à partir des mesures ci-dessous.') + '</small></div>' : '') +
-        '<div class="rings" style="margin-top:14px">' + rings + '</div>' +
-        '<div class="q-grid" style="margin-top:12px">' + bloc('ko', 'Problèmes détectés') + bloc('warn', 'Points à améliorer') + bloc('ok', 'Points positifs') + '</div>' +
-        '<div class="q-act"><button type="button" class="btn btn-lg btn-primary" id="ia-send">Me faire aider sur ces points</button></div>';
-      var sc = Object.keys(NOMS_SC).map(function(k){ return NOMS_SC[k] + ' ' + (S[k] == null ? '—' : S[k]); }).join(', ');
-      $('ia-send').addEventListener('click', function(){ versContact('Audit automatique de ' + R.url + ' : ' + sc + '. ' + groupes.ko.length + ' problème(s), ' + groupes.warn.length + ' point(s) à améliorer. J’aimerais votre avis.', 'Refonte de site'); });
-    }).catch(function(err){
-      out.innerHTML = '<p class="statut ko" style="margin-top:20px">' + (err && err.name === 'AbortError' ? 'L’analyse a pris trop de temps. Réessayez dans un instant.' : 'Le service d’analyse ne répond pas. Réessayez plus tard, ou demandez l’audit fait à la main juste en dessous.') + '</p>';
-    }).then(function(){ clearTimeout(to); btn.disabled = false; btn.textContent = 'Analyser mon site'; });
-  });
-
   // ouvre l'onglet indiqué dans l'adresse (ex. /outils#vitesse)
-  var H = { '#vitesse': 'perf', '#diagnostic': 'diag', '#site-ideal': 'ideal', '#atelier': 'atelier', '#seo': 'seo', '#audit-auto': 'ia' };
+  var H = { '#diagnostic': 'diag', '#site-ideal': 'ideal', '#atelier': 'atelier' };
   if (H[location.hash]) { var bt = document.querySelector('[data-tool="' + H[location.hash] + '"]'); if (bt && !bt.hidden) ouvrir(H[location.hash]); }
 })();

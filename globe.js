@@ -43,11 +43,17 @@ function initGlobe(){
     g.addColorStop(0,'rgba(255,255,255,1)'); g.addColorStop(.5,'rgba(255,255,255,1)'); g.addColorStop(1,'rgba(255,255,255,0)');
     x.fillStyle = g; x.fillRect(0,0,64,64); return new THREE.CanvasTexture(d);
   }
+  // halo d'atmosphère : un anneau lumineux posé exactement sur le bord de la planète
+  // (le sprite mesure 3,3 rayons : le bord de la sphère est à 1/1,65 du centre de la texture)
   function glowTex(){
-    var d = document.createElement('canvas'); d.width = d.height = 256;
-    var x = d.getContext('2d'), g = x.createRadialGradient(128,128,60,128,128,128);
-    g.addColorStop(0,'rgba(' + COL.glow + ',.55)'); g.addColorStop(.45,'rgba(' + COL.glow + ',.18)'); g.addColorStop(1,'rgba(' + COL.glow + ',0)');
-    x.fillStyle = g; x.fillRect(0,0,256,256); return new THREE.CanvasTexture(d);
+    var d = document.createElement('canvas'); d.width = d.height = 512;
+    var x = d.getContext('2d'), c0 = 256, bord = 256 / 1.65, g = x.createRadialGradient(c0, c0, bord * .82, c0, c0, 256);
+    g.addColorStop(0, 'rgba(' + COL.glow + ',0)');
+    g.addColorStop(.15, 'rgba(' + COL.glow + ',.9)');
+    g.addColorStop(.24, 'rgba(' + COL.glow + ',.42)');
+    g.addColorStop(.5, 'rgba(' + COL.glow + ',.1)');
+    g.addColorStop(1, 'rgba(' + COL.glow + ',0)');
+    x.fillStyle = g; x.fillRect(0, 0, 512, 512); return new THREE.CanvasTexture(d);
   }
 
   var mobile = innerWidth < 700;
@@ -123,7 +129,7 @@ function initGlobe(){
   for (var q = 0; q < (mobile ? 4 : 7); q++) arcs.push(makeArc());
 
   // satellite
-  var orbit = new THREE.Group(); orbit.rotation.x = 1.1; orbit.rotation.z = -0.35; world.add(orbit);
+  var orbit = new THREE.Group(); orbit.rotation.x = 1.25; orbit.rotation.z = 0; world.add(orbit);
   var sat = new THREE.Group(); orbit.add(sat);
   sat.add(new THREE.Mesh(new THREE.BoxGeometry(.035, .035, .035), new THREE.MeshBasicMaterial({ color: 0xffffff })));
   var panel = new THREE.Mesh(new THREE.BoxGeometry(.13, .004, .035), new THREE.MeshBasicMaterial({ color: COL.hi }));
@@ -145,14 +151,14 @@ function initGlobe(){
       var T = Math.min(hW * .9, hH * 1.75), R = T / Math.sqrt(1 + (T / d) * (T / d));
       HOME = { s: R, x: 0, y: -hH - R * .08 };
       PAGE = { s: hH * .62, x: hW * .64, y: -hH * .12 };
-      landMat.size = .05;
+      landMat.size = .05; sat.scale.setScalar(.45);
     } else {
       // téléphone / tablette : globe entier
       cam.fov = 35; d = a < 1 ? 4.6 / Math.max(a, .72) : 4.6;
       hH = d * Math.tan(17.5 * Math.PI / 180); hW = hH * a;
       HOME = { s: 1, x: 0, y: a < 1 ? -0.95 : -0.6 };
       PAGE = { s: hW * .55, x: hW * .62, y: hH * .64 };
-      landMat.size = mobile ? .03 : .026;
+      landMat.size = mobile ? .03 : .026; sat.scale.setScalar(.8);
     }
     cam.position.set(0, 0, d);
     cam.updateProjectionMatrix();
@@ -176,7 +182,7 @@ function initGlobe(){
     lattice.rotation.y -= dt * .05;
     stars.rotation.y -= dt * .004;
     var ang = t * .45; sat.position.set(Math.cos(ang) * 1.32, 0, Math.sin(ang) * 1.32); sat.rotation.y = -ang;
-    halo.material.opacity = .78 + Math.sin(t * 1.3) * .22;
+    halo.material.opacity = .85 + Math.sin(t * 1.1) * .15;
     var T = target(), k = reduce ? 1 : 1 - Math.exp(-dt * 2.4);
     cur.s += (T.s - cur.s) * k; cur.x += (T.x - cur.x) * k; cur.y += (T.y - cur.y) * k; place();
     var km = 1 - Math.exp(-dt * 3); mx += (tx - mx) * km; my += (ty - my) * km;
