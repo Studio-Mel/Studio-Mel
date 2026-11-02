@@ -3,14 +3,14 @@
 .works{grid-template-columns:repeat(2,minmax(0,1fr))}
 .work{min-width:0}
 .shot.live{height:auto;display:block;padding:0;border:0;background:#0b0c12;border-radius:14px;overflow:hidden;cursor:pointer;text-align:left;color:inherit;width:100%;box-shadow:0 0 0 1px var(--line)}
-.shot.live:hover,.shot.live:focus-visible{box-shadow:0 0 0 1px rgba(47,91,255,.75),0 18px 50px -20px rgba(47,91,255,.6)}
+.shot.live:hover,.shot.live:focus-visible,.shot.live:has(.shot-btn:focus-visible){box-shadow:0 0 0 1px rgba(47,91,255,.75),0 18px 50px -20px rgba(47,91,255,.6)}
 .chrome{display:flex;align-items:center;gap:6px;height:30px;padding:0 12px;background:#14151b;border-bottom:1px solid var(--line)}
 .chrome i{width:8px;height:8px;border-radius:50%;background:#3a3c46}
 .chrome span{margin-left:10px;flex:1;max-width:240px;height:18px;border-radius:99px;background:#1f2029;color:#8c909c;font-size:11px;line-height:18px;padding:0 10px;overflow:hidden;white-space:nowrap}
 .vp{position:relative;width:100%;height:250px;overflow:hidden;background:#fff}
 .shot.live .chrome{width:100%}
 .ds-scaler{position:absolute;top:0;left:0;width:1200px;container-type:inline-size;transform-origin:0 0;transform:scale(var(--s,.4)) translateY(0);transition:transform 1.4s var(--e-soft)}
-.shot.live:hover .ds-scaler,.shot.live:focus-visible .ds-scaler{transform:scale(var(--s,.4)) translateY(calc(var(--h,0) * -1px));transition:transform 7s cubic-bezier(.45,0,.4,1)}
+.shot.live:hover .ds-scaler,.shot.live:focus-visible .ds-scaler,.shot.live:has(.shot-btn:focus-visible) .ds-scaler{transform:scale(var(--s,.4)) translateY(calc(var(--h,0) * -1px));transition:transform 7s cubic-bezier(.45,0,.4,1)}
 @media (hover:none){.shot.live .ds-scaler{animation:pan 16s cubic-bezier(.45,0,.4,1) 1.5s infinite alternate}}
 @keyframes pan{0%,12%{transform:scale(var(--s,.4)) translateY(0)}88%,100%{transform:scale(var(--s,.4)) translateY(calc(var(--h,0) * -1px))}}
 .work .tag{align-self:flex-start;margin:0 8px;font-size:12px;font-weight:500;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:3px 10px}
@@ -41,7 +41,7 @@
 
 /* LES MAQUETTES */
 .ds{--pad:56px;background:var(--d-bg);color:var(--d-ink);font-family:var(--d-font);font-size:17px;line-height:1.6}
-.ds h3,.ds h4{font-family:var(--d-head);margin:0;font-weight:var(--d-hw);letter-spacing:var(--d-ls);line-height:1.05}
+.ds h3,.ds h4{color:inherit;font-stretch:100%;font-family:var(--d-head);margin:0;font-weight:var(--d-hw);letter-spacing:var(--d-ls);line-height:1.05}
 .ds p{margin:0}
 .ds-nav{display:flex;align-items:center;gap:28px;padding:22px var(--pad)}
 .ds-logo{display:flex;align-items:center;gap:10px;font-family:var(--d-head);font-weight:var(--d-hw);font-size:22px;margin-right:auto;color:var(--d-acc-ink,var(--d-ink))}
@@ -95,7 +95,7 @@
   .ds-quote p{font-size:22px}
   .ds-call{margin:48px var(--pad) 0;padding:36px 22px}
 }
-.ds-jardin{--d-bg:#EEF2E8;--d-ink:#1B2A20;--d-acc:#234D32;--d-on-acc:#EEF2E8;--d-strip:#234D32;--d-strip-ink:#DDE8D3;--d-card:#fff;--d-line:#D6DFCD;--d-font:'Plus Jakarta Sans',sans-serif;--d-head:'Fraunces',Georgia,serif;--d-hw:500;--d-ls:-.02em;--d-r:99px;--d-r2:22px;--d-acc-txt:#4F7F57}
+.ds-jardin{--d-bg:#EEF2E8;--d-ink:#1B2A20;--d-acc:#234D32;--d-on-acc:#EEF2E8;--d-strip:#234D32;--d-strip-ink:#DDE8D3;--d-card:#fff;--d-line:#D6DFCD;--d-font:'Plus Jakarta Sans',sans-serif;--d-head:'Fraunces',Georgia,serif;--d-hw:500;--d-ls:-.02em;--d-r:99px;--d-r2:22px;--d-acc-txt:#3B6A45}
 .fd{--pad:48px;background:#F2F3EF;color:#16201B;font-family:Barlow,'Helvetica Neue',Arial,sans-serif;font-size:17px;line-height:1.55}
 .fd h3,.fd h4,.fd-logo b,.fd-stats b,.fd-tel,.fd-c1{font-family:'Barlow Condensed','Arial Narrow',sans-serif}
 .fd p{margin:0}
@@ -592,3 +592,8 @@ input[aria-invalid="true"],textarea[aria-invalid="true"]{border-color:#FF6369!im
 @media (max-width:760px){.as-fab{right:auto;left:16px;bottom:16px;height:46px}.as-fab span{display:none}.as-fab{width:46px;padding:0;justify-content:center}.as-box{right:16px;left:16px;bottom:16px;width:auto;height:min(560px,calc(100dvh - 90px))}}
 @media (prefers-reduced-motion:reduce){.as-box,.as-m{animation:none}}
 @media print{.as-fab,.as-box{display:none!important}}
+
+/* aperçus : un bouton transparent posé par-dessus la maquette (la maquette elle-même est décorative) */
+.shot.live{position:relative}
+.shot-btn{position:absolute;inset:0;z-index:3;width:100%;height:100%;padding:0;border:0;background:none;cursor:pointer;border-radius:inherit}
+.shot-btn:focus-visible{outline:2px solid var(--blue-hi);outline-offset:-3px}

@@ -35,7 +35,7 @@
       dm.querySelectorAll('.dm-sw button').forEach(function(b){ var on = b.dataset.w === m; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
     }
     function openDemo(b){
-      opener = b; view.innerHTML = '';
+      opener = b.querySelector('.shot-btn') || b; view.innerHTML = '';
       if (b.dataset.site) { var f = document.createElement('iframe'); f.src = b.dataset.site; f.title = 'Site ' + b.dataset.nom; f.className = 'dm-web'; view.appendChild(f); }
       else view.appendChild(tpl(b.dataset.demo));
       view.scrollTop = 0;

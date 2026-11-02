@@ -101,17 +101,20 @@
       });
     });
     controles.sort(function(a, b){ return b.imp - a.imp; });
-    var lcp = A['largest-contentful-paint'], lcpS = lcp && lcp.numericValue ? lcp.numericValue / 1000 : null;
-    return { url: L.finalDisplayedUrl || L.finalUrl || L.requestedUrl, date: new Date().toISOString(), scores: scores, controles: controles, lcp: lcpS, synthese: resumer(scores, controles, lcpS), ia: false };
+    var lcp = A['largest-contentful-paint'], lcpS = lcp && lcp.numericValue ? lcp.numericValue / 1000 : null, tbt = A['total-blocking-time'] && A['total-blocking-time'].numericValue;
+    return { url: L.finalDisplayedUrl || L.finalUrl || L.requestedUrl, date: new Date().toISOString(), scores: scores, controles: controles, lcp: lcpS, synthese: resumer(scores, controles, lcpS, tbt), ia: false };
   }
 
   // résumé en français simple, construit à partir des mesures
-  function resumer(S, ctrl, lcp){
+  function resumer(S, ctrl, lcp, tbt){
     var ko = ctrl.filter(function(c){ return c.etat === 'ko'; }), warn = ctrl.filter(function(c){ return c.etat === 'warn'; });
-    var p = S.performance, s = S.seo, phr = [];
-    if (p != null) phr.push(p >= 90 ? 'Votre site est rapide sur téléphone' + (lcp ? ' : le contenu principal s’affiche en ' + lcp.toLocaleString('fr-FR', { maximumFractionDigits: 1 }) + ' s.' : '.')
-      : p >= 50 ? 'Votre site est un peu lent sur téléphone' + (lcp ? ' : il faut ' + lcp.toLocaleString('fr-FR', { maximumFractionDigits: 1 }) + ' s pour voir l’essentiel, l’idéal étant moins de 2,5 s.' : '.')
-      : 'Votre site est lent sur téléphone' + (lcp ? ' (' + lcp.toLocaleString('fr-FR', { maximumFractionDigits: 1 }) + ' s avant de voir l’essentiel)' : '') + ', et une partie des visiteurs part avant la fin du chargement.');
+    var p = S.performance, s = S.seo, phr = [], sec = function(v){ return v.toLocaleString('fr-FR', { maximumFractionDigits: 1 }) + ' s'; };
+    if (p != null) {
+      if (p >= 90) phr.push('Votre site est rapide sur téléphone' + (lcp ? ' : l’essentiel s’affiche en ' + sec(lcp) + '.' : '.'));
+      else if (lcp && lcp <= 2.5) phr.push('Votre site s’affiche vite (' + sec(lcp) + ' pour voir l’essentiel), mais ' + (tbt > 300 ? 'des scripts lourds le rendent moins réactif sur téléphone dans les premières secondes.' : 'certains fichiers ralentissent encore le chargement complet sur téléphone.'));
+      else if (p >= 50) phr.push('Votre site est un peu lent sur téléphone' + (lcp ? ' : il faut ' + sec(lcp) + ' pour voir l’essentiel, l’idéal étant moins de 2,5 s.' : '.'));
+      else phr.push('Votre site est lent sur téléphone' + (lcp ? ' (' + sec(lcp) + ' avant de voir l’essentiel)' : '') + ', et une partie des visiteurs part avant la fin du chargement.');
+    }
     if (s != null) phr.push(s >= 90 ? 'Les bases pour Google sont en place.' : s >= 70 ? 'Google comprend votre site, mais quelques réglages l’aideraient à mieux vous classer.' : 'Google a du mal à comprendre votre site, ce qui vous fait perdre des clients qui vous cherchent.');
     phr.push(ko.length ? ko.length + ' problème' + (ko.length > 1 ? 's importants' : ' important') + ' à corriger' + (warn.length ? ', et ' + warn.length + ' point' + (warn.length > 1 ? 's' : '') + ' à améliorer.' : '.') : warn.length ? 'Pas de problème grave, ' + warn.length + ' point' + (warn.length > 1 ? 's' : '') + ' à améliorer.' : 'Rien de grave à signaler, bravo.');
     return { resume: phr.join(' '), priorites: ko.concat(warn).slice(0, 3).map(function(c){ return c.titre; }) };
@@ -148,6 +151,7 @@
     var syn = R.synthese || {};
     out.innerHTML =
       '<div class="an-report">' +
+        '<div class="an-print-head"><img src="/logo-mark.svg" alt="" width="36" height="36"><div><b>Studio Mel</b><span>Rapport d’audit gratuit · studiomel.eu</span></div></div>' +
         '<div class="an-head"><div><span class="an-url">' + esc(R.url) + '</span><h2 class="an-verdict">' + verdict + '</h2><p class="an-date">Analyse du ' + new Date(R.date).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' }) + ' · version téléphone</p></div>' +
           (global != null ? '<div class="an-global"><b>' + global + '</b><small>/ 100</small></div>' : '') + '</div>' +
         '<div class="an-scores">' + Object.keys(NOMS).map(function(k, i){ return anneau(S[k], NOMS[k], i); }).join('') + '</div>' +
@@ -157,6 +161,7 @@
           (warn.length ? '<div class="q-box ko"><h3>À améliorer <span>' + warn.length + '</span></h3><ul class="chk-l">' + warn.slice(0, 8).map(li).join('') + '</ul></div>' : '') +
           (ok.length ? '<details class="q-box ok an-ok"><summary><h3>Ce qui va bien <span>' + ok.length + '</span></h3></summary><ul class="chk-l">' + ok.map(li).join('') + '</ul></details>' : '') +
         '</div>' +
+        '<p class="an-print-foot">Besoin d’aide pour corriger ces points ? Studio Mel · 06 04 15 98 58 · studio-mel@outlook.fr · studiomel.eu</p>' +
         '<div class="an-actions"><button type="button" class="btn btn-sm btn-ghost" id="an-print">Imprimer ou enregistrer en PDF</button><button type="button" class="btn btn-sm btn-ghost" id="an-again">Analyser un autre site</button></div>' +
       '</div>';
     // les notes défilent jusqu'à leur valeur
@@ -164,13 +169,23 @@
       var n = parseInt(b.textContent, 10); if (isNaN(n)) return; var t0 = performance.now();
       (function pas(t){ var k = Math.min(1, (t - t0) / 1200); b.textContent = Math.round(n * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(pas); })(t0);
     });
-    $('an-print').addEventListener('click', function(){ window.print(); });
+    $('an-print').addEventListener('click', function(){ imprimer(); });
     $('an-again').addEventListener('click', function(){ out.innerHTML = ''; $('analyse-lead').hidden = true; inp.value = ''; inp.focus(); scrollTo({ top: form.getBoundingClientRect().top + scrollY - 120, behavior: window.SM_CALM ? 'auto' : 'smooth' }); });
     // proposition d'aide, préremplie
     var lead = $('analyse-lead'); lead.hidden = false;
     $('lead-site').value = R.url;
     out.querySelector('.an-report').scrollIntoView({ behavior: window.SM_CALM ? 'auto' : 'smooth', block: 'start' });
   }
+
+  // ---------- impression / PDF ----------
+  function imprimer(){
+    var d = out.querySelector('.an-ok'); if (d) d.open = true;
+    document.documentElement.classList.add('impression');
+    // laisse le navigateur appliquer la mise en page claire avant d'ouvrir la fenêtre d'impression
+    setTimeout(function(){ window.print(); }, 60);
+  }
+  addEventListener('beforeprint', function(){ var d = out.querySelector('.an-ok'); if (d) d.open = true; document.documentElement.classList.add('impression'); });
+  addEventListener('afterprint', function(){ document.documentElement.classList.remove('impression'); });
 
   var enCours = false;
   form.addEventListener('submit', function(e){

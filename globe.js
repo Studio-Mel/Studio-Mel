@@ -32,7 +32,17 @@ function initGlobe(){
     }
     return ins;
   }
-  function isLand(lon, lat){ for (var k = 0; k < LAND.length; k++) if (inPoly(lon, lat, LAND[k])) return true; return false; }
+  // carte des continents dessinée une seule fois (720 × 360) : chaque point se teste ensuite en une lecture
+  var MW = 720, MH = 360, masque = (function(){
+    var m = document.createElement('canvas'); m.width = MW; m.height = MH;
+    var x = m.getContext('2d'); x.fillStyle = '#fff';
+    LAND.forEach(function(p){ x.beginPath(); p.forEach(function(pt, i){ var X = (pt[0] + 180) / 360 * MW, Y = (90 - pt[1]) / 180 * MH; i ? x.lineTo(X, Y) : x.moveTo(X, Y); }); x.closePath(); x.fill(); });
+    return x.getImageData(0, 0, MW, MH).data;
+  })();
+  function isLand(lon, lat){
+    var X = Math.min(MW - 1, Math.max(0, Math.floor((lon + 180) / 360 * MW))), Y = Math.min(MH - 1, Math.max(0, Math.floor((90 - lat) / 180 * MH)));
+    return masque[(Y * MW + X) * 4] > 127;
+  }
   function vec(lon, lat, r){
     var phi = (90 - lat) * Math.PI / 180, th = (lon + 180) * Math.PI / 180;
     return new THREE.Vector3(-r * Math.sin(phi) * Math.cos(th), r * Math.cos(phi), r * Math.sin(phi) * Math.sin(th));
@@ -59,7 +69,19 @@ function initGlobe(){
   var mobile = innerWidth < 700;
   // appareils modestes : moins de points et une résolution plus basse
   var modeste = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4;
-  var r = new THREE.WebGLRenderer({ canvas: c, antialias: true, alpha: true });
+  var test = document.createElement('canvas'), okGL = false;
+  try {
+    var gl = window.WebGLRenderingContext && (test.getContext('webgl2') || test.getContext('webgl'));
+    okGL = !!gl;
+    // rendu logiciel (pas de carte graphique) : la 3D serait saccadée et ralentirait tout le site
+    var info = gl && gl.getExtension('WEBGL_debug_renderer_info'), nom = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : '';
+    if (/swiftshader|llvmpipe|software|basic render/i.test(nom)) okGL = false;
+    var lose = gl && gl.getExtension('WEBGL_lose_context'); if (lose) lose.loseContext();
+  } catch (e) {}
+  if (!okGL) { document.querySelector('.hero').classList.add('sans-3d'); return; }
+  var r;
+  try { r = new THREE.WebGLRenderer({ canvas: c, antialias: true, alpha: true }); }
+  catch (e) { document.querySelector('.hero').classList.add('sans-3d'); return; }
   r.setPixelRatio(Math.min(window.devicePixelRatio || 1, modeste ? 1.25 : mobile ? 1.75 : 2));
   var scene = new THREE.Scene();
   var cam = new THREE.PerspectiveCamera(35, 1, 0.1, 200);
@@ -202,17 +224,42 @@ function initGlobe(){
   function wake(){ if (!running && docOn && inView) { running = true; last = performance.now(); requestAnimationFrame(loop); } }
   document.addEventListener('visibilitychange', function(){ docOn = !document.hidden; wake(); });
   if ('IntersectionObserver' in window) new IntersectionObserver(function(e){ inView = e[0].isIntersecting; wake(); }, { threshold: 0 }).observe(c);
+  var mesures = [], abandon = false;
+  function surveiller(now){
+    if (mesures.length >= 90) return;
+    mesures.push(now);
+    if (mesures.length === 90) {
+      var moy = (mesures[89] - mesures[30]) / 59;
+      if (moy > 45) { abandon = true; c.classList.remove('on'); document.querySelector('.hero').classList.add('sans-3d'); try { r.dispose(); } catch (e) {} }
+    }
+  }
   function loop(now){
-    if (!docOn || !inView) { running = false; return; }
+    if (abandon) { running = false; return; }
+    surveiller(now);
+    if (!docOn || !inView) { running = false; mesures = []; return; }
     requestAnimationFrame(loop);
     frame(now);
   }
 running = true; requestAnimationFrame(function(n){ last = n; loop(n); c.classList.add('on'); });
 }
 // three.js r128 (≈ 600 Ko, hébergé sur le site) ne se charge qu'après l'affichage de la page, au premier geste ou au bout de 3,5 s
-// three.js est préchargé dès l'ouverture de l'accueil (balise preload) : la planète démarre tout de suite.
+// three.js (≈ 600 Ko) se charge dès que la page est affichée, sans retarder le premier affichage
 (function(){
   if (!document.getElementById('globe')) return;
-  if (window.THREE) { initGlobe(); return; }
-  var s = document.createElement('script'); s.src = '/three.r128.min.js'; s.onload = initGlobe; document.head.appendChild(s);
+  // on vérifie la carte graphique AVANT de télécharger three.js
+  function gpuOk(){
+    try {
+      var t = document.createElement('canvas'), gl = window.WebGLRenderingContext && (t.getContext('webgl2') || t.getContext('webgl'));
+      if (!gl) return false;
+      var info = gl.getExtension('WEBGL_debug_renderer_info'), nom = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : '';
+      var lose = gl.getExtension('WEBGL_lose_context'); if (lose) lose.loseContext();
+      return !/swiftshader|llvmpipe|software|basic render/i.test(nom);
+    } catch (e) { return false; }
+  }
+  function go(){
+    if (!gpuOk()) { document.querySelector('.hero').classList.add('sans-3d'); return; }
+    if (window.THREE) { initGlobe(); return; }
+    var s = document.createElement('script'); s.src = '/three.r128.min.js'; s.onload = initGlobe; document.head.appendChild(s);
+  }
+  if (document.readyState === 'complete') go(); else addEventListener('load', go);
 })();

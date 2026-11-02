@@ -600,9 +600,38 @@ html:not(.js) .scroll-hint{opacity:1}
 .an-what p{color:var(--muted);font-size:15px;line-height:1.6}
 @media (max-width:900px){.an-what{grid-template-columns:1fr 1fr}.an-scores{grid-template-columns:1fr 1fr}}
 @media (max-width:600px){.an-form{grid-template-columns:1fr}.an-form .btn{width:100%}.an-form .err{position:static}.an-what{grid-template-columns:1fr}.an-head{flex-direction:column-reverse}.an-global{width:84px;height:84px;border-radius:22px}.an-global b{font-size:36px}.an-wait{grid-template-columns:1fr}.an-scan{width:64px;height:64px}}
+
+
+/* planète de secours (appareils sans 3D) : dessinée en CSS, centrée sous le texte */
+.hero.sans-3d::before{content:"";position:absolute;z-index:-2;left:50%;top:58%;width:min(120vh,120vw);aspect-ratio:1;transform:translateX(-50%);border-radius:50%;
+  background:radial-gradient(circle at 50% 50%,#05070f 0 66%,transparent 66.4%),radial-gradient(circle at 50% 50%,rgba(47,91,255,.0) 64%,rgba(47,91,255,.75) 66.5%,rgba(47,91,255,.18) 70%,transparent 76%)}
+
+/* ---------- rapport d'audit : version imprimée / PDF ---------- */
+.an-print-head,.an-print-foot{display:none}
 @media print{
-  .nav,.foot,.page-head,.an-form,.an-trust,.an-actions,#analyse-lead,#outils,.an-what,.as-fab,.fab,.progress{display:none!important}
-  .an-box{border:0;background:none;padding:0}
-  .an-report,.an-report *{color:#000!important;background:none!important;box-shadow:none!important}
-  .an-global{border:2px solid #000}
+  @page{size:A4;margin:14mm}
+  html,body{background:#fff!important;color:#111!important}
+  .nav,.menu,.foot,.fab,.as-fab,.as-box,.progress,.page-head,.an-actions,#analyse-lead,#outils,section[aria-labelledby="t-verif"],.an-form,.an-trust,.skip,.dm{display:none!important}
+  main,.page-body,.page-body>.wrap{padding:0!important;margin:0!important;max-width:none}
+  .page-body>.wrap>*+*{margin-top:0}
+  .js [data-reveal]{opacity:1!important;transform:none!important}
+  .an-box{border:0!important;background:none!important;padding:0!important;box-shadow:none!important;-webkit-backdrop-filter:none;backdrop-filter:none}
+  .an-report{margin:0;gap:12px;animation:none}
+  .an-report *{color:#111!important;box-shadow:none!important;text-shadow:none!important;animation:none!important;opacity:1!important;transform:none!important}
+  .an-print-head{display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:2px solid #2F5BFF}
+  .an-print-head b{display:block;font-family:var(--f-display);font-size:20px}
+  .an-print-head span{font-size:12px;color:#555!important}
+  .an-print-foot{display:block;margin-top:6px;padding-top:10px;border-top:1px solid #ccc;font-size:12px;color:#444!important}
+  .an-url{color:#2F5BFF!important}
+  .an-global{background:#2F5BFF!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .an-global b,.an-global small{color:#fff!important}
+  .an-scores{grid-template-columns:repeat(4,1fr)}
+  .an-score,.q-box,.ia-sum{background:#fff!important;border:1px solid #d5d8e0!important;break-inside:avoid}
+  .ring{-webkit-print-color-adjust:exact;print-color-adjust:exact;background:conic-gradient(var(--c,#2F5BFF) calc(var(--v)*1%),#e6e8ee 0)!important}
+  .ring::before{background:#fff!important}
+  .chk-l li::before{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .an-cols{grid-template-columns:1fr 1fr}
+  .an-ok summary h3::after{display:none}
+  .ia-sum h3{color:#2F5BFF!important}
 }
+@media (max-width:900px){.hero.sans-3d::before{top:52%;width:150vw}}
