@@ -507,3 +507,25 @@ html:not(.js) .track li::before{border-color:var(--blue-hi);background:var(--blu
   .tilt,.magnet{transform:none!important}
   .progress{display:none}
 }
+
+/* ---------- accueil : indicateur « Découvrir » ---------- */
+.hero{min-height:92vh;min-height:92svh}
+.scroll-hint{position:absolute;left:50%;bottom:calc(26px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px 14px;color:var(--soft);text-decoration:none;font-size:13px;font-weight:500;letter-spacing:.02em;transition:opacity .4s ease,transform .4s var(--e-reveal)}
+.scroll-hint:hover{color:#fff}
+.sh-mouse{display:block;position:relative;width:24px;height:38px;border:1.6px solid rgba(255,255,255,.55);border-radius:14px}
+.sh-mouse i{position:absolute;left:50%;top:7px;width:4px;height:8px;margin-left:-2px;border-radius:2px;background:var(--blue-hi);animation:molette 1.8s cubic-bezier(.65,0,.35,1) infinite}
+@keyframes molette{0%{opacity:0;transform:translateY(-3px)}25%{opacity:1}70%{opacity:1;transform:translateY(12px)}100%{opacity:0;transform:translateY(14px)}}
+.sh-swipe{display:none;position:relative;width:26px;height:30px}
+.sh-swipe i{position:absolute;left:5px;width:16px;height:16px;border-right:2px solid var(--blue-hi);border-bottom:2px solid var(--blue-hi);transform:rotate(45deg);animation:chevron 1.8s ease-in-out infinite}
+.sh-swipe i:first-child{top:0;opacity:.45;animation-delay:.15s}
+.sh-swipe i:last-child{top:9px}
+@keyframes chevron{0%,100%{translate:0 -3px}50%{translate:0 5px}}
+@media (hover:none),(pointer:coarse){.sh-mouse{display:none}.sh-swipe{display:block}}
+.js .scroll-hint{opacity:0}
+.js.ready .scroll-hint{animation:hintIn .9s var(--e-reveal) 1.6s forwards}
+@keyframes hintIn{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+.js.ready.a-defile .scroll-hint,.a-defile .scroll-hint{animation:none;opacity:0;transform:translate(-50%,10px);pointer-events:none}
+html:not(.js) .scroll-hint{opacity:1}
+#realisations{scroll-margin-top:calc(var(--nav-h) - 40px)}
+@media (max-width:900px){.hero{padding-bottom:110px}}
+@media (prefers-reduced-motion:reduce){.sh-mouse i,.sh-swipe i{animation:none}.js .scroll-hint{opacity:1}}

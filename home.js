@@ -30,6 +30,13 @@
     addEventListener('scroll', function(){ if (!hTick) { hTick = true; requestAnimationFrame(heroScroll); } }, { passive: true });
   }
 
+  // ---------- indicateur « Découvrir » : disparaît dès qu'on commence à descendre ----------
+  (function(){
+    var hint = document.querySelector('.scroll-hint'); if (!hint) return;
+    function maj(){ root.classList.toggle('a-defile', scrollY > 40); }
+    addEventListener('scroll', maj, { passive: true }); maj();
+  })();
+
   // ---------- formules : une carte sélectionnée à la fois ----------
   var grid = document.getElementById('formules-grid');
   if (grid) {
