@@ -713,3 +713,10 @@ html:not(.js) .scroll-hint{opacity:1}
 .case-txt ul.chips li::before{display:none!important;content:none}
 @media (min-width:901px){.case>.shot{position:sticky;top:calc(var(--nav-h) + 24px);align-self:start}}
 .hp{position:absolute!important;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
+
+/* accès à l'espace admin */
+.nav-admin{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;color:var(--muted);border:1px solid transparent;transition:color .2s ease,border-color .2s ease,background .2s ease}
+.nav-admin svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-admin:hover{color:#fff;border-color:var(--line-2);background:rgba(255,255,255,.04)}
+.menu-admin{display:block;margin-top:14px;text-align:center;color:var(--muted);font-size:14.5px;text-decoration:none}
+@media (max-width:1080px){.nav-admin{display:none}}

@@ -65,15 +65,16 @@
     var pm = document.getElementById('pm-sw');
     if (pm) {
       var T = window.TARIFS, card = pm.closest('.fcard');
+      var fmtE = function(n){ return Math.round(n).toLocaleString('fr-FR') + ' €'; };
       var DATA = {
-        vitrine: { prix: '1 200 €', pre: '', nom: 'Site Premium', btn: 'Choisir le Premium vitrine' },
-        boutique: { prix: '1 900 €', pre: 'dès', nom: 'Boutique en ligne', btn: 'Choisir la boutique' }
+        vitrine: { cle: 'premium', pre: '', nom: 'Site Premium', btn: 'Choisir le Premium vitrine' },
+        boutique: { cle: 'boutique', pre: 'dès', nom: 'Boutique en ligne', btn: 'Choisir la boutique' }
       };
       pm.addEventListener('click', function(e){
         var b = e.target.closest('[data-pm]'); if (!b) return; var k = b.dataset.pm, d = DATA[k];
         pm.querySelectorAll('[data-pm]').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
         card.querySelectorAll('[data-pane]').forEach(function(p){ p.hidden = p.dataset.pane !== k; });
-        card.querySelector('.fcard-price').innerHTML = (d.pre ? '<small>' + d.pre + '</small>' : '') + d.prix;
+        var pe = card.querySelector('.fcard-price'); pe.dataset.prix = d.cle; pe.innerHTML = (d.pre ? '<small>' + d.pre + '</small>' : '') + fmtE(T[d.cle]);
         var a = card.querySelector('.fcard-inner > .btn'); a.textContent = d.btn; a.href = '/contact?formule=' + encodeURIComponent(d.nom) + '#formulaire';
         card.querySelectorAll('[data-pane]:not([hidden]) li').forEach(function(li, i){ li.style.setProperty('--i', i); });
       });
@@ -173,6 +174,7 @@
     return { type: type, total: total, three: three, opts: opts, sd: sd, lignes: lignes };
   }
   sim.addEventListener('change', simCalc); simCalc();
+  document.addEventListener('sm-tarifs', simCalc);
   document.getElementById('sim-go').addEventListener('click', function(){
     var r = simCalc();
     // le détail part avec la demande : mail et admin affichent les mêmes lignes et le même total

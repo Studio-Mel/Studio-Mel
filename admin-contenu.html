@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contenu du site · Studio Mel</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+@font-face{font-family:'Plus Jakarta Sans';src:url(/plus-jakarta-sans.woff2) format('woff2');font-weight:200 800;font-display:swap}
+@font-face{font-family:'Bricolage Grotesque';src:url(/bricolage-grotesque.woff2) format('woff2');font-weight:200 800;font-stretch:75% 100%;font-display:swap}
+:root{--bg:#000;--s1:#0c0e15;--s2:#141722;--ink:#f3f4f8;--soft:#d7dae3;--mut:#9ba1af;--line:rgba(255,255,255,.1);--line2:rgba(255,255,255,.18);--blue:#2F5BFF;--hi:#B4C6FF;--ok:#3DD68C;--ko:#FF6B6B;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15.5px/1.55 'Plus Jakarta Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-stretch:90%;letter-spacing:-.02em;margin:0}
+button,input,textarea,select{font:inherit;color:inherit}
+.hide{display:none!important}
+.top{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px clamp(14px,3vw,28px);padding-top:calc(14px + env(safe-area-inset-top,0px));background:rgba(0,0,0,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:'Bricolage Grotesque';font-weight:700;font-size:19px}
+.top .logo svg{width:30px;height:30px}
+.top .sp{flex:1}
+.btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:99px;border:1px solid var(--line2);background:rgba(255,255,255,.04);cursor:pointer;text-decoration:none;font-weight:600;font-size:14px;white-space:nowrap}
+.btn:hover{border-color:var(--hi)}
+.btn.pri{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.pri:hover{background:#4470ff}
+.btn.danger{color:var(--ko);border-color:rgba(255,107,107,.4)}
+.btn:disabled{opacity:.5;cursor:wait}
+.st{font-size:13.5px;color:var(--mut);min-height:1em}
+.st.ok{color:var(--ok)}.st.ko{color:var(--ko)}
+main{max-width:1000px;margin:0 auto;padding:24px clamp(14px,3vw,28px) 80px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px}
+.tabs button{height:40px;padding:0 16px;border-radius:99px;border:1px solid var(--line);background:none;cursor:pointer;color:var(--soft);font-weight:500}
+.tabs button[aria-selected=true]{background:var(--ink);color:#000;border-color:var(--ink)}
+.card{background:var(--s1);border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:14px}
+.card h2{font-size:22px;margin-bottom:4px}
+.card>p.help{margin:0 0 16px;color:var(--mut);font-size:14px}
+label.f{display:grid;gap:6px;margin-bottom:12px;font-size:13.5px;color:var(--mut)}
+label.f span b{color:var(--soft);font-weight:600}
+input[type=text],input[type=number],input[type=date],input[type=email],input[type=password],textarea,select{width:100%;padding:11px 13px;border-radius:12px;border:1px solid var(--line2);background:var(--s2);color:var(--ink);font-size:15.5px}
+textarea{min-height:90px;resize:vertical}
+textarea.long{min-height:340px;font-family:ui-monospace,Menlo,monospace;font-size:14px;line-height:1.6}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(47,91,255,.25)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:4px 14px}
+.cnt{font-size:12px;color:var(--mut);text-align:right}.cnt.trop{color:var(--ko)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.faq-it{border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;background:var(--s2)}
+.faq-it .row{justify-content:flex-end;margin-top:6px}
+.mini{height:32px;padding:0 12px;font-size:13px}
+.list .it{display:flex;gap:12px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:14px;margin-bottom:8px;background:var(--s2);cursor:pointer;text-align:left;width:100%}
+.list .it:hover{border-color:var(--hi)}
+.list .it b{flex:1;font-weight:600}
+.tag{font-size:12px;padding:2px 9px;border-radius:99px;border:1px solid var(--line2);color:var(--mut);white-space:nowrap}
+.tag.on{color:var(--ok);border-color:rgba(61,214,140,.5)}.tag.off{color:var(--ko);border-color:rgba(255,107,107,.4)}.tag.mod{color:var(--hi);border-color:rgba(180,198,255,.45)}
+.prev{margin-top:12px;padding:18px;border-radius:14px;border:1px dashed var(--line2);background:#06070b}
+.prev h2{font-size:22px;margin:18px 0 8px}.prev p,.prev li{color:var(--soft)}.prev .enc{padding:12px 14px;border-left:3px solid var(--blue);background:rgba(47,91,255,.08);border-radius:8px;margin:12px 0}
+.aide{font-size:13px;color:var(--mut);background:var(--s2);border-radius:12px;padding:10px 12px;margin-bottom:10px}
+.aide code{color:var(--hi)}
+.login{max-width:380px;margin:12vh auto;padding:28px}
+.login h1{font-size:28px;margin-bottom:6px}
+.rules{white-space:pre-wrap;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:#06070b;border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--hi);overflow:auto}
+.chk{display:flex;gap:10px;align-items:center;margin:6px 0 14px;color:var(--soft)}
+.chk input{width:20px;height:20px;accent-color:var(--blue)}
+@media (max-width:640px){.top .lbl{display:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="admin.html" title="Retour à l’admin"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#2F5BFF"/><path d="M17 45V21.5L32 36l15-14.5V38" fill="none" stroke="#fff" stroke-width="5.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="47" cy="46" r="3.6" fill="#B4C6FF"/></svg><span>Contenu du site</span></a>
+  <span class="sp"></span>
+  <span class="st" id="st" role="status"></span>
+  <a class="btn" href="admin.html">← <span class="lbl">Admin</span></a>
+  <a class="btn" href="/" target="_blank" rel="noopener"><span class="lbl">Voir le site</span> ↗</a>
+  <button class="btn pri" id="save" disabled>Enregistrer</button>
+</header>
+
+<section class="card login hide" id="login">
+  <h1>Connexion</h1>
+  <p style="color:var(--mut);margin:0 0 18px">Même identifiant que l’espace admin.</p>
+  <label class="f"><span>E-mail</span><input type="email" id="lmail" value="studio-mel@outlook.fr" autocomplete="username"></label>
+  <label class="f"><span>Mot de passe</span><input type="password" id="lpass" autocomplete="current-password"></label>
+  <button class="btn pri" id="lbtn" style="width:100%;justify-content:center;height:46px">Se connecter</button>
+  <p class="st ko" id="lerr"></p>
+</section>
+
+<main id="app" class="hide">
+  <div class="tabs" role="tablist">
+    <button role="tab" data-t="tarifs" aria-selected="true">Tarifs</button>
+    <button role="tab" data-t="formules" aria-selected="false">Formules</button>
+    <button role="tab" data-t="accueil" aria-selected="false">Accueil</button>
+    <button role="tab" data-t="faq" aria-selected="false">Questions fréquentes</button>
+    <button role="tab" data-t="articles" aria-selected="false">Articles</button>
+  </div>
+  <div id="erreur-regles" class="card hide">
+    <h2>Les règles Firestore bloquent l’enregistrement</h2>
+    <p class="help">Dans la console Firebase : Firestore Database → onglet <b>Règles</b>. Ajoute ces lignes à l’intérieur de <code>match /databases/{database}/documents { … }</code>, puis clique sur <b>Publier</b>.</p>
+    <div class="rules" id="rules-txt"></div>
+  </div>
+  <section data-p="tarifs"></section>
+  <section data-p="formules" class="hide"></section>
+  <section data-p="accueil" class="hide"></section>
+  <section data-p="faq" class="hide"></section>
+  <section data-p="articles" class="hide"></section>
+</main>
+
+<script src="/admin-defauts.js"></script>
+<script type="module" src="/admin-contenu.js"></script>
+</body>
+</html>

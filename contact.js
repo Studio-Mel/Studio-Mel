@@ -18,7 +18,9 @@ const calm = window.SM_CALM;
   if (formule || (infos && infos.texte)) setTimeout(() => f.nom.focus({ preventScroll: true }), 300);
 })();
 
-const prix = { "Création de site vitrine": "750 €", "Refonte de site": "500 €", "Site Premium": "1 200 €", "Boutique en ligne": "dès 1 900 €", "Fiche Google Business": "80 €", "Maintenance": "40 €/mois", "Autre demande": "—" };
+// prix envoyés avec la demande : toujours ceux du moment (modifiables depuis l'admin)
+const T = window.TARIFS, e = n => Math.round(n).toLocaleString("fr-FR") + " €";
+const prixDe = () => ({ "Création de site vitrine": e(T.creation), "Refonte de site": e(T.refonte), "Site Premium": e(T.premium), "Boutique en ligne": "dès " + e(T.boutique), "Fiche Google Business": e(T.google), "Maintenance": e(T.maint) + "/mois", "Autre demande": "—" });
 
 document.getElementById("devis-form").addEventListener("submit", e => {
   e.preventDefault(); const f = e.target;
@@ -29,7 +31,7 @@ document.getElementById("devis-form").addEventListener("submit", e => {
     titre: "Nouvelle demande de devis",
     nom: f.nom.value, entreprise: f.entreprise.value, email: f.email.value,
     formule: s && s.opts.length ? f.formule.value + " + " + s.opts.join(" + ") : f.formule.value,
-    prix: s ? eur(s.total) : (prix[f.formule.value] || "—"),
+    prix: s ? eur(s.total) : (prixDe()[f.formule.value] || "—"),
     message: f.message.value || "Aucun message",
     ...(s ? { lignes: s.lignes } : {})
   }, "Merci ! Votre demande est bien partie. Je vous réponds sous 48 h, à l’adresse e-mail indiquée.");
