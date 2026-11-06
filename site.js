@@ -447,3 +447,16 @@
   });
   reperer();
 })();
+
+/* v2.21 · menus déroulants (ordinateur) : survol, clic sur « Services », clavier */
+(function(){
+  var dds = [].slice.call(document.querySelectorAll('.nav-links .dd')); if (!dds.length) return;
+  function fermer(sauf){ dds.forEach(function(d){ if (d !== sauf) { d.classList.remove('open'); var b = d.querySelector('button.nl'); if (b) b.setAttribute('aria-expanded', 'false'); } }); }
+  dds.forEach(function(d){
+    var b = d.querySelector('button.nl');
+    if (b) b.addEventListener('click', function(e){ e.stopPropagation(); var o = !d.classList.contains('open'); fermer(d); d.classList.toggle('open', o); b.setAttribute('aria-expanded', o ? 'true' : 'false'); });
+    d.addEventListener('mouseleave', function(){ d.classList.remove('open'); if (b) b.setAttribute('aria-expanded', 'false'); });
+  });
+  document.addEventListener('click', function(e){ if (!e.target.closest('.nav-links .dd')) fermer(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') { var o = document.querySelector('.nav-links .dd.open, .nav-links .dd:focus-within'); fermer(); if (o) { o.querySelector('.nl').focus(); if (document.activeElement && o.contains(document.activeElement)) document.activeElement.blur(); } } });
+})();

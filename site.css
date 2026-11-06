@@ -1054,3 +1054,39 @@ html:has(.sn){scroll-padding-top:calc(var(--nav-h) + 80px)}
 @keyframes snFlash{0%,100%{color:var(--blue-hi)}35%{color:#fff;text-shadow:0 0 18px rgba(180,198,255,.9)}}
 @media (max-width:560px){.sn{padding-inline:12px}.sn a{height:38px;padding:0 14px;font-size:14px}.sn a i{display:none}.sn-pill{height:38px}}
 @media (prefers-reduced-motion:reduce){.sn-pill{transition:opacity .2s}}
+
+/* v2.21 · menu regroupé avec panneaux déroulants */
+.nav-links{align-items:center}
+.nav-links .nl{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border:0;background:none;cursor:pointer;font:inherit;font-size:14.5px;font-weight:500;color:var(--soft);opacity:.85;border-radius:99px;text-decoration:none;transition:opacity .2s ease,background .2s ease,color .2s ease}
+.nav-links .nl:hover,.nav-links .dd:hover>.nl,.nav-links .dd.open>.nl,.nav-links .dd:focus-within>.nl{opacity:1;color:#fff;background:rgba(255,255,255,.06)}
+.nav-links .nl[aria-current="page"],.nav-links .nl[data-actif]{opacity:1;color:#fff;box-shadow:inset 0 -1.5px 0 var(--blue-hi);border-radius:0}
+.nav-links .nl::after{display:none}
+.chev{width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transition:transform .35s var(--e-reveal);opacity:.7}
+.dd:hover>.nl .chev,.dd.open>.nl .chev,.dd:focus-within>.nl .chev{transform:rotate(180deg)}
+.nav-links .dd{position:relative}
+.dd-panel{position:absolute;top:100%;left:50%;z-index:30;padding-top:14px;opacity:0;visibility:hidden;transform:translate(-50%,10px) scale(.98);transform-origin:50% 0;transition:opacity .25s ease,transform .35s var(--e-reveal),visibility 0s linear .35s}
+.dd:hover>.dd-panel,.dd.open>.dd-panel,.dd:focus-within>.dd-panel{opacity:1;visibility:visible;transform:translate(-50%,0) scale(1);transition:opacity .25s ease,transform .35s var(--e-reveal),visibility 0s}
+.dd-in{display:flex;gap:4px;padding:10px;border-radius:20px;background:rgba(10,14,26,.97);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid var(--line-2);box-shadow:0 30px 80px -20px rgba(0,0,0,.8),0 20px 60px -30px rgba(47,91,255,.6)}
+.dd-col{width:260px}
+.dd-col+.dd-col{border-left:1px solid var(--line);padding-left:4px}
+.dd-col p{margin:6px 12px 6px;font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue-hi)}
+.dd-col ul{list-style:none;margin:0;padding:0}
+.nav-links .dd-panel a{display:grid;gap:1px;padding:9px 12px;border-radius:12px;text-decoration:none;opacity:1;color:var(--ink);box-shadow:none;transition:background .2s ease,transform .25s var(--e-reveal)}
+.nav-links .dd-panel a::after{display:none}
+.nav-links .dd-panel a:hover,.nav-links .dd-panel a:focus-visible{background:rgba(47,91,255,.16);transform:translateX(3px)}
+.dd-panel b{font-size:14.5px;font-weight:600;line-height:1.35}
+.dd-panel small{font-size:12.5px;color:var(--muted);line-height:1.35}
+.dd:hover .dd-col li,.dd.open .dd-col li,.dd:focus-within .dd-col li{animation:ddLi .4s var(--e-reveal) both}
+.dd-col li:nth-child(2){animation-delay:.03s!important}.dd-col li:nth-child(3){animation-delay:.06s!important}.dd-col li:nth-child(4){animation-delay:.09s!important}.dd-col li:nth-child(5){animation-delay:.12s!important}
+@keyframes ddLi{from{opacity:0;transform:translateY(6px)}}
+/* menu burger : groupes en accordéon */
+.menu .m-top,.menu summary.m-top{display:flex;justify-content:space-between;align-items:center;padding:16px 4px;border-bottom:1px solid var(--line);text-decoration:none;font-family:var(--f-display);font-size:26px;font-weight:600;letter-spacing:-.02em;color:var(--ink);cursor:pointer;list-style:none}
+.menu summary.m-top::-webkit-details-marker{display:none}
+.menu .m-top[aria-current="page"],.menu summary.m-top.on{color:var(--blue-hi)}
+.menu .m-top .chev{width:16px;height:16px}
+.m-grp[open]>summary .chev{transform:rotate(180deg)}
+.m-grp ul{list-style:none;margin:0;padding:6px 0 12px 14px;border-left:1px solid var(--line-2);margin-left:6px}
+.menu .m-grp ul a{display:block;padding:9px 6px;border:0;font-family:var(--f-body);font-size:17px;font-weight:500;color:var(--soft);text-decoration:none}
+.menu .m-grp ul a:hover{color:#fff}
+.m-grp[open] ul li{animation:ddLi .35s var(--e-reveal) both}
+@media (prefers-reduced-motion:reduce){.dd-panel,.dd-col li,.m-grp ul li{transition:none;animation:none}}
