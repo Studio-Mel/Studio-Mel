@@ -131,6 +131,26 @@ window.SM_DEFAUTS = {
  ],
  "articles": [
   {
+   "slug": "delai-creation-site",
+   "titre": "Combien de temps faut-il pour créer un site internet ?",
+   "cat": "Création de site",
+   "resume": "Les vraies étapes, ce qui accélère ou ralentit un projet, et comment avoir son site en ligne en quelques semaines.",
+   "date": "2026-11-06",
+   "lecture": 4,
+   "contenu": "« Il me faut un site pour quand ? » La réponse dépend beaucoup moins du technique que de ce qu’on imagine. Voici comment ça se passe vraiment.\n\n## Les étapes d’un projet\n\n1. **On fait connaissance** : un appel pour comprendre votre métier et vos clients.\n2. **Le devis** : un prix fixe, détaillé, que vous validez.\n3. **La maquette de l’accueil** : vous validez l’ambiance avant que je construise le reste.\n4. **Le site complet**, puis vos retours.\n5. **La mise en ligne**, avec le domaine à votre nom.\n\n## Les délais chez Studio Mel\n\n- Site vitrine : **1 à 3 semaines** une fois vos textes et photos reçus.\n- Boutique en ligne : **3 à 5 semaines**.\n\n> **Ce qui ralentit vraiment :** presque jamais le code. Le plus souvent, ce sont les textes et les photos qui tardent à arriver. Les préparer avant de commencer, c’est le meilleur moyen d’aller vite.\n\n## Comment gagner du temps\n\n- Faites la liste de vos services, en quelques lignes chacun.\n- Rassemblez 10 à 20 photos de vos réalisations.\n- Notez 2 ou 3 sites que vous aimez, même hors de votre métier.\n- Vérifiez que vous avez accès à votre nom de domaine actuel, si vous en avez un.\n\nAvec ça, on peut avancer très vite. Et si vous ne savez pas par où commencer, un appel de 15 minutes suffit pour faire le point.",
+   "statique": true
+  },
+  {
+   "slug": "erreurs-site-artisan",
+   "titre": "5 erreurs qui font fuir les clients sur un site d’artisan",
+   "cat": "Conversion",
+   "resume": "Numéro introuvable, photos absentes, site illisible sur téléphone : les erreurs les plus courantes, et comment les corriger.",
+   "date": "2026-11-06",
+   "lecture": 5,
+   "contenu": "Un visiteur décide en quelques secondes s’il reste ou s’il part. Sur les sites d’artisans, ce sont presque toujours les mêmes erreurs qui le font partir.\n\n## 1. Le numéro de téléphone est introuvable\n\nVotre client veut souvent appeler, tout de suite. Si le numéro est caché en bas de page, il ira voir le site suivant. **Il doit être visible dès l’accueil**, et cliquable sur téléphone.\n\n## 2. Aucune photo de vos réalisations\n\nDes photos de banque d’images ne rassurent personne. Vos vrais chantiers, même pris au téléphone, valent beaucoup plus.\n\n## 3. Le site est illisible sur téléphone\n\nLa majorité de vos visiteurs arrivent depuis leur téléphone. Texte minuscule, boutons trop petits, page qui déborde : ils repartent.\n\n## 4. On ne sait pas où vous travaillez\n\nIndiquez clairement votre ville et les communes où vous intervenez. C’est utile à vos clients, et c’est ce que Google regarde pour vous montrer près de chez eux.\n\n## 5. Pas de demande de devis simple\n\nUn formulaire de quinze champs décourage. Le nom, le contact et quelques mots sur le projet suffisent pour commencer.\n\n> **Pour savoir où en est votre site :** l’audit gratuit de Studio Mel vérifie sa vitesse, son référencement et sa lisibilité sur téléphone, en moins d’une minute.\n\nCorriger ces cinq points ne demande pas forcément de tout refaire. Mais si votre site en cumule plusieurs, une refonte est souvent le plus simple.",
+   "statique": true
+  },
+  {
    "slug": "prix-site-artisan",
    "titre": "Combien coûte un site internet pour un artisan ?",
    "cat": "Création de site",
