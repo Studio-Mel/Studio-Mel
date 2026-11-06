@@ -864,3 +864,9 @@ body.amb{background:transparent}
 /* v2.12 · teintes plus franches */
 .ambiance{background:radial-gradient(85% 70% at 10% 15%,var(--ta),transparent 72%),radial-gradient(80% 70% at 92% 88%,var(--tb),transparent 72%)}
 .ambiance::after{opacity:.5}
+
+/* v2.13 · lumières flottantes */
+.ambiance::after{display:none}
+.amb-orbe{position:absolute;left:0;top:0;width:min(90vmax,1100px);aspect-ratio:1;border-radius:50%;pointer-events:none;will-change:transform;background:radial-gradient(circle,var(--ta) 0%,transparent 62%);opacity:.85;transform:translate3d(30vw,30vh,0) translate(-50%,-50%)}
+.amb-orbe.o1{width:min(70vmax,850px);background:radial-gradient(circle,var(--tb) 0%,transparent 62%);opacity:.9;transform:translate3d(70vw,70vh,0) translate(-50%,-50%)}
+@media (max-width:700px){.amb-orbe{width:130vmax}.amb-orbe.o1{width:105vmax}}

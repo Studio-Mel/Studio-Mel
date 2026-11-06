@@ -119,6 +119,33 @@
     document.body.insertBefore(amb, document.body.firstChild); document.body.classList.add('amb');
     var teinter = function(el){ amb.style.setProperty('--ta', el.dataset.ta); amb.style.setProperty('--tb', el.dataset.tb || el.dataset.ta); };
     teinter(teintes[0]);
+    // lumières qui flottent dans l'écran : suivent la souris, puis repartent se balader seules
+    var orbes = [0, 1].map(function(i){ var o = document.createElement('i'); o.className = 'amb-orbe o' + i; amb.appendChild(o); return o; });
+    if (!calm) {
+      var sourisOk = window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches;
+      var mx = .5, my = .5, vu = -1e9, pos = [{ x: .3, y: .3 }, { x: .7, y: .7 }], tAmb = 0, actifAmb = true;
+      if (sourisOk) addEventListener('pointermove', function(e){ if (e.pointerType !== 'mouse') return; mx = e.clientX / innerWidth; my = e.clientY / innerHeight; vu = performance.now(); }, { passive: true });
+      document.addEventListener('visibilitychange', function(){ actifAmb = !document.hidden; if (actifAmb) requestAnimationFrame(bouger); });
+      function balade(t, k){
+        // trajectoire douce et jamais répétée exactement (somme de sinus)
+        return { x: .5 + .34 * Math.sin(t * .00011 + k * 2.1) + .12 * Math.sin(t * .00029 + k * 4.3),
+                 y: .5 + .30 * Math.cos(t * .00009 + k * 1.7) + .14 * Math.sin(t * .00023 + k * 3.1) };
+      }
+      function bouger(t){
+        if (!actifAmb) return;
+        var dt = Math.min(64, t - (tAmb || t)); tAmb = t;
+        var suit = sourisOk && (t - vu < 3500);
+        orbes.forEach(function(o, i){
+          var c = balade(t, i);
+          if (suit) c = i === 0 ? { x: mx, y: my } : { x: 1 - mx * .6 - .2, y: 1 - my * .6 - .2 };
+          var k = 1 - Math.exp(-dt / (suit ? 520 : 1400));
+          pos[i].x += (c.x - pos[i].x) * k; pos[i].y += (c.y - pos[i].y) * k;
+          o.style.transform = 'translate3d(' + (pos[i].x * innerWidth).toFixed(1) + 'px,' + (pos[i].y * innerHeight).toFixed(1) + 'px,0) translate(-50%,-50%)';
+        });
+        requestAnimationFrame(bouger);
+      }
+      requestAnimationFrame(bouger);
+    }
     if ('IntersectionObserver' in window) {
       var tio = new IntersectionObserver(function(en){ en.forEach(function(e){ if (e.isIntersecting) teinter(e.target); }); }, { rootMargin: '-45% 0px -45% 0px' });
       teintes.forEach(function(el){ tio.observe(el); });
