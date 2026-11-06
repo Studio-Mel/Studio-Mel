@@ -382,3 +382,68 @@
     }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
   }
 })();
+
+/* v2.20 · barre de navigation de l'accueil : boutons vers les 4 parties, pastille animée, défilement doux */
+(function(){
+  var bar = document.querySelector('.sn'); if (!bar) return;
+  var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var root = document.documentElement, rail = bar.querySelector('.sn-in'), pill = bar.querySelector('.sn-pill');
+  var liens = [].slice.call(bar.querySelectorAll('[data-sn]'));
+  var secs = liens.map(function(a){ return document.getElementById(a.dataset.sn); });
+  var actif = null, verrou = null, anim = null;
+  function navH(){ var n = document.querySelector('.nav'); return n ? n.getBoundingClientRect().height : 72; }
+  function decal(){ return navH() + bar.getBoundingClientRect().height + 8; }
+
+  // la pastille bleue glisse sous le bouton de la partie affichée
+  function poser(id){
+    if (id === actif) return; actif = id;
+    var a = liens.filter(function(l){ return l.dataset.sn === id; })[0];
+    liens.forEach(function(l){ l.classList.toggle('on', l === a); if (l === a) l.setAttribute('aria-current', 'true'); else l.removeAttribute('aria-current'); });
+    if (!a) { pill.style.opacity = '0'; return; }
+    pill.style.opacity = '1';
+    pill.style.width = a.offsetWidth + 'px';
+    pill.style.transform = 'translateX(' + a.offsetLeft + 'px)';
+    // sur téléphone, on garde le bouton actif visible dans la rangée
+    if (rail.scrollWidth > rail.clientWidth) rail.scrollTo({ left: a.offsetLeft - (rail.clientWidth - a.offsetWidth) / 2, behavior: calm ? 'auto' : 'smooth' });
+  }
+  function reperer(){
+    bar.classList.toggle('colle', bar.getBoundingClientRect().top <= navH() + 1);
+    if (verrou) return;
+    var ligne = decal() + innerHeight * .25, id = null;
+    secs.forEach(function(s){ if (s && s.getBoundingClientRect().top <= ligne) id = s.id; });
+    var fin = document.querySelector('.final');
+    if (id && fin && fin.getBoundingClientRect().top < innerHeight * .5) id = 'accompagnement';
+    poser(id);
+  }
+  var t = false;
+  addEventListener('scroll', function(){ if (!t) { t = true; requestAnimationFrame(function(){ t = false; reperer(); }); } }, { passive: true });
+  addEventListener('resize', function(){ var a = actif; actif = null; poser(a); reperer(); });
+
+  // défilement doux et accéléré/ralenti vers la partie choisie, dans les deux sens
+  function arreter(){ if (anim) { cancelAnimationFrame(anim); anim = null; verrou = null; root.style.scrollBehavior = ''; } }
+  ['wheel', 'touchstart', 'keydown'].forEach(function(ev){ addEventListener(ev, arreter, { passive: true }); });
+  liens.forEach(function(a){
+    a.addEventListener('click', function(e){
+      var cible = document.getElementById(a.dataset.sn); if (!cible) return;
+      e.preventDefault(); arreter();
+      var y0 = scrollY, y1 = Math.max(0, cible.getBoundingClientRect().top + scrollY - decal() + 1), dist = y1 - y0;
+      verrou = a.dataset.sn; poser(verrou);
+      if (calm || Math.abs(dist) < 4) { scrollTo(0, y1); fin(); return; }
+      var duree = Math.min(1300, Math.max(550, Math.abs(dist) * .4)), t0 = performance.now();
+      root.style.scrollBehavior = 'auto';
+      function pas(t){
+        var q = Math.min(1, (t - t0) / duree), e2 = q < .5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2;
+        scrollTo(0, y0 + dist * e2);
+        if (q < 1) anim = requestAnimationFrame(pas); else fin();
+      }
+      anim = requestAnimationFrame(pas);
+      function fin(){
+        anim = null; root.style.scrollBehavior = '';
+        setTimeout(function(){ verrou = null; reperer(); }, 60);
+        cible.setAttribute('tabindex', '-1'); cible.focus({ preventScroll: true });
+        cible.classList.remove('sn-arrive'); void cible.offsetWidth; cible.classList.add('sn-arrive');
+      }
+    });
+  });
+  reperer();
+})();
