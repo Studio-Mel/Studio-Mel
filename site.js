@@ -107,6 +107,12 @@
 
 
   // ---------- ambiance colorée : la couleur du fond suit la section à l'écran ----------
+  // pages sans teintes prévues : on les répartit automatiquement, mêmes couleurs que l'accueil
+  if (!document.querySelector('[data-ta]')) {
+    var PAL = [['rgba(47,91,255,.55)','rgba(124,92,255,.28)'],['rgba(20,170,200,.45)','rgba(47,91,255,.26)'],['rgba(124,92,255,.55)','rgba(214,92,255,.24)'],['rgba(28,160,140,.42)','rgba(47,91,255,.28)']];
+    var zones = [].concat([].slice.call(document.querySelectorAll('.page-head')), [].slice.call(document.querySelectorAll('.page-body > .wrap > *, .ja > *')));
+    zones.forEach(function(z, i){ var c = PAL[i % PAL.length]; z.setAttribute('data-ta', c[0]); z.setAttribute('data-tb', c[1]); });
+  }
   var teintes = document.querySelectorAll('[data-ta]');
   if (teintes.length) {
     var amb = document.createElement('div'); amb.className = 'ambiance'; amb.setAttribute('aria-hidden', 'true');

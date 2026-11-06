@@ -860,3 +860,7 @@ body.amb{background:transparent}
 @media (max-width:560px){.sks{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){.mq-track,.ambiance::after,.ap-id .avatar{animation:none}.ambiance{transition:none}}
 .case-gal{align-items:start}
+
+/* v2.12 · teintes plus franches */
+.ambiance{background:radial-gradient(85% 70% at 10% 15%,var(--ta),transparent 72%),radial-gradient(80% 70% at 92% 88%,var(--tb),transparent 72%)}
+.ambiance::after{opacity:.5}
