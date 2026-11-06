@@ -1,0 +1,65 @@
+// ============================================================
+// Studio Mel · règles Firestore de référence
+// Fichier d'exemple : à adapter puis à coller dans
+// Firebase Console > Firestore Database > Règles.
+// Ne jamais déployer ce fichier tel quel sans l'avoir testé.
+//
+// Ce que fait le site (vérifié dans le code) :
+//   - contact.js écrit dans « creneaux » : { statut: "attente" }
+//     (identifiant du document = date + heure, ex. 2026-11-12_09h30)
+//   - firebase.js lit toute la collection « creneaux » pour
+//     griser les créneaux déjà pris  → lecture publique nécessaire
+//   - firebase.js écrit les demandes dans « devis »
+//     → lecture interdite aux visiteurs, écriture autorisée
+//   - admin/app.js (utilisateur connecté) passe un créneau à
+//     { statut: "pris" } ou le supprime
+//
+// Règle d'or : AUCUNE donnée personnelle dans « creneaux ».
+// Firestore ne sait pas masquer un champ à la lecture : tout
+// document lisible par tous est lisible en entier, champ par champ.
+// ============================================================
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- Créneaux de rendez-vous : lisibles par tous, jamais de données perso ---
+    match /creneaux/{creneau} {
+      allow read: if true;
+
+      // Un visiteur ne peut créer que la réservation d'un créneau libre,
+      // avec le seul champ « statut », sans écraser une réservation existante.
+      allow create: if request.resource.data.keys().hasOnly(['statut'])
+                    && request.resource.data.statut == 'attente';
+
+      // Seul le studio connecté peut confirmer un créneau.
+      allow update, delete: if request.auth != null;
+    }
+
+    // --- Demandes de devis et de rendez-vous : jamais lisibles publiquement ---
+    match /devis/{demande} {
+      allow read: if request.auth != null;
+
+      // Formulaire public : création autorisée, avec des champs bornés.
+      allow create: if request.resource.data.keys().hasOnly([
+                      'nom', 'entreprise', 'email', 'tel', 'message', 'formule',
+                      'prix', 'date', 'type', 'rdvJour', 'rdvHeure', 'mode',
+                      'creneau', 'statut', 'createdAt'
+                    ])
+                    && request.resource.data.nom is string
+                    && request.resource.data.nom.size() <= 200
+                    && request.resource.data.message is string
+                    && request.resource.data.message.size() <= 2000
+                    && request.resource.data.statut == 'nouveau';
+
+      // Modification et suppression réservées au studio connecté.
+      allow update, delete: if request.auth != null;
+    }
+
+    // --- Tout le reste est fermé par défaut ---
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
