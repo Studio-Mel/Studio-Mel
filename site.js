@@ -295,25 +295,17 @@
   var fin = window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches;
   if (fin && !calm) {
     var cur = document.createElement('div'); cur.className = 'cur'; cur.setAttribute('aria-hidden', 'true');
-    cur.innerHTML = '<i class="cur-c"></i><span class="cur-b"><svg class="cur-t" viewBox="0 0 100 100"><defs><path id="cur-rond" d="M50 50m-37 0a37 37 0 1 1 74 0a37 37 0 1 1-74 0"/></defs>' +
-      '<text><textPath href="#cur-rond" textLength="230">VOIR LE PROJET · VOIR LE PROJET · </textPath></text></svg>' +
-      '<svg class="cur-m" viewBox="0 0 64 64"><path d="M17 45V21.5L32 36l15-14.5V38" fill="none" stroke="#fff" stroke-width="5.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="47" cy="46" r="3.6" fill="#B4C6FF"/></svg></span>';
+    cur.innerHTML = '<i class="cur-c"></i>';
     document.body.appendChild(cur);
-    var tp = cur.querySelector('textPath'), mot = '';
     var VOIR = '.pcard, .case-v .shot, .pj-shot, [data-galerie] img, .mt-ex-v, .jc, .story-visual, .pj-next';
     var LIEN = 'a, button, summary, label, select, [role="tab"], input[type="range"], .tool';
     var TEXTE = 'input:not([type="range"]):not([type="checkbox"]):not([type="radio"]), textarea, [contenteditable]';
-    function texte(t){
-      var m = t.closest('[data-galerie]') ? 'AGRANDIR' : t.closest('.jc') ? 'LIRE L’ARTICLE' : t.closest('.pj-next') ? 'PROJET SUIVANT' : 'VOIR LE PROJET';
-      if (m !== mot) { mot = m; tp.textContent = m + ' · ' + m + ' · '; }
-    }
     addEventListener('pointermove', function(e){
       if (e.pointerType !== 'mouse') return;
       // le rond et le point sont un seul élément : aucun retard
       cur.style.transform = 'translate3d(' + e.clientX + 'px,' + e.clientY + 'px,0)';
       root.classList.add('cur-on');
       var t = e.target, v = t.closest && t.closest(VOIR), l = t.closest && t.closest(LIEN), tx = t.closest && t.closest(TEXTE);
-      if (v && !tx) texte(t);
       root.classList.toggle('cur-voir', !!v && !tx);
       root.classList.toggle('cur-lien', !v && !!l && !tx);
       root.classList.toggle('cur-texte', !!tx);

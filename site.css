@@ -19,8 +19,8 @@
   --surface:#0D1220;
   --surface-2:#131A2B;
   --ink:#F3F4F8;
-  --soft:#D7DAE3;
-  --muted:#9BA1AF;
+  --soft:#E4E7F0;
+  --muted:#B9BFCE;
   --line:rgba(180,198,255,.10);
   --line-2:rgba(180,198,255,.18);
   --blue:#2F5BFF;
@@ -398,7 +398,7 @@ html:not(.js) .track li::before{border-color:var(--blue-hi);background:var(--blu
 .foot ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
 .foot a{color:var(--soft);text-decoration:none}
 .foot a:hover{color:#fff;text-decoration:underline;text-underline-offset:4px}
-.foot-legal{margin-top:clamp(40px,5vw,64px);padding-top:22px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;color:#727887;font-size:13.5px}
+.foot-legal{margin-top:clamp(40px,5vw,64px);padding-top:22px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;color:#A3A9BA;font-size:13.5px}
 @media (max-width:900px){.foot-grid{grid-template-columns:1fr 1fr}.foot-about{grid-column:1/-1}}
 @media (max-width:480px){.foot-grid{grid-template-columns:1fr}}
 
@@ -1024,3 +1024,9 @@ html.fondu-in main{animation:fondIn .45s cubic-bezier(.16,1,.3,1) both}
 .ja-img .cov{animation:covIn 1.4s var(--e-reveal) both}
 @keyframes covIn{from{transform:scale(1.12);filter:blur(6px)}}
 @media (max-width:640px){.ja-img{height:220px}}
+
+/* v2.18 · curseur de base, textes plus lisibles, un seul bouton flottant sur téléphone */
+.cur-b{display:none}
+html.cur-voir .cur-c{opacity:1;transform:none;width:48px;height:48px;margin:-24px 0 0 -24px;border-color:#fff;background:rgba(47,91,255,.22)}
+html.cur-voir .cur-c::after{transform:scale(1.5)}
+@media (max-width:900px){.as-fab,.as-box{display:none!important}}
