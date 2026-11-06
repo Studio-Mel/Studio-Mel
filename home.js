@@ -81,31 +81,6 @@
     }
   }
 
-  // ---------- accompagnement : la ligne avance avec le défilement ----------
-  var track = document.getElementById('track');
-  if (track) {
-    var line = track.querySelector('.track-line i'), steps = track.querySelectorAll('li'), vert = false, raf = 0, actif = false;
-    function maj(){
-      raf = 0;
-      var r = track.getBoundingClientRect(), vh = innerHeight;
-      vert = innerWidth <= 900;
-      // progression de 0 (bas de l'écran) à 1 (le bloc a atteint le premier tiers)
-      var p = calm ? 1 : Math.max(0, Math.min(1, (vh * .92 - r.top) / (r.height + vh * .45)));
-      line.style.setProperty('--p', p.toFixed(3));
-      var n = steps.length;
-      steps.forEach(function(li, i){ li.classList.toggle('on', p >= (i + .35) / (n + .4)); });
-    }
-    function demander(){ if (!raf) raf = requestAnimationFrame(maj); }
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function(e){
-        actif = e[0].isIntersecting;
-        if (actif) { addEventListener('scroll', demander, { passive: true }); demander(); }
-        else removeEventListener('scroll', demander);
-      }).observe(track);
-    } else { line.style.setProperty('--p', 1); steps.forEach(function(li){ li.classList.add('on'); }); }
-    addEventListener('resize', demander);
-  }
-
   // ---------- contact final : le bouton s'illumine une fois ----------
   var fin = document.getElementById('final-btn');
   if (fin && !calm) fin.closest('[data-reveal]').addEventListener('revealed', function(){ fin.classList.add('glow'); });

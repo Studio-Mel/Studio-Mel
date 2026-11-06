@@ -47,7 +47,7 @@
     });
   });
   // 3. aperçus des fiches projet : même dévoilement que sur l'accueil
-  document.querySelectorAll('.case > .shot').forEach(function(s){ s.setAttribute('data-reveal', 'clip'); });
+  document.querySelectorAll('.case-v > .shot, .pcard-v > .shot').forEach(function(s){ s.setAttribute('data-reveal', 'clip'); });
 
   // ---------- apparitions au défilement ----------
   // [data-reveal] reçoit .in quand il entre à l'écran ; --d règle un léger décalage.
@@ -79,6 +79,59 @@
     addEventListener('load', demande);
   }
 
+  // ---------- accompagnement : la ligne avance avec le défilement ----------
+  document.querySelectorAll('.track').forEach(function(track){
+  if (track.querySelector('.track-line i')) {
+    var line = track.querySelector('.track-line i'), steps = track.querySelectorAll('li'), vert = false, raf = 0, actif = false;
+    function maj(){
+      raf = 0;
+      var r = track.getBoundingClientRect(), vh = innerHeight;
+      vert = innerWidth <= 900;
+      // progression de 0 (bas de l'écran) à 1 (le bloc a atteint le premier tiers)
+      var p = calm ? 1 : Math.max(0, Math.min(1, (vh * .92 - r.top) / (r.height + vh * .45)));
+      line.style.setProperty('--p', p.toFixed(3));
+      var n = steps.length;
+      steps.forEach(function(li, i){ li.classList.toggle('on', p >= (i + .35) / (n + .4)); });
+    }
+    function demander(){ if (!raf) raf = requestAnimationFrame(maj); }
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function(e){
+        actif = e[0].isIntersecting;
+        if (actif) { addEventListener('scroll', demander, { passive: true }); demander(); }
+        else removeEventListener('scroll', demander);
+      }).observe(track);
+    } else { line.style.setProperty('--p', 1); steps.forEach(function(li){ li.classList.add('on'); }); }
+    addEventListener('resize', demander);
+  }
+  });
+
+
+  // ---------- ambiance colorée : la couleur du fond suit la section à l'écran ----------
+  var teintes = document.querySelectorAll('[data-ta]');
+  if (teintes.length) {
+    var amb = document.createElement('div'); amb.className = 'ambiance'; amb.setAttribute('aria-hidden', 'true');
+    document.body.insertBefore(amb, document.body.firstChild); document.body.classList.add('amb');
+    var teinter = function(el){ amb.style.setProperty('--ta', el.dataset.ta); amb.style.setProperty('--tb', el.dataset.tb || el.dataset.ta); };
+    teinter(teintes[0]);
+    if ('IntersectionObserver' in window) {
+      var tio = new IntersectionObserver(function(en){ en.forEach(function(e){ if (e.isIntersecting) teinter(e.target); }); }, { rootMargin: '-45% 0px -45% 0px' });
+      teintes.forEach(function(el){ tio.observe(el); });
+    }
+  }
+
+  // ---------- chiffres clés qui comptent (À propos) ----------
+  document.querySelectorAll('[data-compte]').forEach(function(el){
+    var cible = +el.dataset.compte, suite = el.textContent.replace(/^\d+/, '');
+    if (calm || !cible || !('IntersectionObserver' in window)) return;
+    el.textContent = '0' + suite;
+    var o = new IntersectionObserver(function(en){
+      if (!en[0].isIntersecting) return; o.disconnect();
+      var t0 = performance.now(), dur = 1400;
+      (function pas(t){ var q = Math.min(1, (t - t0) / dur), v = Math.round(cible * (1 - Math.pow(1 - q, 3))); el.textContent = v + suite; if (q < 1) requestAnimationFrame(pas); })(t0);
+    }, { threshold: .6 });
+    o.observe(el);
+  });
+
   // ---------- barre de progression de lecture ----------
   var bar = document.createElement('div'); bar.className = 'progress'; bar.setAttribute('aria-hidden', 'true');
   document.body.appendChild(bar);
@@ -93,7 +146,7 @@
   var souris = window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches;
   if (souris && !calm) {
     // inclinaison légère des aperçus et des cartes
-    document.querySelectorAll('.story-visual, .case > .shot, .jc, .fcard, .tool').forEach(function(el){
+    document.querySelectorAll('.story-visual, .case-v > .shot, .pcard, .jc, .fcard, .tool, .sk').forEach(function(el){
       el.classList.add('tilt');
       el.addEventListener('pointermove', function(e){
         var r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
