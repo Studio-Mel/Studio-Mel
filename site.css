@@ -881,20 +881,20 @@ html.rideau-in::after{animation:rideauIn .43s cubic-bezier(.76,0,.24,1) forwards
 .cur{position:fixed;left:0;top:0;z-index:9998;pointer-events:none;opacity:0;transition:opacity .3s ease}
 html.cur-on .cur{opacity:1}
 html.cur-out .cur,html.cur-texte .cur{opacity:0}
-.cur-c{position:absolute;left:0;top:0;width:32px;height:32px;margin:-16px 0 0 -16px;border-radius:50%;border:1.5px solid rgba(180,198,255,.75);box-shadow:0 0 18px -4px rgba(47,91,255,.6);transition:width .4s var(--e-reveal),height .4s var(--e-reveal),margin .4s var(--e-reveal),background .3s ease,border-color .3s ease,opacity .25s ease,transform .25s var(--e-reveal)}
-.cur-c::after{content:"";position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:#fff;box-shadow:0 0 10px rgba(180,198,255,.9);transition:transform .3s var(--e-reveal)}
-html.cur-lien .cur-c{width:58px;height:58px;margin:-29px 0 0 -29px;border-color:var(--blue-hi);background:radial-gradient(circle,rgba(47,91,255,.32),rgba(47,91,255,.08) 70%)}
+.cur-c{position:absolute;left:0;top:0;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;border:1.5px solid rgba(180,198,255,.75);box-shadow:0 0 18px -4px rgba(47,91,255,.6);transition:width .4s var(--e-reveal),height .4s var(--e-reveal),margin .4s var(--e-reveal),background .3s ease,border-color .3s ease,opacity .25s ease,transform .25s var(--e-reveal)}
+.cur-c::after{content:"";position:absolute;left:50%;top:50%;width:4px;height:4px;margin:-2px 0 0 -2px;border-radius:50%;background:#fff;box-shadow:0 0 10px rgba(180,198,255,.9);transition:transform .3s var(--e-reveal)}
+html.cur-lien .cur-c{width:40px;height:40px;margin:-20px 0 0 -20px;border-color:var(--blue-hi);background:radial-gradient(circle,rgba(47,91,255,.32),rgba(47,91,255,.08) 70%)}
 html.cur-lien .cur-c::after{transform:scale(1.4)}
 html.cur-clic .cur-c{transform:scale(.8)}
-.cur-b{position:absolute;left:0;top:0;width:118px;height:118px;margin:-59px 0 0 -59px;border-radius:50%;display:grid;place-items:center;
+.cur-b{position:absolute;left:0;top:0;width:86px;height:86px;margin:-43px 0 0 -43px;border-radius:50%;display:grid;place-items:center;
   background:radial-gradient(circle at 32% 28%,#6E8BFF,#2F5BFF 52%,#1B2FA8);box-shadow:0 18px 50px -12px rgba(47,91,255,.9),inset 0 1px 0 rgba(255,255,255,.35),inset 0 0 0 1px rgba(255,255,255,.12);
   transform:scale(0) rotate(-40deg);opacity:0;transition:transform .55s cubic-bezier(.34,1.56,.64,1),opacity .25s ease}
 html.cur-voir .cur-b{transform:scale(1);opacity:1}
 html.cur-voir .cur-c{opacity:0;transform:scale(.4)}
 html.cur-voir.cur-clic .cur-b{transform:scale(.9)}
 .cur-t{position:absolute;inset:0;width:100%;height:100%;animation:curTourne 9s linear infinite}
-.cur-t text{fill:rgba(255,255,255,.92);font:700 9.4px/1 var(--f-body);letter-spacing:.12em}
-.cur-m{width:34px;height:34px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.25))}
+.cur-t text{fill:rgba(255,255,255,.92);font:700 10px/1 var(--f-body);letter-spacing:.1em}
+.cur-m{width:24px;height:24px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.25))}
 html.cur-voir .cur-m{animation:curM .6s cubic-bezier(.34,1.56,.64,1) both}
 @keyframes curTourne{to{transform:rotate(360deg)}}
 @keyframes curM{from{transform:scale(.3) rotate(-20deg)}}
