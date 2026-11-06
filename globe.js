@@ -133,12 +133,29 @@ function initGlobe(){
     new THREE.LineBasicMaterial({ color: COL.line, transparent: true, opacity: .1, depthWrite: false }));
   world.add(lattice);
 
-  // arcs lumineux entre villes
+  // Lyon : la planète tourne puis s’arrête sur la région lyonnaise, avec un point qui pulse
+  var LYON = [4.84, 45.76], PL = vec(LYON[0], LYON[1], 1);
+  var CIBLE = Math.atan2(-PL.x, PL.z);
+  globe.rotation.y = CIBLE + 2.2;
+  var pin = new THREE.Group(); pin.position.copy(vec(LYON[0], LYON[1], 1.012)); globe.add(pin);
+  var pinDot = new THREE.Sprite(new THREE.SpriteMaterial({ map: DOT, color: 0xffffff, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+  pinDot.scale.set(.07, .07, 1); pin.add(pinDot);
+  var pinGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: DOT, color: COL.hi, transparent: true, opacity: .9, depthWrite: false, blending: THREE.AdditiveBlending }));
+  pinGlow.scale.set(.16, .16, 1); pin.add(pinGlow);
+  var rings = [];
+  for (var rr = 0; rr < 2; rr++){
+    var rp = []; for (var s2 = 0; s2 <= 64; s2++){ var a2 = s2 / 64 * Math.PI * 2; rp.push(new THREE.Vector3(Math.cos(a2), Math.sin(a2), 0)); }
+    var ring = new THREE.Line(new THREE.BufferGeometry().setFromPoints(rp), new THREE.LineBasicMaterial({ color: COL.hi, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }));
+    ring.lookAt(pin.position.clone().multiplyScalar(2)); pin.add(ring); rings.push(ring);
+  }
+
+  // arcs lumineux depuis et vers Lyon
   var CITIES = [[2.35,48.85],[-74,40.7],[139.7,35.7],[-0.1,51.5],[55.3,25.2],[103.8,1.35],[-46.6,-23.5],[151.2,-33.9],[-118.2,34],[77.2,28.6],[4.8,45.76],[-99.1,19.4],[18.4,-33.9],[37.6,55.75]];
   var arcs = [], SEG = 60;
   function makeArc(){
-    var a = CITIES[Math.floor(Math.random() * CITIES.length)], b;
-    do { b = CITIES[Math.floor(Math.random() * CITIES.length)]; } while (b === a);
+    var a = LYON, b;
+    do { b = CITIES[Math.floor(Math.random() * CITIES.length)]; } while (b[0] === a[0]);
+    if (Math.random() < .5) { var tmpc = a; a = b; b = tmpc; }
     var A = vec(a[0], a[1], 1.005), B = vec(b[0], b[1], 1.005);
     var mid = A.clone().add(B).multiplyScalar(.5), h = 1 + A.distanceTo(B) * .35;
     mid.normalize().multiplyScalar(h);
@@ -161,7 +178,7 @@ function initGlobe(){
   var ringPts = []; for (var s = 0; s <= 128; s++){ var an = s / 128 * Math.PI * 2; ringPts.push(new THREE.Vector3(Math.cos(an) * 1.32, 0, Math.sin(an) * 1.32)); }
   orbit.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ringPts), new THREE.LineBasicMaterial({ color: COL.line, transparent: true, opacity: .25, depthWrite: false })));
 
-  var HOME = { s: 1, x: 0, y: -.6 }, PAGE = { s: 1, x: 0, y: 0 }, cur = null;
+  var DECAL = 0, PENTE = .25, HOME = { s: 1, x: 0, y: -.6 }, PAGE = { s: 1, x: 0, y: 0 }, cur = null;
   function size(){
     // taille réelle du canvas affiché (corrige le globe ovale sur iPhone)
     var w = c.clientWidth || innerWidth, h = c.clientHeight || innerHeight, a = w / h, d, hH, hW;
@@ -173,14 +190,14 @@ function initGlobe(){
       var T = Math.min(hW * .9, hH * 1.75), R = T / Math.sqrt(1 + (T / d) * (T / d));
       HOME = { s: R, x: 0, y: -hH - R * .08 };
       PAGE = { s: hH * .62, x: hW * .64, y: -hH * .12 };
-      landMat.size = .05; sat.scale.setScalar(.45);
+      landMat.size = .05; sat.scale.setScalar(.45); DECAL = .9; PENTE = .62;
     } else {
       // téléphone / tablette : globe entier
       cam.fov = 35; d = a < 1 ? 4.6 / Math.max(a, .72) : 4.6;
       hH = d * Math.tan(17.5 * Math.PI / 180); hW = hH * a;
       HOME = { s: 1, x: 0, y: a < 1 ? -0.95 : -0.6 };
       PAGE = { s: hW * .55, x: hW * .62, y: hH * .64 };
-      landMat.size = mobile ? .03 : .026; sat.scale.setScalar(.8);
+      landMat.size = mobile ? .03 : .026; sat.scale.setScalar(.8); DECAL = .55; PENTE = 1.3;
     }
     cam.position.set(0, 0, d);
     cam.updateProjectionMatrix();
@@ -200,7 +217,12 @@ function initGlobe(){
   function frame(now){
     var dt = Math.min((now - last) / 1000, .05) || 0; last = now;
     var t = now / 1000;
-    globe.rotation.y -= dt * .09;
+    var vise = CIBLE + DECAL + Math.sin(t * .22) * .05, ecart = vise - globe.rotation.y;
+    ecart = Math.atan2(Math.sin(ecart), Math.cos(ecart));
+    globe.rotation.y += ecart * (1 - Math.exp(-dt * .9));
+    var pu = (t * .7) % 1;
+    for (var ri = 0; ri < rings.length; ri++){ var ph = (pu + ri * .5) % 1; rings[ri].scale.setScalar(.03 + ph * .14); rings[ri].material.opacity = .85 * (1 - ph); }
+    pinGlow.material.opacity = .6 + Math.sin(t * 2.4) * .3;
     lattice.rotation.y -= dt * .05;
     stars.rotation.y -= dt * .004;
     var ang = t * .45; sat.position.set(Math.cos(ang) * 1.32, 0, Math.sin(ang) * 1.32); sat.rotation.y = -ang;
@@ -208,7 +230,7 @@ function initGlobe(){
     var T = target(), k = reduce ? 1 : 1 - Math.exp(-dt * 2.4);
     cur.s += (T.s - cur.s) * k; cur.x += (T.x - cur.x) * k; cur.y += (T.y - cur.y) * k; place();
     var km = 1 - Math.exp(-dt * 3); mx += (tx - mx) * km; my += (ty - my) * km;
-    world.rotation.y = mx * .28; world.rotation.x = .25 + my * .1;
+    world.rotation.y = mx * .28; world.rotation.x = PENTE + my * .1; pin.scale.setScalar(Math.min(1, 1.3 / cur.s));
     for (var i = 0; i < arcs.length; i++){
       var a = arcs[i]; a.t += dt * .55;
       if (a.t < 0) { a.g.setDrawRange(0, 0); continue; }
@@ -218,7 +240,7 @@ function initGlobe(){
     }
     r.render(scene, cam);
   }
-  if (reduce) { frame(0); c.classList.add('on'); var rf = function(){ frame(0); }; addEventListener('resize', rf); new MutationObserver(rf).observe(document.body, { attributes: true, attributeFilter: ['class'] }); return; }
+  if (reduce) { globe.rotation.y = CIBLE + DECAL; frame(0); c.classList.add('on'); var rf = function(){ frame(0); }; addEventListener('resize', rf); new MutationObserver(rf).observe(document.body, { attributes: true, attributeFilter: ['class'] }); return; }
   // le globe ne tourne que lorsqu'il est visible (onglet actif et accueil à l'écran)
   var docOn = !document.hidden, inView = true, running = false;
   function wake(){ if (!running && docOn && inView) { running = true; last = performance.now(); requestAnimationFrame(loop); } }
