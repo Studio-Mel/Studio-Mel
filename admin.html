@@ -11,6 +11,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="admin/erp.css">
+<!-- rideau d'entrée quand on arrive depuis le cadenas du site -->
+<style>html.rideau-on::after{content:"";position:fixed;inset:0;z-index:10000;pointer-events:none;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cpath%20d%3D%22M17%2045V21.5L32%2036l15-14.5V38%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%225.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3Ccircle%20cx%3D%2247%22%20cy%3D%2246%22%20r%3D%223.6%22%20fill%3D%22%23B4C6FF%22/%3E%3C/svg%3E") center/76px no-repeat,linear-gradient(160deg,#2F5BFF,#1B2FA8 60%,#121a5c);animation:rideauOut .7s cubic-bezier(.76,0,.24,1) .15s forwards}@keyframes rideauOut{to{transform:translateY(-101%)}}</style>
+<script>try{if(sessionStorage.getItem('sm-rideau')){sessionStorage.removeItem('sm-rideau');document.documentElement.classList.add('rideau-on');setTimeout(function(){document.documentElement.classList.remove('rideau-on')},1200)}}catch(e){}</script>
 </head>
 <body>
 

@@ -272,39 +272,48 @@
   var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var root = document.documentElement;
 
-  // ---------- rideau entre les pages ----------
-  if (root.classList.contains('rideau-on')) setTimeout(function(){ root.classList.remove('rideau-on'); }, 1100);
-  addEventListener('pageshow', function(e){ if (e.persisted) root.classList.remove('rideau-in', 'rideau-on'); });
+  // ---------- transitions : fondu entre les pages, rideau vers l'admin ----------
+  if (root.classList.contains('fondu-in')) setTimeout(function(){ root.classList.remove('fondu-in'); }, 700);
+  addEventListener('pageshow', function(e){ if (e.persisted) root.classList.remove('rideau-in', 'fondu-out', 'fondu-in'); });
   if (!calm) document.addEventListener('click', function(e){
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     var a = e.target.closest && e.target.closest('a[href]'); if (!a) return;
     if (a.target && a.target !== '_self' || a.hasAttribute('download') || a.dataset.noRideau !== undefined) return;
     var u; try { u = new URL(a.href, location.href); } catch (x) { return; }
     if (u.origin !== location.origin || /^(mailto|tel):/.test(a.getAttribute('href'))) return;
-    if (/admin/.test(u.pathname) || /\.(pdf|zip|jpg|png|webp)$/i.test(u.pathname)) return;
+    if (/\.(pdf|zip|jpg|png|webp)$/i.test(u.pathname)) return;
+    var admin = /\/admin/.test(u.pathname);
     if (u.pathname.replace(/\/$/, '') === location.pathname.replace(/\/$/, '') && u.search === location.search) return; // simple ancre sur la même page
     e.preventDefault();
-    try { sessionStorage.setItem('sm-rideau', '1'); } catch (x) {}
-    root.classList.add('rideau-in');
-    setTimeout(function(){ location.href = u.href; }, 430);
+    // cadenas / espace admin : le rideau bleu ; partout ailleurs : un fondu doux
+    try { sessionStorage.setItem(admin ? 'sm-rideau' : 'sm-fondu', '1'); } catch (x) {}
+    root.classList.add(admin ? 'rideau-in' : 'fondu-out');
+    setTimeout(function(){ location.href = u.href; }, admin ? 430 : 200);
   });
 
   // ---------- curseur personnalisé (ordinateur) ----------
   var fin = window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches;
   if (fin && !calm) {
-    var dot = document.createElement('div'), ring = document.createElement('div');
-    dot.className = 'cur-dot'; ring.className = 'cur-ring'; ring.innerHTML = '<span>Voir</span>';
-    dot.setAttribute('aria-hidden', 'true'); ring.setAttribute('aria-hidden', 'true');
-    document.body.appendChild(ring); document.body.appendChild(dot);
-    var x = innerWidth / 2, y = innerHeight / 2, rx = x, ry = y, vu = false;
-    var VOIR = '.pcard, .case-v .shot, .pj-shot, [data-galerie] img, .mt-ex-v, .jc, .story-visual';
+    var cur = document.createElement('div'); cur.className = 'cur'; cur.setAttribute('aria-hidden', 'true');
+    cur.innerHTML = '<i class="cur-c"></i><span class="cur-b"><svg class="cur-t" viewBox="0 0 100 100"><defs><path id="cur-rond" d="M50 50m-37 0a37 37 0 1 1 74 0a37 37 0 1 1-74 0"/></defs>' +
+      '<text><textPath href="#cur-rond" textLength="230">VOIR LE PROJET · VOIR LE PROJET · </textPath></text></svg>' +
+      '<svg class="cur-m" viewBox="0 0 64 64"><path d="M17 45V21.5L32 36l15-14.5V38" fill="none" stroke="#fff" stroke-width="5.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="47" cy="46" r="3.6" fill="#B4C6FF"/></svg></span>';
+    document.body.appendChild(cur);
+    var tp = cur.querySelector('textPath'), mot = '';
+    var VOIR = '.pcard, .case-v .shot, .pj-shot, [data-galerie] img, .mt-ex-v, .jc, .story-visual, .pj-next';
     var LIEN = 'a, button, summary, label, select, [role="tab"], input[type="range"], .tool';
     var TEXTE = 'input:not([type="range"]):not([type="checkbox"]):not([type="radio"]), textarea, [contenteditable]';
+    function texte(t){
+      var m = t.closest('[data-galerie]') ? 'AGRANDIR' : t.closest('.jc') ? 'LIRE L’ARTICLE' : t.closest('.pj-next') ? 'PROJET SUIVANT' : 'VOIR LE PROJET';
+      if (m !== mot) { mot = m; tp.textContent = m + ' · ' + m + ' · '; }
+    }
     addEventListener('pointermove', function(e){
       if (e.pointerType !== 'mouse') return;
-      x = e.clientX; y = e.clientY;
-      if (!vu) { vu = true; rx = x; ry = y; root.classList.add('cur-on'); }
+      // le rond et le point sont un seul élément : aucun retard
+      cur.style.transform = 'translate3d(' + e.clientX + 'px,' + e.clientY + 'px,0)';
+      root.classList.add('cur-on');
       var t = e.target, v = t.closest && t.closest(VOIR), l = t.closest && t.closest(LIEN), tx = t.closest && t.closest(TEXTE);
+      if (v && !tx) texte(t);
       root.classList.toggle('cur-voir', !!v && !tx);
       root.classList.toggle('cur-lien', !v && !!l && !tx);
       root.classList.toggle('cur-texte', !!tx);
@@ -313,12 +322,6 @@
     document.addEventListener('pointerenter', function(){ root.classList.remove('cur-out'); });
     addEventListener('pointerdown', function(){ root.classList.add('cur-clic'); });
     addEventListener('pointerup', function(){ root.classList.remove('cur-clic'); });
-    (function suivre(){
-      rx += (x - rx) * .2; ry += (y - ry) * .2;
-      dot.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
-      ring.style.transform = 'translate3d(' + rx.toFixed(1) + 'px,' + ry.toFixed(1) + 'px,0)';
-      requestAnimationFrame(suivre);
-    })();
   }
 
   // ---------- galerie plein écran ----------
