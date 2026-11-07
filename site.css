@@ -1090,3 +1090,78 @@ html:has(.sn){scroll-padding-top:calc(var(--nav-h) + 80px)}
 .menu .m-grp ul a:hover{color:#fff}
 .m-grp[open] ul li{animation:ddLi .35s var(--e-reveal) both}
 @media (prefers-reduced-motion:reduce){.dd-panel,.dd-col li,.m-grp ul li{transition:none;animation:none}}
+
+/* ==========================================================================
+   v2.22 · MODE CLAIR automatique (si l'appareil ou le navigateur est en clair)
+   Le haut de l'accueil (la planète) reste une « île » sombre qui se fond dans la page claire.
+   ========================================================================== */
+@media (prefers-color-scheme: light){
+  :root{
+    --bg:#F4F6FB;--surface:#FFFFFF;--surface-2:#EDF0F7;--ink:#0A0F1E;--soft:#273047;--muted:#556078;
+    --line:rgba(16,28,64,.10);--line-2:rgba(16,28,64,.17);--blue-hi:#2F5BFF;--glass:rgba(255,255,255,.8);--panel:#FFFFFF;
+    --white-btn:#0A0F1E;--btn-ink:#FFFFFF;
+  }
+  html{color-scheme:light;scrollbar-color:#C3CADB var(--bg)}
+  /* îles sombres : le haut de l'accueil, et le menu tant qu'il est posé dessus */
+  .hero,html:has(.hero) .nav:not(.scrolled),.lb{
+    --bg:#060912;--surface:#0D1220;--surface-2:#131A2B;--ink:#F3F4F8;--soft:#E4E7F0;--muted:#B9BFCE;
+    --line:rgba(180,198,255,.10);--line-2:rgba(180,198,255,.18);--blue-hi:#B4C6FF;--glass:rgba(13,18,32,.78);--panel:#111726;
+    --white-btn:#FDFDFD;--btn-ink:#050505;color-scheme:dark}
+  .hero{background:#060912;color:var(--ink)}
+  .hero::after{background:radial-gradient(ellipse 60% 48% at 50% 46%,rgba(6,9,18,.62),rgba(6,9,18,0) 72%),linear-gradient(180deg,rgba(6,9,18,0) 91%,#F4F6FB 100%)}
+  html:has(.hero) .nav:not(.scrolled)::before{background:linear-gradient(180deg,rgba(6,9,18,.75),rgba(6,9,18,0))}
+  .nav::before{background:linear-gradient(180deg,rgba(244,246,251,.9),rgba(244,246,251,0))}
+  .nav.scrolled{background:rgba(244,246,251,.82)}
+  .burger span,.burger span::before,.burger span::after{background:var(--ink)}
+  .burger[aria-expanded="true"] span{background:transparent}
+  .burger{background:rgba(16,28,64,.05)}
+  .menu{background:rgba(244,246,251,.97)}
+  /* textes qui étaient blancs « en dur » */
+  .nav-links a[aria-current="page"],.nav-links .nl[aria-current="page"],.nav-links .nl[data-actif],.nav-links .nl:hover,.nav-links .dd:hover>.nl,.nav-links .dd.open>.nl,.nav-links .dd:focus-within>.nl,
+  .btn-ghost:hover,.final-alt a:hover,.crumbs a:hover,.foot a:hover,.nav-admin:hover,.menu .m-grp ul a:hover,.sn a:hover:not(.on),
+  .contacts a,.contacts .inline-link,.about p strong,.compare .hl,.options b,.ja-c h2,.ja-c strong,.avi figcaption b,.launch b,.sim-out li b,.an-wait li.cur,.stp button,.q-ch button,.jr-bar input,.as-x{color:var(--ink)}
+  .nav-links a:hover,.nav-links .nl:hover,.nav-links .dd:hover>.nl,.nav-admin:hover,.sn a:hover:not(.on){background:rgba(16,28,64,.05)}
+  /* surfaces translucides blanches → cartes blanches */
+  .btn-primary:hover{background:#1F2B55;color:#fff}
+  .btn-ghost{background:rgba(255,255,255,.7)}
+  .tag.concept,.case .tag.concept{border-color:rgba(16,28,64,.22)}
+  .fcard,.compare,.options,.faq details,.skills li,.an-score,.mq-faq,.pj-pal li,.case-gal figure,.q-box,.sim-wrap{background:#FFFFFF}
+  .fcard{box-shadow:0 20px 50px -35px rgba(16,28,64,.35)}
+  .pm-sw,.seg,.days span,.slots span,.chips button,.at-pal button,.rf button,.dm-sw,.vit div,.as-ch button,.q-ch button,.stp button,.as-m.bot,.as-x{background:rgba(16,28,64,.04)}
+  .loading-bar,.q-bar,.an-cols h3 span{background:rgba(16,28,64,.07)}
+  .ring{background:conic-gradient(var(--c,#2F5BFF) calc(var(--v)*1%),rgba(16,28,64,.08) 0)}
+  .ring::before{background:var(--surface)}
+  .form input,.form select,.form textarea,.rdv input,.t-form input,.audit-box input,.an-form input,#lead-form input,#lead-form textarea,.jr-bar input{background:#FFFFFF}
+  .form select option{background:#FFFFFF;color:var(--ink)}
+  .reassure{background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0))}
+  .cta-band{background:radial-gradient(ellipse 80% 120% at 100% 0%,rgba(47,91,255,.14),rgba(47,91,255,0) 60%),#FFFFFF}
+  .mt-f{background:radial-gradient(ellipse 70% 120% at 0% 0%,rgba(47,91,255,.12),transparent 60%),#FFFFFF}
+  .foot{background:linear-gradient(180deg,var(--bg),#E8ECF5)}
+  .as-box{background:linear-gradient(170deg,#FFFFFF,#F0F3FA);border-color:var(--line-2)}
+  .dd-in{background:rgba(255,255,255,.98);box-shadow:0 30px 80px -25px rgba(16,28,64,.35),0 20px 60px -30px rgba(47,91,255,.4)}
+  .sn::before{background:rgba(244,246,251,.82)}
+  .sn-in{background:rgba(255,255,255,.8);box-shadow:0 18px 40px -26px rgba(16,28,64,.45)}
+  .chrome{background:#E6EAF2}
+  .chrome span{background:#FFFFFF;color:#4A5165}
+  .shot.live{background:#E6EAF2}
+  .pcard{background:linear-gradient(180deg,rgba(47,91,255,.04),rgba(47,91,255,0)),#FFFFFF;box-shadow:0 0 0 1px var(--line),0 24px 60px -40px rgba(16,28,64,.4)}
+  .pj-shot,.mt-ex-v{box-shadow:0 0 0 1px var(--line),0 50px 120px -50px rgba(47,91,255,.45)}
+  /* textes en dégradé ou en contour, qui étaient pensés pour le fond sombre */
+  .ap-facts b{background:linear-gradient(180deg,#0A0F1E,#2F5BFF);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .ap-big em{background:linear-gradient(90deg,#2F5BFF,#6A4CFF);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .mq-track span{-webkit-text-stroke-color:rgba(47,91,255,.45)}
+  .mq-track span:nth-child(3n+1){color:var(--ink)}
+  .vals b{color:rgba(47,91,255,.06);-webkit-text-stroke-color:rgba(47,91,255,.55)}
+  .vals li.in b{animation-name:remplirClair}
+  @keyframes remplirClair{50%{color:rgba(10,15,30,.9)}100%{color:rgba(47,91,255,.06)}}
+  .pj-obj span{-webkit-text-stroke-color:rgba(47,91,255,.55)}
+  /* lumières d'ambiance : plus douces sur fond clair */
+  .amb-orbe{opacity:.4}
+  .amb-orbe.o1{opacity:.45}
+  /* curseur visible sur fond clair */
+  .cur-c{border-color:rgba(47,91,255,.75);box-shadow:0 0 14px -4px rgba(47,91,255,.5)}
+  .cur-c::after{background:var(--blue);box-shadow:none}
+  html.cur-voir .cur-c{border-color:var(--blue);background:rgba(47,91,255,.12)}
+  /* galerie plein écran : reste sombre */
+  .lb{background:rgba(4,6,12,.92)}
+}

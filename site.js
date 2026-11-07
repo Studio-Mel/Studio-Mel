@@ -122,7 +122,8 @@
     // lumières qui flottent dans l'écran : suivent la souris, puis repartent se balader seules
     var orbes = [0, 1].map(function(i){ var o = document.createElement('i'); o.className = 'amb-orbe o' + i; amb.appendChild(o); return o; });
     if (!calm) {
-      var sourisOk = window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches;
+      // toute souris ou trackpad compte, même sur une tablette (pointerType « mouse »)
+      var sourisOk = true;
       var mx = .5, my = .5, vu = -1e9, pos = [{ x: .3, y: .3 }, { x: .7, y: .7 }], tAmb = 0, actifAmb = true;
       if (sourisOk) addEventListener('pointermove', function(e){ if (e.pointerType !== 'mouse') return; mx = e.clientX / innerWidth; my = e.clientY / innerHeight; vu = performance.now(); }, { passive: true });
       document.addEventListener('visibilitychange', function(){ actifAmb = !document.hidden; if (actifAmb) requestAnimationFrame(bouger); });
