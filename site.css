@@ -1222,3 +1222,66 @@ html:has(.sn){scroll-padding-top:calc(var(--nav-h) + 80px)}
   .hero::after{background:radial-gradient(ellipse 60% 48% at 50% 46%,rgba(240,244,255,.7),rgba(240,244,255,0) 72%),linear-gradient(180deg,rgba(244,246,251,0) 82%,#F4F6FB 100%)}
 }
 @media (prefers-color-scheme: light) and (prefers-reduced-motion: reduce){.etoiles i{animation:none}}
+
+/* v2.25 · espace client */
+.ec{display:grid;gap:16px}
+.ec-carte{position:relative;padding:clamp(20px,3vw,32px);border-radius:24px;border:1px solid var(--line-2);background:var(--glass);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);display:grid;gap:14px;align-content:start;animation:liftIn .6s var(--e-reveal) both}
+.ec-carte h2{font-size:clamp(26px,3vw,36px)}
+.ec-carte h3{font-size:20px}
+.ec-carte p{color:var(--soft);line-height:1.6}
+.ec-centre{max-width:520px;margin:0 auto;width:100%;justify-items:center;text-align:center}
+.ec-ico{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;background:linear-gradient(135deg,#5b7cff,var(--blue));box-shadow:0 18px 40px -14px rgba(47,91,255,.9)}
+.ec-ico svg{width:30px;height:30px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ec-ico.ok{background:linear-gradient(135deg,#46e09a,#1aa865)}
+.ec-form{display:grid;gap:12px;width:100%;text-align:left}
+.ec-form .btn{justify-content:center}
+.ec-aide{font-size:14.5px;color:var(--muted)!important}
+.ec-lien{border:0;background:none;padding:0;font:inherit;color:var(--blue-hi);text-decoration:underline;cursor:pointer}
+.ec-spin{width:34px;height:34px;border-radius:50%;border:3px solid var(--line-2);border-top-color:var(--blue);animation:spin .8s linear infinite}
+.ec-tete{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;padding:4px 4px 8px}
+.ec-tete h2{font-size:clamp(32px,4.6vw,56px);letter-spacing:-.035em;font-stretch:86%}
+.ec-tete h2 span{background:linear-gradient(90deg,var(--blue-hi),#8FA8FF,#C9B8FF);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ec-sous{color:var(--muted);margin-top:6px}
+.ec-ct{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.ec-badge{padding:5px 12px;border-radius:99px;font-size:13px;font-weight:600;color:#fff;background:linear-gradient(135deg,#5b7cff,var(--blue))}
+.ec-badge:empty{display:none}
+.ec-frise{position:relative;padding-top:6px}
+.ec-barre{position:absolute;left:20px;right:20px;top:25px;height:3px;border-radius:3px;background:var(--line-2)}
+.ec-barre i{position:absolute;left:0;top:0;bottom:0;width:var(--p,0%);border-radius:3px;background:linear-gradient(90deg,#3DD68C,var(--blue));box-shadow:0 0 14px rgba(47,91,255,.7);transition:width 1.4s var(--e-reveal)}
+.ec-frise ol{position:relative;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.ec-frise li{display:grid;justify-items:center;gap:8px;text-align:center;font-size:13.5px;color:var(--muted)}
+.ec-frise b{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:14px;background:var(--surface);border:2px solid var(--line-2);color:var(--muted);transition:all .4s ease}
+.ec-frise li.fait b{background:#3DD68C;border-color:#3DD68C;color:#04120B}
+.ec-frise li.cours b{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 0 0 6px rgba(47,91,255,.22),0 0 24px rgba(47,91,255,.8);animation:ecPulse 2.4s ease-in-out infinite}
+.ec-frise li.cours span{color:var(--ink);font-weight:600}
+@keyframes ecPulse{50%{box-shadow:0 0 0 11px rgba(47,91,255,.08),0 0 30px rgba(47,91,255,.9)}}
+.ec-grille{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.ec-grille .btn{justify-self:start}
+.ec-act{display:flex;flex-wrap:wrap;gap:8px}
+.ec-act[hidden],.ec-modif[hidden]{display:none}
+.ec-modif{display:grid;gap:10px}
+.ec-ok{color:#3DD68C;font-weight:600}.ec-att{color:#F5B451;font-weight:600}
+.ec-af,.ec-docs{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.ec-af label{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);cursor:pointer;transition:background .2s ease,border-color .2s ease}
+.ec-af label:hover{border-color:var(--line-2)}
+.ec-af input{width:20px;height:20px;accent-color:#3DD68C;flex:none}
+.ec-af input:checked+span{text-decoration:line-through;color:var(--muted)}
+.ec-docs a{display:flex;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);text-decoration:none;color:var(--ink);font-weight:500;transition:border-color .2s ease,transform .25s var(--e-reveal)}
+.ec-docs a:hover{border-color:var(--blue);transform:translateX(3px)}
+.ec-rien{color:var(--muted);font-size:14.5px;padding:6px 2px}
+.ec-msgs{list-style:none;margin:0;padding:4px;display:flex;flex-direction:column;gap:10px;max-height:420px;overflow-y:auto}
+.ec-msgs li{max-width:78%;display:grid;gap:4px}
+.ec-msgs li p{padding:12px 15px;border-radius:18px;line-height:1.5;color:var(--ink)}
+.ec-msgs li small{font-size:12px;color:var(--muted);padding:0 6px}
+.ec-msgs li.mel{align-self:flex-start}
+.ec-msgs li.mel p{background:var(--surface-2);border-bottom-left-radius:6px}
+.ec-msgs li.moi{align-self:flex-end;text-align:right}
+.ec-msgs li.moi p{background:var(--blue);color:#fff;border-bottom-right-radius:6px;text-align:left}
+.ec-msgs li.ec-rien{max-width:none;align-self:stretch;text-align:center}
+.ec-msg-form{display:flex;gap:10px;align-items:flex-end}
+.ec-msg-form textarea{flex:1;min-height:52px;padding:14px 16px;border-radius:16px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink);font:inherit;resize:vertical}
+.ec-msg-form textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px rgba(47,91,255,.18)}
+@media (max-width:760px){.ec-grille{grid-template-columns:1fr}.ec-frise ol{grid-template-columns:repeat(3,1fr);row-gap:18px}.ec-barre{display:none}.ec-msgs li{max-width:90%}}
+@media (prefers-color-scheme: light){.ec-ok{color:#0E7A47}.ec-att{color:#A15C00}.ec-carte{background:rgba(255,255,255,.85)}}
+.ec [hidden],.ec[hidden]{display:none!important}
+#ec-app{display:grid;gap:16px}
