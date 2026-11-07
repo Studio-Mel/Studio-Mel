@@ -21,7 +21,18 @@ $("ec-form").addEventListener("submit", async e => {
   try {
     await sendSignInLinkToEmail(auth, mail, { url: location.origin + "/espace-client", handleCodeInApp: true });
     localStorage.setItem("sm-ec-mail", mail); $("ec-mail-vu").textContent = mail; vue("ec-envoye");
-  } catch (err) { $("ec-err").textContent = "Impossible d’envoyer le lien pour le moment. Réessayez dans un instant, ou appelez-moi."; }
+  } catch (err) {
+    const c = (err && err.code) || "", M = {
+      "auth/operation-not-allowed": "La connexion par lien e-mail n’est pas encore activée sur ce site.",
+      "auth/unauthorized-continue-uri": "Ce site n’est pas encore autorisé pour la connexion.",
+      "auth/unauthorized-domain": "Ce site n’est pas encore autorisé pour la connexion.",
+      "auth/quota-exceeded": "Trop de liens envoyés aujourd’hui. Réessayez demain, ou appelez-moi.",
+      "auth/too-many-requests": "Trop de tentatives d’affilée. Patientez quelques minutes.",
+      "auth/invalid-email": "Cette adresse e-mail ne semble pas valide.",
+      "auth/network-request-failed": "Pas de connexion internet. Vérifiez votre réseau."
+    };
+    $("ec-err").textContent = (M[c] || "Impossible d’envoyer le lien pour le moment. Réessayez, ou appelez-moi.") + (c ? " (code : " + c.replace("auth/", "") + ")" : "");
+  }
   btn.classList.remove("loading");
 });
 $("ec-autre").addEventListener("click", () => vue("ec-login"));
