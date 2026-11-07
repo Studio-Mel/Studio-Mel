@@ -1205,3 +1205,20 @@ html:has(.sn){scroll-padding-top:calc(var(--nav-h) + 80px)}
   .sh-mouse::before,.sh-mouse i{background:#fff}
   .sh-chev,.sh-chev i{border-color:#fff}
 }
+
+/* v2.24 · mode clair : ciel d'aube et étoiles bleues derrière la planète */
+.etoiles{display:none}
+@media (prefers-color-scheme: light){
+  .hero{background:
+    radial-gradient(ellipse 70% 55% at 50% 92%,rgba(47,91,255,.30),rgba(47,91,255,0) 70%),
+    radial-gradient(ellipse 45% 40% at 18% 22%,rgba(124,92,255,.14),transparent 70%),
+    radial-gradient(ellipse 45% 40% at 85% 18%,rgba(32,170,204,.12),transparent 70%),
+    linear-gradient(180deg,#D7E1FF 0%,#E6ECFF 35%,#EFF2FB 70%,#F4F6FB 100%)}
+  .etoiles{display:block;position:absolute;inset:0;z-index:-3;pointer-events:none;-webkit-mask:linear-gradient(180deg,#000 55%,transparent 95%);mask:linear-gradient(180deg,#000 55%,transparent 95%)}
+  .etoiles i{position:absolute;width:var(--s);height:var(--s);border-radius:50%;background:#2F5BFF;opacity:var(--o);box-shadow:0 0 calc(var(--s) * 2.5) rgba(47,91,255,.55);will-change:opacity;animation:scintille var(--t) ease-in-out var(--d) infinite}
+  .etoiles i:nth-child(5n){background:#7C5CFF;box-shadow:0 0 8px rgba(124,92,255,.6)}
+  .etoiles i:nth-child(7n){width:calc(var(--s) + 3px);height:calc(var(--s) + 3px);background:radial-gradient(circle,#fff 0 30%,#2F5BFF 31%)}
+  @keyframes scintille{0%,100%{opacity:var(--o)}50%{opacity:calc(var(--o) * .2)}}
+  .hero::after{background:radial-gradient(ellipse 60% 48% at 50% 46%,rgba(240,244,255,.7),rgba(240,244,255,0) 72%),linear-gradient(180deg,rgba(244,246,251,0) 82%,#F4F6FB 100%)}
+}
+@media (prefers-color-scheme: light) and (prefers-reduced-motion: reduce){.etoiles i{animation:none}}
