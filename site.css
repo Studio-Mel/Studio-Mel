@@ -1292,3 +1292,38 @@ html:has(.sn){scroll-padding-top:calc(var(--nav-h) + 80px)}
 .nav-client:hover,.nav-client[aria-current="page"]{color:var(--ink);border-color:var(--blue-hi);background:rgba(47,91,255,.12)}
 @media (max-width:1280px){.nav-client{width:38px;padding:0;justify-content:center}.nav-client span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}}
 @media (max-width:1080px){.nav-client{display:none}}
+
+/* v2.27 · Engagements, Tarifs, Lexique */
+.egs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.eg{position:relative;display:grid;gap:8px;padding:clamp(22px,3vw,32px);border-radius:22px;border:1px solid var(--line-2);background:var(--glass);overflow:hidden;transition:transform .4s var(--e-reveal),border-color .3s ease}
+.eg:hover{transform:translateY(-4px);border-color:rgba(47,91,255,.55)}
+.eg::after{content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(47,91,255,.22),transparent 70%);transition:transform .6s var(--e-reveal)}
+.eg:hover::after{transform:scale(1.4)}
+.eg-n{font-family:var(--f-display);font-size:clamp(34px,4vw,48px);line-height:1;font-weight:650;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1px rgba(180,198,255,.6)}
+.eg h3{font-size:clamp(20px,2vw,24px)}
+.eg p{color:var(--soft);line-height:1.6}
+.tfs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.tf{display:grid;gap:10px;align-content:start;padding:24px;border-radius:22px;border:1px solid var(--line-2);background:var(--glass);transition:transform .4s var(--e-reveal)}
+.tf:hover{transform:translateY(-4px)}
+.tf.hl{border-color:rgba(47,91,255,.7);background:radial-gradient(ellipse 90% 70% at 50% 0%,rgba(47,91,255,.22),transparent 70%),var(--glass);box-shadow:0 30px 70px -35px rgba(47,91,255,.8)}
+.tf h3{font-size:22px}.tf p{color:var(--soft);line-height:1.55;font-size:15px}
+.tf b{font-family:var(--f-display);font-size:clamp(32px,3.4vw,42px);font-weight:650;letter-spacing:-.03em;margin-top:6px}
+.txs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tx{display:grid;grid-template-columns:1fr auto;gap:4px 20px;align-items:center;padding:20px 24px;border-radius:20px;border:1px solid var(--line);background:var(--glass)}
+.tx-m{grid-column:1/-1;font-size:12.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue-hi)}
+.tx p:not(.tx-m){color:var(--ink);font-weight:500}
+.tx small{color:var(--muted);font-size:13.5px}
+.tx b{grid-row:2/4;grid-column:2;font-family:var(--f-display);font-size:clamp(26px,2.8vw,34px);font-weight:650;letter-spacing:-.03em;white-space:nowrap}
+.tf-detail .compare,.tf-detail .options{margin-top:14px;border-radius:22px;padding:clamp(16px,2.4vw,26px)}
+.lx-nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:var(--s-head);position:sticky;top:calc(var(--nav-h) + 10px);z-index:5;padding:8px;border-radius:99px;border:1px solid var(--line-2);background:var(--glass);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);width:max-content;max-width:100%}
+.lx-nav a{width:36px;height:36px;display:grid;place-items:center;border-radius:50%;font-weight:700;color:var(--soft);text-decoration:none;transition:background .2s ease,color .2s ease}
+.lx-nav a:hover{background:var(--blue);color:#fff}
+.lxs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 28px}
+.lx-l{grid-column:1/-1;font-family:var(--f-display);font-size:clamp(40px,5vw,64px);line-height:1;font-weight:650;color:transparent;-webkit-text-stroke:1px rgba(180,198,255,.5);margin-top:18px;scroll-margin-top:calc(var(--nav-h) + 80px)}
+.lx{display:grid;gap:6px;padding:18px 0;border-top:1px solid var(--line)}
+.lx dfn{font-style:normal;font-family:var(--f-display);font-size:21px;font-weight:600;color:var(--ink)}
+.lx p{color:var(--soft);line-height:1.6}
+@media (max-width:1000px){.tfs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){.egs,.txs,.lxs{grid-template-columns:1fr}.tx b{grid-row:auto;grid-column:1/-1}}
+@media (max-width:480px){.tfs{grid-template-columns:1fr}}
+@media (prefers-color-scheme: light){.eg-n,.lx-l{-webkit-text-stroke-color:rgba(47,91,255,.55)}.eg,.tf,.tx{background:#FFFFFF}.tf.hl{background:radial-gradient(ellipse 90% 70% at 50% 0%,rgba(47,91,255,.12),transparent 70%),#FFFFFF}}

@@ -61,6 +61,11 @@
         var last = null; el.childNodes.forEach(function(c){ if (c.nodeType === 3 && c.nodeValue.trim()) last = c; });
         if (last && el.children.length) last.nodeValue = euro(n); else el.textContent = euro(n);
       });
+      // totaux des exemples (page Tarifs) : somme de plusieurs prix
+      document.querySelectorAll('[data-somme]').forEach(function(el){
+        var t = el.dataset.somme.split(',').reduce(function(s, k){ return s + (window.TARIFS[k.trim()] || 0); }, 0);
+        el.textContent = euro(t);
+      });
       document.dispatchEvent(new CustomEvent('sm-tarifs'));
     }
     // textes simples
