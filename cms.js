@@ -81,6 +81,15 @@
       ul.innerHTML = v.filter(Boolean).map(function(t, i){ return '<li style="--i:' + i + '">' + esc(t) + '</li>'; }).join('');
     });
     // questions fréquentes
+    // avis clients : section cachée tant qu'il n'y a ni avis ni lien Google
+    var avis = Array.isArray(C.avis) ? C.avis.filter(function(x){ return x && x.nom && x.texte; }) : [];
+    document.querySelectorAll('[data-cms-avis]').forEach(function(sec){
+      var liste = sec.querySelector('[data-avis-liste]'), g = sec.querySelector('[data-avis-google]'), gz = sec.querySelector('[data-avis-google-zone]');
+      if (liste) liste.innerHTML = avis.map(function(x, i){ var n = Math.max(1, Math.min(5, +x.note || 5));
+        return '<figure class="av" style="--d:' + i + '"><div class="av-et" aria-label="' + n + ' étoiles sur 5">' + '★'.repeat(n) + '<span>' + '★'.repeat(5 - n) + '</span></div><blockquote>' + esc(x.texte) + '</blockquote><figcaption><b>' + esc(x.nom) + '</b>' + (x.metier ? '<span>' + esc(x.metier) + '</span>' : '') + '</figcaption></figure>'; }).join('');
+      if (g && C.avisGoogle && /^https:\/\//.test(C.avisGoogle)) { g.href = C.avisGoogle; if (gz) gz.hidden = false; }
+      sec.hidden = !avis.length && !(C.avisGoogle && /^https:\/\//.test(C.avisGoogle));
+    });
     var faq = document.querySelector('[data-cms-faq]');
     if (faq && Array.isArray(C.faq) && C.faq.length) {
       faq.innerHTML = C.faq.filter(function(x){ return x && x.q; }).map(function(x){ return '<details><summary>' + esc(x.q) + '</summary><p>' + esc(x.r) + '</p></details>'; }).join('');

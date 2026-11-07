@@ -131,6 +131,16 @@ window.SM_DEFAUTS = {
  ],
  "articles": [
   {
+   "slug": "site-ou-facebook",
+   "titre": "Faut-il un site internet quand on a déjà une page Facebook ?",
+   "cat": "Création de site",
+   "resume": "Facebook est utile, mais ne remplace pas un site. Ce que chacun fait de mieux, et comment les utiliser ensemble.",
+   "date": "2026-11-07",
+   "lecture": 4,
+   "contenu": "Beaucoup d’artisans se disent : « J’ai déjà ma page Facebook, pourquoi payer un site ? » La question est légitime. Facebook est utile, mais il ne fait pas le même travail qu’un site.\n\n## Ce que Facebook fait bien\n\n- Montrer vos chantiers du moment, au fil de l’eau.\n- Garder le contact avec les clients qui vous suivent déjà.\n- Recevoir des recommandations de bouche-à-oreille.\n\n## Ses limites\n\n**Votre page ne vous appartient pas.** Facebook décide de qui voit vos publications, peut changer ses règles du jour au lendemain, et un compte peut être bloqué. Tout ce que vous y avez construit dépend d’eux.\n\n**Elle est peu visible sur Google.** Quand quelqu’un cherche « plâtrier Tarare » ou « paysagiste L’Arbresle », ce sont surtout les sites et les fiches Google qui ressortent.\n\n**Elle n’est pas faite pour convaincre.** Vos meilleures réalisations sont noyées dans le fil des publications, et le client doit chercher vos services, votre zone et vos coordonnées.\n\n> **Le bon réflexe :** le site est votre vitrine, qui vous appartient et que Google montre. Facebook est votre journal de chantier, qui renvoie vers le site.\n\n## Comment les faire marcher ensemble\n\n- Mettez le lien de votre site dans votre page Facebook.\n- Publiez vos chantiers sur Facebook, et gardez les plus beaux dans la galerie du site.\n- Sur le site, ajoutez un lien vers votre page pour montrer que vous êtes actif.\n- Complétez avec une fiche Google Business : c’est elle qui vous fait apparaître sur Maps.\n\nFacebook fait connaître. Le site rassure et fait appeler. Les deux ensemble, c’est ce qui marche le mieux.",
+   "statique": true
+  },
+  {
    "slug": "delai-creation-site",
    "titre": "Combien de temps faut-il pour créer un site internet ?",
    "cat": "Création de site",

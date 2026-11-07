@@ -87,6 +87,26 @@ function rendreAccueil(){
     champ("Titre, ligne 2", A.titre2, v => A.titre2 = v, { max: 30 }),
     champ("Sous-titre", A.sous_titre, v => A.sous_titre = v, { max: 70, aide: "70 caractères maximum conseillés" })));
 }
+function rendreAvis(){
+  const p = document.querySelector('[data-p="avis"]'); p.innerHTML = "";
+  p.append(el("div", { class: "card" }, el("h2", {}, "Lien « Laisser un avis Google »"),
+    el("p", { class: "help" }, "Colle ici le lien de ta fiche Google pour laisser un avis (dans ta fiche Google Business : « Demander des avis »). Un bouton apparaîtra sur le site."),
+    champ("Lien Google", C.avisGoogle, v => C.avisGoogle = v.trim())));
+  const card = el("div", { class: "card" }, el("h2", {}, "Avis clients"), el("p", { class: "help" }, "Affichés sur l’accueil et la page À propos. Tant qu’il n’y en a aucun, la section reste cachée. N’ajoute que de vrais avis, avec l’accord du client."));
+  C.avis.forEach((x, i) => {
+    const note = el("select", { onchange: e => { x.note = +e.target.value; marquer(); } }, ...[5, 4, 3, 2, 1].map(n => { const o = el("option", { value: n }, "★".repeat(n)); if ((x.note || 5) === n) o.selected = true; return o; }));
+    card.append(el("div", { class: "faq-it" },
+      champ("Nom du client", x.nom, v => x.nom = v),
+      champ("Métier et ville (ex. Plâtrier, Villechenève)", x.metier, v => x.metier = v),
+      champ("Son avis", x.texte, v => x.texte = v, { long: true }),
+      el("label", { class: "f" }, el("span", {}, "Note"), note),
+      el("div", { class: "row" },
+        el("button", { class: "btn mini", type: "button", onclick: () => { if (i > 0) { [C.avis[i - 1], C.avis[i]] = [C.avis[i], C.avis[i - 1]]; marquer(); rendreAvis(); } } }, "↑ Monter"),
+        el("button", { class: "btn mini danger", type: "button", onclick: () => { if (confirm("Supprimer cet avis ?")) { C.avis.splice(i, 1); marquer(); rendreAvis(); } } }, "Supprimer"))));
+  });
+  card.append(el("button", { class: "btn", type: "button", onclick: () => { C.avis.push({ nom: "", metier: "", texte: "", note: 5 }); marquer(); rendreAvis(); } }, "+ Ajouter un avis"));
+  p.append(card);
+}
 function rendreFaq(){
   const p = document.querySelector('[data-p="faq"]'); p.innerHTML = "";
   const card = el("div", { class: "card" }, el("h2", {}, "Questions fréquentes"), el("p", { class: "help" }, "Affichées sur la page Contact."));
@@ -190,14 +210,15 @@ async function charger(){
   // on part du contenu d'origine, puis on applique ce qui a déjà été modifié
   C = { tarifs: { ...D.tarifs, ...(enLigne.tarifs || {}) }, accueil: { ...D.accueil, ...(enLigne.accueil || {}) }, formules: clone(D.formules), faq: clone(enLigne.faq && enLigne.faq.length ? enLigne.faq : D.faq) };
   for (const k in (enLigne.formules || {})) C.formules[k] = { ...(C.formules[k] || {}), ...enLigne.formules[k] };
+  C.avis = clone(enLigne.avis || []); C.avisGoogle = enLigne.avisGoogle || "";
   await chargerArticles();
-  rendreTarifs(); rendreFormules(); rendreAccueil(); rendreFaq(); rendreArticles();
+  rendreTarifs(); rendreFormules(); rendreAccueil(); rendreFaq(); rendreArticles(); rendreAvis();
   st(enLigne.maj ? "Dernière modification : " + enLigne.maj.toDate().toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" }) : "Contenu d’origine du site");
 }
 $("save").addEventListener("click", async () => {
   $("save").disabled = true; st("Enregistrement…");
   try {
-    await setDoc(doc(db, "site", "contenu"), { tarifs: C.tarifs, accueil: C.accueil, formules: C.formules, faq: C.faq.filter(x => x.q && x.q.trim()), maj: serverTimestamp() });
+    await setDoc(doc(db, "site", "contenu"), { tarifs: C.tarifs, accueil: C.accueil, formules: C.formules, faq: C.faq.filter(x => x.q && x.q.trim()), avis: C.avis.filter(x => x.nom && x.texte).map(x => ({ nom: x.nom.trim(), metier: (x.metier || "").trim(), texte: x.texte.trim(), note: x.note || 5 })), avisGoogle: C.avisGoogle || "", maj: serverTimestamp() });
     modifie = false; st("Enregistré ✓ Le site est à jour (jusqu’à 5 minutes pour les visiteurs déjà sur le site).", "ok");
   } catch (e) { $("save").disabled = false; erreur(e); }
 });

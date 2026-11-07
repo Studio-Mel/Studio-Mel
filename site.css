@@ -1327,3 +1327,16 @@ html:has(.sn){scroll-padding-top:calc(var(--nav-h) + 80px)}
 @media (max-width:760px){.egs,.txs,.lxs{grid-template-columns:1fr}.tx b{grid-row:auto;grid-column:1/-1}}
 @media (max-width:480px){.tfs{grid-template-columns:1fr}}
 @media (prefers-color-scheme: light){.eg-n,.lx-l{-webkit-text-stroke-color:rgba(47,91,255,.55)}.eg,.tf,.tx{background:#FFFFFF}.tf.hl{background:radial-gradient(ellipse 90% 70% at 50% 0%,rgba(47,91,255,.12),transparent 70%),#FFFFFF}}
+
+/* v2.28 · avis clients */
+.avis-sec[hidden]{display:none}
+.avis-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:var(--s-head)}
+.ap .avis-grid{margin-top:0}
+.av{margin:0;display:grid;gap:14px;align-content:start;padding:clamp(22px,3vw,30px);border-radius:22px;border:1px solid var(--line-2);background:var(--glass);animation:liftIn .7s var(--e-reveal) both;animation-delay:calc(var(--d) * .08s)}
+.av-et{color:#F5B451;font-size:18px;letter-spacing:2px}.av-et span{color:var(--line-2)}
+.av blockquote{margin:0;font-size:17px;line-height:1.6;color:var(--ink)}
+.av blockquote::before{content:"“";display:block;font-family:var(--f-display);font-size:56px;line-height:.6;color:var(--blue-hi);opacity:.6;margin-bottom:6px}
+.av figcaption{display:grid;gap:2px}.av figcaption b{font-weight:700}.av figcaption span{color:var(--muted);font-size:14px}
+.avis-g{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin-top:var(--s-gap);color:var(--soft)}
+.avis-g[hidden]{display:none}
+@media (prefers-color-scheme: light){.av{background:#FFFFFF}.av-et{color:#E39A1E}}
