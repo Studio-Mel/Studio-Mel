@@ -1,10 +1,13 @@
 /* Studio Mel · globe de l'accueil (three.js r128). Repris de la V1, affiché uniquement dans l'accueil. */
 function initGlobe(){
+  if (window.matchMedia && !window.__smTheme) { window.__smTheme = 1; matchMedia('(prefers-color-scheme: light)').addEventListener('change', function(){ location.reload(); }); }
   var c = document.getElementById('globe');
   if (!c || !window.THREE) return;
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  var COL = { dot: 0x2F5BFF, hi: 0xB4C6FF, line: 0x2F5BFF, glow: '47,91,255' };
+  var clair = window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches;
+  var COL = clair ? { dot: 0xFFFFFF, hi: 0xFFFFFF, line: 0xFFFFFF, glow: '47,91,255' } : { dot: 0x2F5BFF, hi: 0xB4C6FF, line: 0x2F5BFF, glow: '47,91,255' };
+  var ADD = clair ? THREE.NormalBlending : THREE.AdditiveBlending;
 
   var LAND = [
     [[-168,66],[-162,70],[-140,70],[-120,72],[-95,72],[-80,73],[-62,60],[-55,52],[-66,45],[-70,42],[-76,35],[-81,31],[-80,25],[-82,28],[-84,30],[-90,29],[-97,26],[-97,20],[-92,18],[-87,21],[-88,15],[-83,9],[-78,8],[-80,7],[-86,12],[-92,14],[-105,20],[-110,24],[-112,31],[-117,33],[-122,37],[-124,42],[-124,48],[-130,55],[-140,59],[-152,58],[-158,56],[-165,60]],
@@ -95,7 +98,7 @@ function initGlobe(){
     sp[i*3] = v.x; sp[i*3+1] = v.y; sp[i*3+2] = v.z;
   }
   var sg = new THREE.BufferGeometry(); sg.setAttribute('position', new THREE.BufferAttribute(sp, 3));
-  var stars = new THREE.Points(sg, new THREE.PointsMaterial({ size: .16, map: DOT, color: 0xffffff, transparent: true, opacity: .55, depthWrite: false }));
+  var stars = new THREE.Points(sg, new THREE.PointsMaterial({ size: .16, map: DOT, color: clair ? 0x7F95D6 : 0xffffff, transparent: true, opacity: clair ? .45 : .55, depthWrite: false }));
   scene.add(stars);
 
   var world = new THREE.Group(); scene.add(world);
@@ -103,11 +106,11 @@ function initGlobe(){
   var globe = new THREE.Group(); world.add(globe);
 
   // halo
-  var halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+  var halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), transparent: true, depthWrite: false, blending: ADD }));
   halo.scale.set(3.3, 3.3, 1); halo.renderOrder = -1; scene.add(halo);
 
   // sphère occultante (cache les points de dos)
-  globe.add(new THREE.Mesh(new THREE.SphereGeometry(0.985, 48, 48), new THREE.MeshBasicMaterial({ color: 0x03050c })));
+  globe.add(new THREE.Mesh(new THREE.SphereGeometry(0.985, 48, 48), new THREE.MeshBasicMaterial({ color: clair ? 0x2F5BFF : 0x03050c })));
 
   // points des continents
   var N = modeste ? 9000 : mobile ? 14000 : 46000, lp = [], lc = [], cA = new THREE.Color(COL.dot), cB = new THREE.Color(COL.hi), tmp = new THREE.Color();
@@ -138,14 +141,14 @@ function initGlobe(){
   var CIBLE = Math.atan2(-PL.x, PL.z);
   globe.rotation.y = CIBLE + 2.2;
   var pin = new THREE.Group(); pin.position.copy(vec(LYON[0], LYON[1], 1.012)); globe.add(pin);
-  var pinDot = new THREE.Sprite(new THREE.SpriteMaterial({ map: DOT, color: 0xffffff, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+  var pinDot = new THREE.Sprite(new THREE.SpriteMaterial({ map: DOT, color: 0xffffff, transparent: true, depthWrite: false, blending: ADD }));
   pinDot.scale.set(.07, .07, 1); pin.add(pinDot);
-  var pinGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: DOT, color: COL.hi, transparent: true, opacity: .9, depthWrite: false, blending: THREE.AdditiveBlending }));
+  var pinGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: DOT, color: COL.hi, transparent: true, opacity: .9, depthWrite: false, blending: ADD }));
   pinGlow.scale.set(.16, .16, 1); pin.add(pinGlow);
   var rings = [];
   for (var rr = 0; rr < 2; rr++){
     var rp = []; for (var s2 = 0; s2 <= 64; s2++){ var a2 = s2 / 64 * Math.PI * 2; rp.push(new THREE.Vector3(Math.cos(a2), Math.sin(a2), 0)); }
-    var ring = new THREE.Line(new THREE.BufferGeometry().setFromPoints(rp), new THREE.LineBasicMaterial({ color: COL.hi, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }));
+    var ring = new THREE.Line(new THREE.BufferGeometry().setFromPoints(rp), new THREE.LineBasicMaterial({ color: COL.hi, transparent: true, opacity: 0, depthWrite: false, blending: ADD }));
     ring.lookAt(pin.position.clone().multiplyScalar(2)); pin.add(ring); rings.push(ring);
   }
 
@@ -161,7 +164,7 @@ function initGlobe(){
     mid.normalize().multiplyScalar(h);
     var curve = new THREE.QuadraticBezierCurve3(A, mid, B), pts = curve.getPoints(SEG);
     var g = new THREE.BufferGeometry().setFromPoints(pts); g.setDrawRange(0, 0);
-    var m = new THREE.LineBasicMaterial({ color: COL.hi, transparent: true, opacity: .9, depthWrite: false, blending: THREE.AdditiveBlending });
+    var m = new THREE.LineBasicMaterial({ color: COL.hi, transparent: true, opacity: .9, depthWrite: false, blending: ADD });
     var line = new THREE.Line(g, m); globe.add(line);
     return { line: line, g: g, m: m, t: -Math.random() * 2 };
   }
@@ -173,7 +176,7 @@ function initGlobe(){
   sat.add(new THREE.Mesh(new THREE.BoxGeometry(.035, .035, .035), new THREE.MeshBasicMaterial({ color: 0xffffff })));
   var panel = new THREE.Mesh(new THREE.BoxGeometry(.13, .004, .035), new THREE.MeshBasicMaterial({ color: COL.hi }));
   sat.add(panel);
-  var sglow = new THREE.Sprite(new THREE.SpriteMaterial({ map: DOT, color: COL.hi, transparent: true, opacity: .8, depthWrite: false, blending: THREE.AdditiveBlending }));
+  var sglow = new THREE.Sprite(new THREE.SpriteMaterial({ map: DOT, color: COL.hi, transparent: true, opacity: .8, depthWrite: false, blending: ADD }));
   sglow.scale.set(.09, .09, 1); sat.add(sglow);
   var ringPts = []; for (var s = 0; s <= 128; s++){ var an = s / 128 * Math.PI * 2; ringPts.push(new THREE.Vector3(Math.cos(an) * 1.32, 0, Math.sin(an) * 1.32)); }
   orbit.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ringPts), new THREE.LineBasicMaterial({ color: COL.line, transparent: true, opacity: .25, depthWrite: false })));
