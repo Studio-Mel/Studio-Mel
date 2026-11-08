@@ -1,6 +1,6 @@
 /* Studio Mel · espace client : connexion par lien e-mail, suivi du projet, maquette, documents, messages */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
-import { getAuth, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+import { getAuth, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, onAuthStateChanged, signOut, signInWithEmailAndPassword, updatePassword } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
 import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc, addDoc, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
 
 const app = initializeApp({ apiKey: "AIzaSyA42dvTyNYoQCliUXqF3ie_5SxWI95xxoY", authDomain: "studio-mel-2f2cc.firebaseapp.com", projectId: "studio-mel-2f2cc",
@@ -9,8 +9,9 @@ const auth = getAuth(app), db = getFirestore(app);
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const ETAPES = ["Premier échange", "Devis signé", "Maquette", "Création du site", "Mise en ligne", "Suivi"];
-const vue = v => ["ec-login", "ec-envoye", "ec-vide", "ec-app", "ec-charge"].forEach(id => $(id).hidden = id !== v);
-let espace = null, ref = null, stopMsg = null;
+const vue = v => ["ec-login", "ec-lien", "ec-mdp", "ec-envoye", "ec-vide", "ec-app", "ec-charge"].forEach(id => $(id).hidden = id !== v);
+const MDP = "sm-ec-mdp"; // posé juste après une connexion par lien : on propose de créer un mot de passe
+let espace = null, ref = null, stopMsg = null, stopEsp = null;
 
 // ---------- connexion par lien e-mail ----------
 $("ec-form").addEventListener("submit", async e => {
@@ -35,7 +36,48 @@ $("ec-form").addEventListener("submit", async e => {
   }
   btn.classList.remove("loading");
 });
-$("ec-autre").addEventListener("click", () => vue("ec-login"));
+$("ec-autre").addEventListener("click", () => vue("ec-lien"));
+$("ec-vers-lien").addEventListener("click", () => { $("ec-mail").value = $("ec-mail-mdp").value; vue("ec-lien"); });
+$("ec-vers-mdp").addEventListener("click", () => vue("ec-login"));
+
+// ---------- connexion par mot de passe ----------
+$("ec-form-mdp").addEventListener("submit", async e => {
+  e.preventDefault();
+  const mail = $("ec-mail-mdp").value.trim().toLowerCase(), pass = $("ec-pass").value, btn = $("ec-btn-mdp");
+  $("ec-err-mdp").textContent = "";
+  if (!mail || !pass) { $("ec-err-mdp").textContent = "Entrez votre e-mail et votre mot de passe."; return; }
+  btn.classList.add("loading");
+  try { await signInWithEmailAndPassword(auth, mail, pass); }
+  catch (err) {
+    const c = (err && err.code) || "";
+    $("ec-err-mdp").innerHTML = c === "auth/too-many-requests" ? "Trop de tentatives. Patientez quelques minutes."
+      : c === "auth/network-request-failed" ? "Pas de connexion internet."
+      : "E-mail ou mot de passe incorrect. Première connexion ? Utilisez le lien par e-mail ci-dessous.";
+  }
+  btn.classList.remove("loading");
+});
+
+// ---------- création / changement du mot de passe ----------
+$("ec-changer").addEventListener("click", () => { $("ec-plus-tard").textContent = "Annuler"; vue("ec-mdp"); $("ec-new").focus(); });
+$("ec-plus-tard").addEventListener("click", () => { sessionStorage.removeItem(MDP); vue("ec-charge"); charger(auth.currentUser); });
+$("ec-form-nouveau").addEventListener("submit", async e => {
+  e.preventDefault();
+  const a = $("ec-new").value, b = $("ec-new2").value, btn = $("ec-btn-new");
+  $("ec-err-new").textContent = "";
+  if (a.length < 8) { $("ec-err-new").textContent = "Le mot de passe doit faire au moins 8 caractères."; return; }
+  if (a !== b) { $("ec-err-new").textContent = "Les deux mots de passe ne sont pas identiques."; return; }
+  btn.classList.add("loading");
+  try {
+    await updatePassword(auth.currentUser, a);
+    sessionStorage.removeItem(MDP); $("ec-new").value = $("ec-new2").value = "";
+    vue("ec-charge"); charger(auth.currentUser);
+  } catch (err) {
+    $("ec-err-new").textContent = err && err.code === "auth/requires-recent-login"
+      ? "Par sécurité, reconnectez-vous avec un lien par e-mail, puis choisissez votre mot de passe."
+      : "Le mot de passe n’a pas pu être enregistré. Réessayez.";
+  }
+  btn.classList.remove("loading");
+});
 $("ec-sortir").addEventListener("click", () => signOut(auth));
 $("ec-sortir2").addEventListener("click", () => signOut(auth));
 
@@ -44,22 +86,27 @@ $("ec-sortir2").addEventListener("click", () => signOut(auth));
     vue("ec-charge");
     let mail = localStorage.getItem("sm-ec-mail");
     if (!mail) mail = (prompt("Pour confirmer, quelle adresse e-mail avez-vous utilisée ?") || "").trim().toLowerCase();
-    try { await signInWithEmailLink(auth, mail, location.href); localStorage.removeItem("sm-ec-mail"); history.replaceState(null, "", "/espace-client"); }
-    catch (e) { vue("ec-login"); $("ec-err").textContent = "Ce lien a expiré ou a déjà servi. Demandez-en un nouveau."; }
+    try { sessionStorage.setItem(MDP, "1"); await signInWithEmailLink(auth, mail, location.href); localStorage.removeItem("sm-ec-mail"); history.replaceState(null, "", "/espace-client"); }
+    catch (e) { sessionStorage.removeItem(MDP); vue("ec-lien"); $("ec-err").textContent = "Ce lien a expiré ou a déjà servi. Demandez-en un nouveau."; }
   }
 })();
 
 onAuthStateChanged(auth, u => {
   if (stopMsg) { stopMsg(); stopMsg = null; }
-  if (!u) { vue("ec-login"); return; }
-  vue("ec-charge");
-  onSnapshot(query(collection(db, "espaces"), where("email", "==", (u.email || "").toLowerCase())), snap => {
+  if (!u) { if (stopEsp) { stopEsp(); stopEsp = null; } vue("ec-login"); return; }
+  if (sessionStorage.getItem(MDP)) { $("ec-mdp-user").value = u.email || ""; $("ec-plus-tard").textContent = "Plus tard"; vue("ec-mdp"); return; }
+  vue("ec-charge"); charger(u);
+});
+function charger(u){
+  if (!u) return;
+  if (stopEsp) { stopEsp(); stopEsp = null; }
+  stopEsp = onSnapshot(query(collection(db, "espaces"), where("email", "==", (u.email || "").toLowerCase())), snap => {
     if (snap.empty) { $("ec-vide-mail").textContent = u.email; vue("ec-vide"); return; }
     const d = snap.docs[0]; espace = d.data(); ref = doc(db, "espaces", d.id);
-    afficher(); vue("ec-app");
+    afficher(); if ($("ec-mdp").hidden) vue("ec-app");
     if (!stopMsg) stopMsg = onSnapshot(query(collection(db, "espaces", d.id, "messages"), orderBy("date")), s => messages(s.docs.map(x => x.data())));
   }, () => { vue("ec-vide"); $("ec-vide-mail").textContent = u.email; });
-});
+}
 
 // ---------- affichage ----------
 function afficher(){
