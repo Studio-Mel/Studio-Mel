@@ -143,6 +143,7 @@ $("ec-af").addEventListener("change", async ev => {
 $("ec-ok").addEventListener("click", async () => {
   if (!confirm("Vous validez la maquette ? Je passe ensuite à la création du site.")) return;
   await updateDoc(ref, { validation: { etat: "ok", note: "", date: new Date().toISOString().slice(0, 10) } });
+  notifierMel("maquette validée", "Le client a validé la maquette de son site.");
   feter();
 });
 $("ec-modif").addEventListener("click", () => { $("ec-modif-zone").hidden = false; $("ec-modif-txt").focus(); });
@@ -151,8 +152,21 @@ $("ec-modif-env").addEventListener("click", async () => {
   await updateDoc(ref, { validation: { etat: "modifs", note: t.slice(0, 1500), date: new Date().toISOString().slice(0, 10) } });
   await addDoc(collection(ref, "messages"), { de: "client", texte: "Modifications demandées sur la maquette : " + t.slice(0, 1900), date: serverTimestamp() });
   updateDoc(ref, { dernierClient: serverTimestamp() }).catch(() => {});
+  notifierMel("modifications demandées", "Modifications demandées sur la maquette : " + t);
   $("ec-modif-zone").hidden = true; $("ec-modif-txt").value = "";
 });
+
+// ---------- notification par e-mail à Mel (via EmailJS, comme les demandes de devis) ----------
+let ejs = null;
+function notifierMel(quoi, texte){
+  try {
+    if (!ejs) ejs = new Promise((ok, ko) => { const s = document.createElement("script"); s.src = "https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"; s.onload = () => { emailjs.init({ publicKey: "53BDiH6RSJl99cF65" }); ok(); }; s.onerror = ko; document.head.appendChild(s); });
+    ejs.then(() => emailjs.send("service_nszz5ip", "template_ab96u3d", {
+      nom: (espace && espace.nom) || "Client", entreprise: (espace && espace.projet) || "", email: (auth.currentUser && auth.currentUser.email) || "",
+      formule: "Espace client · " + quoi, prix: "", message: texte.slice(0, 1500), date: new Date().toLocaleDateString("fr-FR"), type: "espace"
+    })).catch(() => { ejs = null; });
+  } catch (err) {}
+}
 
 // ---------- messages ----------
 function messages(L){
@@ -167,7 +181,7 @@ $("ec-msg-form").addEventListener("submit", async e => {
   e.preventDefault();
   const t = $("ec-msg").value.trim(); if (!t || !ref) return;
   $("ec-msg").value = "";
-  try { await addDoc(collection(ref, "messages"), { de: "client", texte: t.slice(0, 2000), date: serverTimestamp() }); updateDoc(ref, { dernierClient: serverTimestamp() }).catch(() => {}); }
+  try { await addDoc(collection(ref, "messages"), { de: "client", texte: t.slice(0, 2000), date: serverTimestamp() }); updateDoc(ref, { dernierClient: serverTimestamp() }).catch(() => {}); notifierMel("nouveau message", t); }
   catch (err) { $("ec-msg").value = t; alert("Le message n’est pas parti. Réessayez."); }
 });
 function feter(){

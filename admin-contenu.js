@@ -87,6 +87,20 @@ function rendreAccueil(){
     champ("Titre, ligne 2", A.titre2, v => A.titre2 = v, { max: 30 }),
     champ("Sous-titre", A.sous_titre, v => A.sous_titre = v, { max: 70, aide: "70 caractères maximum conseillés" })));
 }
+function rendreBandeau(){
+  const p = document.querySelector('[data-p="bandeau"]'); p.innerHTML = "";
+  const B = C.bandeau;
+  const actif = el("input", { type: "checkbox", onchange: e => { B.actif = e.target.checked; marquer(); apercu(); } }); actif.checked = !!B.actif;
+  const ap = el("div", { class: "ban-ap" });
+  function apercu(){ ap.innerHTML = ""; ap.append(el("span", {}, B.actif && B.texte ? B.texte : "(bandeau masqué)")); ap.style.opacity = B.actif && B.texte ? 1 : .45; }
+  p.append(el("div", { class: "card" }, el("h2", {}, "Bandeau d’annonce"),
+    el("p", { class: "help" }, "Une ligne affichée tout en haut du site, sur toutes les pages. Le visiteur peut la fermer. Exemples : « Congés du 20 au 27 décembre », « 2 places de lancement restantes ce mois-ci »."),
+    el("label", { class: "chk" }, actif, " Afficher le bandeau"),
+    champ("Texte (court, une ligne)", B.texte, v => { B.texte = v.slice(0, 120); apercu(); }),
+    champ("Lien au clic (facultatif, ex. /contact/ ou https://…)", B.lien, v => B.lien = v.trim()),
+    el("p", { class: "help" }, "Aperçu :"), ap));
+  apercu();
+}
 function rendreAvis(){
   const p = document.querySelector('[data-p="avis"]'); p.innerHTML = "";
   p.append(el("div", { class: "card" }, el("h2", {}, "Lien « Laisser un avis Google »"),
@@ -211,14 +225,15 @@ async function charger(){
   C = { tarifs: { ...D.tarifs, ...(enLigne.tarifs || {}) }, accueil: { ...D.accueil, ...(enLigne.accueil || {}) }, formules: clone(D.formules), faq: clone(enLigne.faq && enLigne.faq.length ? enLigne.faq : D.faq) };
   for (const k in (enLigne.formules || {})) C.formules[k] = { ...(C.formules[k] || {}), ...enLigne.formules[k] };
   C.avis = clone(enLigne.avis || []); C.avisGoogle = enLigne.avisGoogle || "";
+  C.bandeau = { actif: false, texte: "", lien: "", ...(enLigne.bandeau || {}) };
   await chargerArticles();
-  rendreTarifs(); rendreFormules(); rendreAccueil(); rendreFaq(); rendreArticles(); rendreAvis();
+  rendreTarifs(); rendreFormules(); rendreAccueil(); rendreFaq(); rendreArticles(); rendreAvis(); rendreBandeau();
   st(enLigne.maj ? "Dernière modification : " + enLigne.maj.toDate().toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" }) : "Contenu d’origine du site");
 }
 $("save").addEventListener("click", async () => {
   $("save").disabled = true; st("Enregistrement…");
   try {
-    await setDoc(doc(db, "site", "contenu"), { tarifs: C.tarifs, accueil: C.accueil, formules: C.formules, faq: C.faq.filter(x => x.q && x.q.trim()), avis: C.avis.filter(x => x.nom && x.texte).map(x => ({ nom: x.nom.trim(), metier: (x.metier || "").trim(), texte: x.texte.trim(), note: x.note || 5 })), avisGoogle: C.avisGoogle || "", maj: serverTimestamp() });
+    await setDoc(doc(db, "site", "contenu"), { tarifs: C.tarifs, accueil: C.accueil, formules: C.formules, faq: C.faq.filter(x => x.q && x.q.trim()), avis: C.avis.filter(x => x.nom && x.texte).map(x => ({ nom: x.nom.trim(), metier: (x.metier || "").trim(), texte: x.texte.trim(), note: x.note || 5 })), avisGoogle: C.avisGoogle || "", bandeau: { actif: !!C.bandeau.actif, texte: (C.bandeau.texte || "").trim(), lien: C.bandeau.lien || "" }, maj: serverTimestamp() });
     modifie = false; st("Enregistré ✓ Le site est à jour (jusqu’à 5 minutes pour les visiteurs déjà sur le site).", "ok");
   } catch (e) { $("save").disabled = false; erreur(e); }
 });

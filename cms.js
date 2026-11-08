@@ -90,9 +90,23 @@
       if (g && C.avisGoogle && /^https:\/\//.test(C.avisGoogle)) { g.href = C.avisGoogle; if (gz) gz.hidden = false; }
       sec.hidden = !avis.length && !(C.avisGoogle && /^https:\/\//.test(C.avisGoogle));
     });
+    // bandeau d'annonce, en haut du site (modifiable dans l'éditeur, refermable par le visiteur)
+    var ban = document.getElementById('ban'), B = C.bandeau || {};
+    if (ban && B.actif && B.texte) {
+      var cle = 'sm-ban-' + B.texte.length + B.texte.slice(0, 20);
+      var vu = false; try { vu = sessionStorage.getItem('sm-ban-x') === cle; } catch (e) {}
+      if (!vu) {
+        document.getElementById('ban-txt').textContent = B.texte;
+        var bl = document.getElementById('ban-lien');
+        if (B.lien && /^(https?:\/\/|\/)/.test(B.lien)) bl.href = B.lien; else { bl.removeAttribute('href'); bl.setAttribute('role', 'note'); }
+        ban.hidden = false; document.documentElement.classList.add('ban-on');
+        document.getElementById('ban-x').onclick = function(){ ban.hidden = true; document.documentElement.classList.remove('ban-on'); try { sessionStorage.setItem('sm-ban-x', cle); } catch (e) {} };
+      }
+    }
     var faq = document.querySelector('[data-cms-faq]');
     if (faq && Array.isArray(C.faq) && C.faq.length) {
-      faq.innerHTML = C.faq.filter(function(x){ return x && x.q; }).map(function(x){ return '<details><summary>' + esc(x.q) + '</summary><p>' + esc(x.r) + '</p></details>'; }).join('');
+      faq.innerHTML = C.faq.filter(function(x){ return x && x.q; }).map(function(x, i){ return '<details id="q-' + (i + 1) + '"><summary>' + esc(x.q) + '</summary><p>' + esc(x.r) + '</p></details>'; }).join('');
+      if (location.hash && /^#q-\d+$/.test(location.hash)) { var dq = document.querySelector(location.hash); if (dq) dq.open = true; }
     }
     if (articles) appliquerArticles(articles);
   }
