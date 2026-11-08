@@ -462,83 +462,15 @@
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape') { var o = document.querySelector('.nav-links .dd.open, .nav-links .dd:focus-within'); fermer(); if (o) { o.querySelector('.nl').focus(); if (document.activeElement && o.contains(document.activeElement)) document.activeElement.blur(); } } });
 })();
 
-/* v2.29 · recherche, taille du texte, partage */
-(function(){
-  var root = document.documentElement;
-  // ---------- taille du texte ----------
-  function taille(n){
-    root.classList.remove('txt-1', 'txt-2'); if (n > 0) root.classList.add('txt-' + n);
-    try { localStorage.setItem('sm-txt', String(n)); } catch (e) {}
-    document.querySelectorAll('[data-txt]').forEach(function(b){ b.setAttribute('aria-pressed', String(+b.dataset.txt === n)); });
-  }
-  var t0 = 0; try { t0 = +localStorage.getItem('sm-txt') || 0; } catch (e) {}
-  document.querySelectorAll('[data-txt]').forEach(function(b){ b.setAttribute('aria-pressed', String(+b.dataset.txt === t0)); b.addEventListener('click', function(){ taille(+b.dataset.txt); }); });
-
-  // ---------- partage des articles ----------
-  document.querySelectorAll('[data-copier]').forEach(function(b){
-    b.addEventListener('click', function(){
-      var ok = function(){ var t = b.textContent; b.textContent = 'Lien copié ✓'; setTimeout(function(){ b.textContent = t; }, 1800); };
-      if (navigator.clipboard) navigator.clipboard.writeText(b.dataset.copier).then(ok); else { prompt('Copiez le lien :', b.dataset.copier); }
-    });
+/* copier le lien d'un article */
+document.querySelectorAll('[data-copier]').forEach(function(b){
+  b.addEventListener('click', function(){
+    var lbl = b.lastChild, t = lbl.textContent;
+    var ok = function(){ lbl.textContent = 'Lien copié ✓'; setTimeout(function(){ lbl.textContent = t; }, 1800); };
+    if (navigator.clipboard) navigator.clipboard.writeText(b.dataset.copier).then(ok, function(){ prompt('Copiez le lien :', b.dataset.copier); });
+    else prompt('Copiez le lien :', b.dataset.copier);
   });
-  if (navigator.share) document.querySelectorAll('[data-partage]').forEach(function(b){
-    b.hidden = false;
-    b.addEventListener('click', function(){ navigator.share({ title: b.dataset.partage, url: location.href }).catch(function(){}); });
-  });
-
-  // ---------- recherche sur tout le site ----------
-  var box = document.getElementById('rch'); if (!box) return;
-  var q = document.getElementById('rch-q'), res = document.getElementById('rch-res'), aide = document.getElementById('rch-aide');
-  var INDEX = null, sel = -1, ouvreur = null;
-  var norm = function(s){ return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[’']/g, ' '); };
-  var esc = function(s){ return String(s).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
-  function charger(){
-    if (INDEX) return Promise.resolve(INDEX);
-    return fetch('/recherche.json').then(function(r){ return r.json(); }).then(function(d){
-      INDEX = d.map(function(e){ e.n = norm(e.t); e.nd = norm(e.d + ' ' + (e.x || '')); return e; }); return INDEX;
-    });
-  }
-  function chercher(){
-    var VIDES = ['un','une','le','la','les','de','du','des','et','ou','pour','sur','en','a','au','aux','mon','ma','mes','son','sa','ses','est','ce','qui','que','quoi','comment','combien','faut','il','je','on','site','internet'];
-    var mots = norm(q.value).split(/[\s,?!.]+/).filter(function(m){ return m.length > 1 && VIDES.indexOf(m) < 0; });
-    if (!mots.length && norm(q.value).trim().length > 1) mots = [norm(q.value).trim()];
-    sel = -1;
-    if (!mots.length) { res.innerHTML = ''; aide.hidden = false; aide.textContent = 'Tapez au moins 2 lettres. Astuce : la touche « / » ouvre la recherche.'; return; }
-    charger().then(function(I){
-      var L = I.map(function(e){
-        var s = 0, n = 0;
-        for (var i = 0; i < mots.length; i++) {
-          var m = mots[i], rac = m.length > 4 ? m.slice(0, m.length - 1) : m;   // « prix » trouve aussi « prix », « tarifs » trouve « tarif »
-          var dans = e.n.indexOf(rac) > -1, desc = e.nd.indexOf(rac) > -1;
-          if (dans || desc) { n++; s += dans ? 10 : 3; if (e.n.indexOf(rac) === 0) s += 4; }
-        }
-        if (!n) return null;
-        s += n * n * 8;                                   // ceux qui contiennent le plus de mots passent devant
-        if (e.k === 'page' || e.k === 'outil') s += 2;
-        return { e: e, s: s };
-      }).filter(Boolean).sort(function(a, b){ return b.s - a.s; }).slice(0, 8);
-      aide.hidden = !!L.length; if (!L.length) aide.textContent = 'Aucun résultat. Essayez un autre mot, ou posez-moi la question sur la page Contact.';
-      res.innerHTML = L.map(function(r, i){ return '<li role="option" id="rch-o' + i + '"><a href="' + r.e.u + '"><span class="rch-k">' + esc(r.e.k) + '</span><b>' + esc(r.e.t) + '</b><small>' + esc(r.e.d) + '</small></a></li>'; }).join('');
-    });
-  }
-  function ouvrir(){ ouvreur = document.activeElement; box.hidden = false; document.body.classList.add('rch-ouvert'); setTimeout(function(){ q.focus(); q.select(); }, 30); charger(); var m = document.getElementById('menu'); if (m && m.classList.contains('open')) { var bg = document.getElementById('burger'); if (bg) bg.click(); } }
-  function fermer(){ box.hidden = true; document.body.classList.remove('rch-ouvert'); if (ouvreur && ouvreur.focus) ouvreur.focus({ preventScroll: true }); }
-  document.querySelectorAll('[data-recherche]').forEach(function(b){ b.addEventListener('click', ouvrir); });
-  document.getElementById('rch-x').addEventListener('click', fermer);
-  box.addEventListener('click', function(e){ if (e.target === box) fermer(); });
-  q.addEventListener('input', chercher);
-  q.addEventListener('keydown', function(e){
-    var items = res.querySelectorAll('a');
-    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); if (!items.length) return; sel = (sel + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length; items.forEach(function(a, i){ a.classList.toggle('on', i === sel); }); items[sel].scrollIntoView({ block: 'nearest' }); }
-    else if (e.key === 'Enter') { var a = items[sel > -1 ? sel : 0]; if (a) { e.preventDefault(); location.href = a.href; } }
-  });
-  res.addEventListener('click', function(e){ if (e.target.closest('a')) fermer(); });
-  document.addEventListener('keydown', function(e){
-    if (e.key === 'Escape' && !box.hidden) { fermer(); return; }
-    var champ = e.target.closest && e.target.closest('input, textarea, select, [contenteditable]');
-    if (!champ && box.hidden && (e.key === '/' || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'))) { e.preventDefault(); ouvrir(); }
-  });
-})();
+});
 
 /* v2.29 · page FAQ : filtre en direct */
 (function(){

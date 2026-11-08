@@ -1356,39 +1356,8 @@ html.ban-on .nav{padding-top:calc(env(safe-area-inset-top,0px) + 36px)}
 html.ban-on .nav-in{height:72px}
 @media (prefers-reduced-motion:reduce){.ban-pt{animation:none}}
 
-/* bouton recherche + fenêtre de recherche */
-.nav-cherche{display:grid;place-items:center;width:38px;height:38px;margin-left:4px;border-radius:50%;border:1px solid transparent;background:none;color:var(--soft);cursor:pointer;transition:color .2s ease,border-color .2s ease,background .2s ease}
-.nav-cherche svg,.fq-cherche svg,.rch-champ svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round}
-.nav-cherche:hover{color:var(--ink);border-color:var(--line-2);background:rgba(47,91,255,.1)}
-@media (max-width:1080px){.nav-cherche{display:none}}
-.menu .m-cherche{width:100%;background:none;border:0;border-bottom:1px solid var(--line);font:inherit;font-family:var(--f-display);font-size:26px;font-weight:600;color:var(--ink);text-align:left}
-.menu .m-cherche svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9}
-.rch{position:fixed;inset:0;z-index:9995;display:flex;justify-content:center;align-items:flex-start;padding:max(12vh,90px) 16px 16px;background:rgba(4,6,12,.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
-.rch[hidden]{display:none}
-.rch-in{width:min(680px,100%);max-height:76vh;display:flex;flex-direction:column;border-radius:22px;border:1px solid var(--line-2);background:var(--surface);box-shadow:0 40px 120px -30px rgba(0,0,0,.8),0 20px 70px -30px rgba(47,91,255,.6);overflow:hidden;animation:rchIn .35s var(--e-reveal)}
-@keyframes rchIn{from{opacity:0;transform:translateY(-12px) scale(.98)}}
-.rch-champ{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line);color:var(--muted)}
-.rch-champ input{flex:1;min-width:0;border:0;background:none;outline:none;font:inherit;font-size:18px;color:var(--ink)}
-.rch-x{flex:none;padding:5px 9px;border-radius:8px;border:1px solid var(--line-2);background:none;color:var(--muted);font:inherit;font-size:12px;cursor:pointer}
-.rch-res{list-style:none;margin:0;padding:8px;overflow-y:auto}
-.rch-res a{display:grid;gap:2px;padding:11px 14px;border-radius:14px;text-decoration:none;color:var(--ink)}
-.rch-res a:hover,.rch-res a.on{background:rgba(47,91,255,.14)}
-.rch-res b{font-weight:600;font-size:15.5px}.rch-res small{color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rch-k{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-hi)}
-.rch-aide{margin:0;padding:16px 20px;color:var(--muted);font-size:14px}
-.rch-aide[hidden]{display:none}
-body.rch-ouvert{overflow:hidden}
-
-/* taille du texte (accessibilité) */
-.a11y{display:inline-flex;align-items:center;gap:6px}
-.a11y button{min-width:34px;height:28px;padding:0 8px;border-radius:8px;border:1px solid var(--line-2);background:none;color:var(--soft);font:inherit;font-size:13px;font-weight:700;cursor:pointer}
-.a11y button[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
-html.txt-1 :is(.hero-in,.page-head .wrap,.page-body,main > .sec,main > .final,main > .reassure,.foot){zoom:1.12}
-html.txt-2 :is(.hero-in,.page-head .wrap,.page-body,main > .sec,main > .final,main > .reassure,.foot){zoom:1.25}
-
 /* partage des articles */
 .pt{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:28px;padding-top:22px;border-top:1px solid var(--line)}
-.pt > span{font-weight:700;margin-right:6px}
 .pt-b{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 15px;border-radius:99px;border:1px solid var(--line-2);background:none;color:var(--soft);font:inherit;font-size:14px;font-weight:600;text-decoration:none;cursor:pointer;transition:background .2s ease,border-color .2s ease,color .2s ease}
 .pt-b:hover{border-color:var(--blue);color:var(--ink);background:rgba(47,91,255,.12)}
 .pt-b svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
@@ -1432,4 +1401,4 @@ html.txt-2 :is(.hero-in,.page-head .wrap,.page-body,main > .sec,main > .final,ma
 .pl ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
 .pl a{display:block;padding:6px 0;color:var(--soft);text-decoration:none;transition:color .2s ease,transform .25s var(--e-reveal)}
 .pl a:hover{color:var(--ink);transform:translateX(4px)}
-@media (prefers-color-scheme: light){.ban{background:linear-gradient(90deg,#2F5BFF,#5B4BFF 55%,#7C5CFF)}.rch-in{background:#FFFFFF}}
+
