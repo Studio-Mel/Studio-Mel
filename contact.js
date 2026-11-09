@@ -34,7 +34,7 @@ document.getElementById("devis-form").addEventListener("submit", e => {
     prix: s ? eur(s.total) : (prixDe()[f.formule.value] || "—"),
     message: f.message.value || "Aucun message",
     ...(s ? { lignes: s.lignes } : {})
-  }, "Merci ! Votre demande est bien partie. Je vous réponds sous 48 h, à l’adresse e-mail indiquée.");
+  }, "Merci ! Votre demande est bien partie. Je vous réponds sous 48 h, à l’adresse e-mail indiquée. Pensez à vérifier vos courriers indésirables (spams) si vous ne voyez rien arriver.");
   window.simDevis = null;
 });
 
@@ -139,6 +139,6 @@ rdvForm.addEventListener("submit", async e => {
     nom: f.nom.value, entreprise: f.entreprise.value, email: f.email.value,
     message: "Rendez-vous demandé le " + quand + " (" + mode.toLowerCase() + "). Téléphone : " + f.tel.value,
     type: "rdv", rdvJour: jour, rdvHeure: heure, mode: mode, tel: f.tel.value, creneau: cle
-  }, "C’est réservé ! Je vous confirme le rendez-vous par e-mail.");
+  }, "C’est réservé ! Je vous confirme le rendez-vous par e-mail. Pensez à vérifier vos courriers indésirables (spams) si vous ne voyez rien arriver.");
 });
 rdvForm.addEventListener("reset-done", () => document.dispatchEvent(new Event("creneaux")));

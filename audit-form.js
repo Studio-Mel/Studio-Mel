@@ -15,5 +15,5 @@ if (f) f.addEventListener("submit", e => {
     nom: f.entreprise.value, entreprise: f.entreprise.value, email: f.email.value,
     titre: "Nouvelle demande d’audit", formule: "Audit gratuit", prix: "Gratuit",
     message: "Site analysé : " + f.site.value + "\nNotes : " + notes + "\n" + (pb ? "Points relevés :\n" + pb + "\n" : "") + (f.message.value ? "\nMessage : " + f.message.value : "")
-  }, "C’est noté ! Je regarde votre site moi-même et je vous envoie mes conseils sous 48 h.");
+  }, "C’est noté ! Je regarde votre site moi-même et je vous envoie mes conseils sous 48 h. Pensez à vérifier vos courriers indésirables (spams) si vous ne voyez rien arriver.");
 });

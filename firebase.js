@@ -85,7 +85,7 @@ export async function envoyer(form, statutId, demande, merci){
     console.error(err); ready = null;
     s.classList.add(enregistre ? "ok" : "ko");
     s.innerHTML = enregistre
-      ? "Votre demande est bien enregistrée. Je vous réponds sous 48 h."
+      ? "Votre demande est bien enregistrée. Je vous réponds sous 48 h. Pensez à vérifier vos courriers indésirables (spams) si vous ne voyez rien arriver."
       : "L’envoi n’a pas fonctionné. Réessayez dans un instant, ou contactez-moi directement au <a href=\"tel:+33604159858\">06 04 15 98 58</a> ou à <a href=\"mailto:studio-mel@outlook.fr\">studio-mel@outlook.fr</a>.";
   }
   btn.disabled = false; btn.classList.remove("loading"); btn.removeAttribute("aria-busy");
