@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <script src="/admin-garde.js"></script>
+<script>if (window.self !== window.top) document.documentElement.classList.add("embed");</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Contenu du site · Studio Mel</title>
@@ -64,6 +65,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--blue);bo
 .chk input{width:20px;height:20px;accent-color:var(--blue)}
 @media (max-width:640px){.top .lbl{display:none}}
 .ban-ap{margin-top:6px;padding:10px 16px;border-radius:12px;background:linear-gradient(90deg,#2F5BFF,#7C5CFF);color:#fff;font-weight:600;font-size:14px;text-align:center}
+html.embed header.top{display:none!important}html.embed body{background:transparent!important;padding-top:0!important}html.embed main,html.embed #app{margin-top:0!important;padding-top:8px!important}
 </style>
 </head>
 <body>
