@@ -31,20 +31,27 @@ const STATUTS = {
   factures: { attente: "En attente", partielle: "Payée en partie", payee: "Payée", retard: "En retard" },
   avoirs: { emis: "Émis", rembourse: "Remboursé", impute: "Déduit d'une facture" }
 };
-const COND_DEVIS = "Paiement : 50 % à la signature, 50 % à la mise en ligne (ou 30 % / 40 % / 30 % sur accord). 2 tours de retouches inclus, retouches supplémentaires 30 €/h. Délai : 1 à 3 semaines après réception des contenus. Le site et le nom de domaine appartiennent au client après paiement complet. Devis valable 30 jours. TVA non applicable, art. 293 B du CGI.";
+// tarifs : repris de l'éditeur du site (site/contenu), donc une seule saisie pour le site et l'ERP
+const TARIFS_DEF = { refonte: 500, creation: 750, premium: 1200, boutique: 1900, lotProduits: 80, promo: 100, google: 80, domaine: 15, maint: 40, maintBoutique: 70, heure: 30, page: 60, galerie: 60, blog: 150, resa: 150 };
+let T = { ...TARIFS_DEF };
+const condDevis = () => "Paiement : 50 % à la signature, 50 % à la mise en ligne (ou 30 % / 40 % / 30 % sur accord). 2 tours de retouches inclus, retouches supplémentaires " + T.heure + " €/h. Délai : 1 à 3 semaines après réception des contenus. Le site et le nom de domaine appartiennent au client après paiement complet. Devis valable 30 jours. TVA non applicable, art. 293 B du CGI.";
 // prestations proposées sur le site (mêmes prix que la page Formules)
-const CATALOGUE = [
-  { des: "Refonte de site (jusqu'à 5 pages)", pu: 500 },
-  { des: "Création de site vitrine (jusqu'à 5 pages)", pu: 750 },
-  { des: "Site Premium vitrine (jusqu'à 8 pages)", pu: 1200 },
-  { des: "Boutique en ligne · Premium Boutique (jusqu'à 20 produits)", pu: 1900, boutique: true },
-  { des: "Produits supplémentaires (lot de 20)", pu: 80, boutique: true },
-  { des: "Codes promo et livraison offerte", pu: 100, boutique: true },
-  { des: "Fiche Google Business", pu: 80 },
-  { des: "Nom de domaine (1re année)", pu: 15 },
-  { des: "Maintenance, 1er mois (40 €/mois, 6 mois minimum)", pu: 40 },
-  { des: "Maintenance boutique, 1er mois (70 €/mois, 6 mois minimum)", pu: 70, boutique: true },
-  { des: "Heure de modifications hors maintenance", pu: 30 }
+const catalogue = () => [
+  { des: "Refonte de site (jusqu'à 5 pages)", pu: T.refonte },
+  { des: "Création de site vitrine (jusqu'à 5 pages)", pu: T.creation },
+  { des: "Site Premium vitrine (jusqu'à 8 pages)", pu: T.premium },
+  { des: "Boutique en ligne · Premium Boutique (jusqu'à 20 produits)", pu: T.boutique, boutique: true },
+  { des: "Produits supplémentaires (lot de 20)", pu: T.lotProduits, boutique: true },
+  { des: "Codes promo et livraison offerte", pu: T.promo, boutique: true },
+  { des: "Page supplémentaire", pu: T.page },
+  { des: "Galerie photos", pu: T.galerie },
+  { des: "Blog", pu: T.blog },
+  { des: "Réservation en ligne", pu: T.resa },
+  { des: "Fiche Google Business", pu: T.google },
+  { des: "Nom de domaine (1re année)", pu: T.domaine },
+  { des: `Maintenance, 1er mois (${T.maint} €/mois, 6 mois minimum)`, pu: T.maint },
+  { des: `Maintenance boutique, 1er mois (${T.maintBoutique} €/mois, 6 mois minimum)`, pu: T.maintBoutique, boutique: true },
+  { des: "Heure de modifications hors maintenance", pu: T.heure }
 ];
 const COND_BOUTIQUE = "Boutique en ligne : les frais du service de paiement (Stripe, compte ouvert au nom du client) restent à la charge du client, Studio Mel ne prend aucune commission sur les ventes. Les CGV et pages légales sont rédigées à partir des informations fournies par le client, qui les valide.";
 const COND_AVOIR = "Avoir à valoir sur une prochaine facture ou remboursé par virement. TVA non applicable, art. 293 B du CGI.";
@@ -134,6 +141,7 @@ $("newFacture").onclick = () => openDoc("factures");
 
 async function load() {
   await chargerReglages();
+  try { const sc = await getDoc(doc(db, "site", "contenu")); const t = sc.exists() ? (sc.data().tarifs || {}) : {}; T = { ...TARIFS_DEF }; for (const k in t) if (typeof t[k] === "number" && t[k] >= 0) T[k] = t[k]; } catch (e) { console.warn("tarifs", e); }
   for (const k of ["devis", "factures"]) {
     const snap = await getDocs(query(collection(db, k), orderBy("createdAt", "desc")));
     data[k] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -144,6 +152,7 @@ async function load() {
     try { const snap = await getDocs(collection(db, k)); data[k] = snap.docs.map(d => ({ id: d.id, ...d.data() })); }
     catch (e) { console.warn(k, e); data[k] = []; data[k].bloque = true; }
   }
+  await synchroValidations();
   renderList();
 }
 
@@ -739,6 +748,28 @@ function renderProspects(){
 }
 
 // ================= PROJETS =================
+// étape de l'espace client correspondant au statut du projet
+const ETAPES_E = ["Premier échange", "Devis signé", "Maquette", "Création du site", "Mise en ligne", "Suivi"];
+const ETAPE_DU_STATUT = { demarrage: 1, maquette: 2, dev: 3, retours: 3, enligne: 4 };
+const AF_DEF = ["Vos textes (présentation, services)", "Vos photos de réalisations", "Votre logo", "L’accès à votre nom de domaine actuel (si vous en avez un)"];
+function espaceDuProjet(p){
+  if (p.espaceId) { const e = data.espaces.find(x => x.id === p.espaceId); if (e) return e; }
+  const c = p.clientKey && annuaire().find(x => x.key === p.clientKey), m = c && String(c.email || "").toLowerCase();
+  return m ? data.espaces.find(x => String(x.email || "").toLowerCase() === m) || null : null;
+}
+function ouvrirEspace(id){
+  const box = $("cadre"), old = box.querySelector('iframe[data-k="espaces"]'); if (old) old.remove();
+  const f = document.createElement("iframe"); f.dataset.k = "espaces"; f.src = "admin-clients.html" + (id ? "?id=" + encodeURIComponent(id) : ""); f.title = "Espaces clients";
+  box.appendChild(f); tab = "espaces"; renderList();
+}
+// maquette validée dans l'espace client → étape cochée dans le projet
+async function synchroValidations(){
+  for (const p of data.projets) {
+    const e = espaceDuProjet(p); if (!e || !e.validation || e.validation.etat !== "ok") continue;
+    const t = (p.taches || []).find(x => /maquette valid/i.test(x.t) && !x.ok); if (!t) continue;
+    t.ok = true; try { await updateDoc(doc(db, "projets", p.id), { taches: p.taches }); } catch (err) {}
+  }
+}
 const STATUTS_P = { demarrage: "À démarrer", maquette: "Maquette", dev: "Développement", retours: "Retours client", enligne: "En ligne", pause: "En pause" };
 const COUL_P = { demarrage: "t-nouveau", maquette: "t-nouveau", dev: "t-nouveau", retours: "t-envoye", enligne: "t-accepte", pause: "t-archive" };
 let projetPreset = null;
@@ -827,6 +858,10 @@ function renderProjet(id){
       </div>
       ${fx.length ? `<ul class="todo">${fx.map(f => `<li><button data-fx="${f.id}"><span class="tag t-${statutF(f)}">Facture · ${STATUTS.factures[statutF(f)]}</span><b>${esc(f.numero || "")} · ${eur(total(f))}</b><small>${esc(f.date || "")}</small></button></li>`).join("")}</ul>` : `<p class="calm">${nouveau ? "Enregistre le projet pour lui rattacher des factures." : "Aucune facture liée."}</p>`}
       ${!nouveau ? `<button id="factJ" style="margin-top:12px;width:100%">Créer une facture pour ce projet</button>` : ""}
+      ${!nouveau ? (() => { const e = espaceDuProjet({ ...p, id }), v = e && e.validation;
+        return `<h3 style="margin-top:22px">Espace client</h3>${e ? `<div class="mini"><div><small>Étape affichée</small><b>${esc(ETAPES_E[e.etape || 0])}</b></div><div><small>Maquette</small><b>${!e.maquette ? "—" : !v ? "En attente" : v.etat === "ok" ? "Validée ✓" : "Modifs demandées"}</b></div></div>
+          <p class="calm" style="font-size:13px;margin:6px 0">Mis à jour automatiquement quand tu enregistres ce projet.</p><button id="espJ" style="width:100%">Ouvrir son espace client</button>`
+          : `<p class="calm">Pas encore d’espace client pour ce projet.</p><button id="espJ" style="width:100%">Créer son espace client</button>`}`; })() : ""}
       ${!nouveau ? `<h3 style="margin-top:22px">Documents</h3>
       ${data.documents.filter(o => o.projetId === id).map(o => `<div class="pdoc"><b>${esc(o.titre)}</b><div class="liens">${lienListe(o.liens).map(lienHtml).join("")}</div></div>`).join("") || `<p class="calm">Aucun document lié.</p>`}
       <button id="docJ" style="margin-top:10px;width:100%">Ajouter un document</button>` : ""}`;
@@ -836,6 +871,22 @@ function renderProjet(id){
     $("addT").onclick = ajouter;
     $("newT").onkeydown = e => { if (e.key === "Enter") ajouter(); };
     document.querySelectorAll("[data-fx]").forEach(b => b.onclick = () => { tab = "factures"; openDoc("factures", b.dataset.fx); });
+    if ($("espJ")) $("espJ").onclick = async () => {
+      const e = espaceDuProjet({ ...p, id });
+      if (e) return ouvrirEspace(e.id);
+      const c = annuaire().find(x => x.key === p.clientKey), email = String((c && c.email) || "").trim().toLowerCase();
+      if (!/^[^@ ]+@[^@ ]+\.[^@ ]+$/.test(email)) { $("msgJ").textContent = "Ajoute d’abord un e-mail valide dans la fiche du client."; return; }
+      const dv = p.devisId && data.devis.find(d => d.id === p.devisId);
+      const esp = { nom: (c && (c.nom || c.entreprise)) || "", email, projet: p.titre || "", formule: dv ? ((dv.lignes && dv.lignes[0] && dv.lignes[0].des) || dv.formule || "") : "",
+        etape: ETAPE_DU_STATUT[p.statut] ?? 1, maquette: p.maquette || "", site: p.site || "", docs: [], afournir: AF_DEF.map(t => ({ t, fait: false })), validation: null, creeLe: serverTimestamp(), maj: serverTimestamp() };
+      $("espJ").disabled = true;
+      try {
+        const r = await addDoc(collection(db, "espaces"), esp);
+        await updateDoc(doc(db, "projets", id), { espaceId: r.id });
+        const o = data.projets.find(x => x.id === id); if (o) o.espaceId = r.id;
+        await chargerEspaces(); ouvrirEspace(r.id);
+      } catch (err) { $("espJ").disabled = false; $("msgJ").textContent = "Échec : vérifie les règles Firestore (espaces)."; }
+    };
     if ($("docJ")) $("docJ").onclick = () => { tab = "documents"; docEdit = "__nouveau"; docPreset = { projetId: id, clientKey: p.clientKey, categorie: "Contenus client", retour: id }; renderList(); };
     if ($("factJ")) $("factJ").onclick = () => {
       const c = annuaire().find(x => x.key === p.clientKey) || {};
@@ -865,7 +916,11 @@ function renderProjet(id){
         <label>Livraison prévue<input id="jE" type="date" value="${esc(p.echeance || "")}"></label>
       </div>
       <label>Montant hors devis (si pas de devis lié)<input id="jM" inputmode="decimal" value="${p.montant || ""}" placeholder="—"></label>
-      <label>Liens (un par ligne : site en ligne, maquette, dossier des contenus…)<textarea id="jL" rows="3" placeholder="https://">${esc(p.liens || "")}</textarea></label>
+      <div class="cols3" style="grid-template-columns:1fr 1fr">
+        <label>Lien de la maquette<input id="jQ" value="${esc(p.maquette || "")}" placeholder="https://"></label>
+        <label>Adresse du site en ligne<input id="jW" value="${esc(p.site || "")}" placeholder="https://"></label>
+      </div>
+      <label>Autres liens (un par ligne : dossier des contenus, accès…)<textarea id="jL" rows="3" placeholder="https://">${esc(p.liens || "")}</textarea></label>
       ${liens(p.liens).length ? `<div class="liens">${liens(p.liens).map(u => /^https?:\/\//i.test(u) ? `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\//, "").slice(0, 60))}</a>` : `<span>${esc(u)}</span>`).join("")}</div>` : ""}
       <label>Notes<textarea id="jN" rows="4" placeholder="Couleurs, accès, remarques du client…">${esc(p.notes || "")}</textarea></label>
     </div>
@@ -879,12 +934,22 @@ function renderProjet(id){
   $("saveJ").onclick = async () => {
     const ck = $("jC").value, c = annuaire().find(x => x.key === ck), dv = $("jD").value && data.devis.find(d => d.id === $("jD").value);
     const out = { titre: $("jT").value.trim() || "Projet sans titre", clientKey: ck, client: c ? (c.entreprise || c.nom || c.email || "") : "", devisId: dv ? dv.id : "", devisNum: dv ? (dv.numero || "") : "",
-      statut: $("jS").value, debut: $("jB").value, echeance: $("jE").value, montant: num($("jM").value), liens: $("jL").value, notes: $("jN").value, taches: p.taches || [] };
+      statut: $("jS").value, debut: $("jB").value, echeance: $("jE").value, montant: num($("jM").value), liens: $("jL").value, notes: $("jN").value, taches: p.taches || [],
+      maquette: $("jQ").value.trim(), site: $("jW").value.trim() };
     if (out.statut === "enligne" && !p.livre) out.livre = today();
     $("saveJ").disabled = true;
     try {
       if (nouveau) { out.createdAt = serverTimestamp(); const r = await addDoc(collection(db, "projets"), out); projetOuvert = r.id; }
       else await updateDoc(doc(db, "projets", id), out);
+      // l'espace client du projet suit automatiquement : étape, maquette, adresse du site
+      const esp = espaceDuProjet({ ...p, ...out });
+      if (esp) {
+        const maj = { projet: out.titre, maj: serverTimestamp() };
+        if (out.statut !== "pause") { const et = ETAPE_DU_STATUT[out.statut]; if (et != null && !(out.statut === "enligne" && (esp.etape || 0) > et)) maj.etape = et; }
+        if (out.maquette !== (esp.maquette || "")) { maj.maquette = out.maquette; if (esp.maquette) maj.validation = null; }
+        if (out.site) maj.site = out.site;
+        try { await updateDoc(doc(db, "espaces", esp.id), maj); } catch (e) { console.warn("espace", e); }
+      }
       projetPreset = null; await load(); tab = "projets"; renderList(); if ($("msgJ")) $("msgJ").textContent = "Enregistré.";
     } catch (e) { console.error(e); if ($("saveJ")) $("saveJ").disabled = false; if ($("msgJ")) $("msgJ").textContent = "Échec : " + (e.code === "permission-denied" ? "ajoute la règle « projets » dans Firestore." : (e.message || "erreur inconnue")); }
   };
@@ -1091,10 +1156,10 @@ function renderParametres(){
       <h3>Identité de facturation</h3>
       <p class="calm" style="margin:-4px 0 6px">Reprise automatiquement dans tes nouveaux devis et factures.</p>
       ${f("gN", "Nom affiché", R.nom)}
-      ${f("gA", "Adresse", R.adresse, 'placeholder="N° et rue, code postal, ville"')}
+      ${f("gA", "Adresse (publiée dans les mentions légales du site)", R.adresse, 'placeholder="N° et rue, code postal, ville"')}
       ${f("gS", "SIRET", R.siret, 'inputmode="numeric" placeholder="14 chiffres (après l’immatriculation)"')}
       ${f("gM", "E-mail", R.email, 'type="email"')}
-      ${f("gI", "IBAN (affiché sur les factures)", R.iban, 'placeholder="FR76 …"')}
+      ${f("gI", "IBAN (sur les factures seulement, jamais sur le site)", R.iban, 'placeholder="FR76 …"')}
     </div>
     <div class="panel fiche">
       <h3>Activité</h3>
@@ -1119,7 +1184,12 @@ function renderParametres(){
     const patch = { nom: $("gN").value.trim(), adresse: $("gA").value.trim(), siret, email: $("gM").value.trim(), iban: $("gI").value.trim().toUpperCase(),
       debut: $("gD").value, taux: num($("gT").value), objectif: num($("gO").value), plafond: num($("gP").value) || 83600, seuilTva: num($("gV").value) || 37500 };
     $("gSave").disabled = true;
-    try { await majReglages(patch); $("gMsg").textContent = "Enregistré."; }
+    try {
+      await majReglages(patch);
+      // partie publique de l'identité : affichée automatiquement sur le site (l'IBAN reste privé)
+      await setDoc(doc(db, "site", "contenu"), { identite: { nom: "Melvyn Clouzet", siret: patch.siret, adresse: patch.adresse } }, { merge: true });
+      $("gMsg").textContent = patch.siret ? "Enregistré. Ton SIRET et ton adresse s’affichent maintenant sur le site." : "Enregistré.";
+    }
     catch (e) { $("gMsg").textContent = "Échec : vérifie les règles Firestore (collection « compteurs »)."; }
     $("gSave").disabled = false;
   };
@@ -1228,7 +1298,7 @@ function openDoc(kind, id, preset) {
   if (!base.numero) { base.numero = nextNum(kind); provisoire = base.numero; }
   if (!base.date) base.date = today();
   if (!base.statut) base.statut = kind === "devis" ? "brouillon" : kind === "avoirs" ? "emis" : "attente";
-  if (!base.conditions) base.conditions = kind === "devis" ? COND_DEVIS : kind === "avoirs" ? COND_AVOIR : (R.iban ? COND_FACT.replace("IBAN : [à compléter]", "IBAN : " + R.iban) : COND_FACT);
+  if (!base.conditions) base.conditions = kind === "devis" ? condDevis() : kind === "avoirs" ? COND_AVOIR : (R.iban ? COND_FACT.replace("IBAN : [à compléter]", "IBAN : " + R.iban) : COND_FACT);
   if (!id) {
     if (!base.emNom && R.nom) base.emNom = R.nom;
     if (!base.emAdr && R.adresse) base.emAdr = R.adresse;
@@ -1298,7 +1368,7 @@ function renderEditor() {
       <tbody id="lines"></tbody>
     </table></div>
     <div class="addrow noprint"><button class="add" id="addL">Ajouter une ligne</button>
-      <select id="cata" aria-label="Ajouter une prestation du catalogue"><option value="">+ Prestation du catalogue</option>${CATALOGUE.map((c, i) => `<option value="${i}">${esc(c.des)} · ${eur(c.pu)}</option>`).join("")}</select></div>
+      <select id="cata" aria-label="Ajouter une prestation du catalogue"><option value="">+ Prestation du catalogue</option>${catalogue().map((c, i) => `<option value="${i}">${esc(c.des)} · ${eur(c.pu)}</option>`).join("")}</select></div>
     <div class="tot" id="tot"></div>
     ${isF ? `<div class="pay noprint" id="pay"></div>` : ""}
     ${d.message ? `<div class="cm"><strong>Message du client :</strong> ${esc(d.message)}</div>` : ""}
@@ -1321,7 +1391,7 @@ function renderEditor() {
   if ($("pay")) renderPaiements();
   $("addL").onclick = () => { cur.d.lignes.push({ des: "", qte: 1, pu: 0 }); renderLines(); };
   $("cata").onchange = e => {
-    const c = CATALOGUE[+e.target.value]; e.target.value = ""; if (!c) return;
+    const c = catalogue()[+e.target.value]; e.target.value = ""; if (!c) return;
     const L = cur.d.lignes;
     // remplace la ligne vide de départ plutôt que d'en ajouter une
     if (L.length === 1 && !L[0].des && !num(L[0].pu)) L.splice(0, 1);
