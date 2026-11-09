@@ -12,6 +12,7 @@ const ETAPES = ["Premier échange", "Devis signé", "Maquette", "Création du si
 const AF = ["Vos textes (présentation, services)", "Vos photos de réalisations", "Votre logo", "L’accès à votre nom de domaine actuel (si vous en avez un)"];
 const LIEN = "https://studiomel.eu/espace-client";
 let LISTE = [], sel = null, stopMsg = null;
+let ouvrirId = new URLSearchParams(location.search).get("id"); // depuis un projet de l'ERP
 localStorage.setItem("sm-moi", "1");
 
 const ts = x => x && x.toMillis ? x.toMillis() : 0;
@@ -82,7 +83,7 @@ function st(t, c){ $("st").textContent = t; $("st").className = "st " + (c || ""
 
 onAuthStateChanged(auth, u => {
   $("login").classList.toggle("hide", !!u); $("app").classList.toggle("hide", !u);
-  if (u) onSnapshot(query(collection(db, "espaces"), orderBy("maj", "desc")), s => { LISTE = s.docs.map(d => ({ id: d.id, ...d.data() })); liste(); if (sel && !LISTE.find(x => x.id === sel)) sel = null; },
+  if (u) onSnapshot(query(collection(db, "espaces"), orderBy("maj", "desc")), s => { LISTE = s.docs.map(d => ({ id: d.id, ...d.data() })); liste(); if (ouvrirId && LISTE.find(x => x.id === ouvrirId)) { const i = ouvrirId; ouvrirId = null; ouvrir(i); } if (sel && !LISTE.find(x => x.id === sel)) sel = null; },
     e => { if (e.code === "permission-denied") $("err-regles").classList.remove("hide"); });
 });
 $("lbtn").addEventListener("click", async () => { $("lerr").textContent = ""; try { await signInWithEmailAndPassword(auth, $("lmail").value.trim(), $("lpass").value); } catch (e) { $("lerr").textContent = "Identifiant ou mot de passe incorrect."; } });

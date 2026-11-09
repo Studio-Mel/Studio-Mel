@@ -103,6 +103,16 @@
         document.getElementById('ban-x').onclick = function(){ ban.hidden = true; document.documentElement.classList.remove('ban-on'); try { sessionStorage.setItem('sm-ban-x', cle); } catch (e) {} };
       }
     }
+    // identité légale (remplie dans les Paramètres de l'ERP) : mentions légales, CGV, pied de page
+    var I = C.identite || {};
+    if (I.siret) {
+      var siretF = String(I.siret).replace(/^(\d{3})(\d{3})(\d{3})(\d{5})$/, '$1 $2 $3 $4');
+      document.querySelectorAll('[data-id="siret"]').forEach(function(e){ e.textContent = siretF; });
+      document.querySelectorAll('[data-id="adresse"]').forEach(function(e){ e.textContent = I.adresse || ''; });
+      document.querySelectorAll('[data-identite]').forEach(function(e){ e.hidden = false; });
+      document.querySelectorAll('[data-id-todo]').forEach(function(e){ e.hidden = true; });
+      document.querySelectorAll('[data-id-pied]').forEach(function(e){ e.textContent = 'SIRET ' + siretF; });
+    }
     var faq = document.querySelector('[data-cms-faq]');
     if (faq && Array.isArray(C.faq) && C.faq.length) {
       faq.innerHTML = C.faq.filter(function(x){ return x && x.q; }).map(function(x, i){ return '<details id="q-' + (i + 1) + '"><summary>' + esc(x.q) + '</summary><p>' + esc(x.r) + '</p></details>'; }).join('');

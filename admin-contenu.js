@@ -233,7 +233,7 @@ async function charger(){
 $("save").addEventListener("click", async () => {
   $("save").disabled = true; st("Enregistrement…");
   try {
-    await setDoc(doc(db, "site", "contenu"), { tarifs: C.tarifs, accueil: C.accueil, formules: C.formules, faq: C.faq.filter(x => x.q && x.q.trim()), avis: C.avis.filter(x => x.nom && x.texte).map(x => ({ nom: x.nom.trim(), metier: (x.metier || "").trim(), texte: x.texte.trim(), note: x.note || 5 })), avisGoogle: C.avisGoogle || "", bandeau: { actif: !!C.bandeau.actif, texte: (C.bandeau.texte || "").trim(), lien: C.bandeau.lien || "" }, maj: serverTimestamp() });
+    await setDoc(doc(db, "site", "contenu"), { tarifs: C.tarifs, accueil: C.accueil, formules: C.formules, faq: C.faq.filter(x => x.q && x.q.trim()), avis: C.avis.filter(x => x.nom && x.texte).map(x => ({ nom: x.nom.trim(), metier: (x.metier || "").trim(), texte: x.texte.trim(), note: x.note || 5 })), avisGoogle: C.avisGoogle || "", bandeau: { actif: !!C.bandeau.actif, texte: (C.bandeau.texte || "").trim(), lien: C.bandeau.lien || "" }, maj: serverTimestamp() }, { merge: true });
     modifie = false; st("Enregistré ✓ Le site est à jour (jusqu’à 5 minutes pour les visiteurs déjà sur le site).", "ok");
   } catch (e) { $("save").disabled = false; erreur(e); }
 });
