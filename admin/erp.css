@@ -459,3 +459,14 @@ main{max-width:1320px;width:100%;margin:0 auto;padding:26px 32px 64px}
 .inl[hidden]{display:none}
 .addrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .addrow select{width:auto;height:36px;padding:0 12px;border-radius:99px;font-size:13px;background:#f3f5fa;color:#14171F;border:1px solid #d9deea}
+
+/* pages Site intégrées dans l'ERP */
+.cadre{position:relative;margin:-8px -4px 0}
+.cadre iframe{display:block;width:100%;height:calc(100vh - 120px);height:calc(100dvh - 120px);border:0;border-radius:18px;background:transparent}
+.cadre iframe[hidden]{display:none}
+/* plafonds micro-entreprise */
+.pf{display:grid;gap:6px;margin-top:12px}
+.pf-h{display:flex;justify-content:space-between;font-size:14px}
+.pf small{color:var(--muted,#8b93a7);font-size:12.5px}
+.pf.pf-warn .f-bar i{background:linear-gradient(90deg,#F5B451,#ff9d4d)}
+.pf.pf-ko .f-bar i{background:linear-gradient(90deg,#ff6b6b,#ff8a8f)}

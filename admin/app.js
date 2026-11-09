@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
-import { getFirestore, collection, getDocs, doc, addDoc, updateDoc, deleteDoc, setDoc, serverTimestamp, query, orderBy, runTransaction } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, getDoc, doc, addDoc, updateDoc, deleteDoc, setDoc, serverTimestamp, query, orderBy, runTransaction } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
 
 const app = initializeApp({
   apiKey: "AIzaSyA42dvTyNYoQCliUXqF3ie_5SxWI95xxoY",
@@ -22,7 +22,7 @@ const today = () => new Date().toLocaleDateString("fr-FR");
 // ---- Mail automatique au client (rendez-vous confirmé ou refusé) ----
 // Colle ici l'ID du modèle "mail client" créé sur EmailJS, ex. 'template_abc1234'
 const TEMPLATE_CLIENT = "";
-const SITE = "https://studio-mel.github.io/Studio-Mel/";
+const SITE = "https://studiomel.eu/";
 if (window.emailjs) emailjs.init({ publicKey: "53BDiH6RSJl99cF65" });
 
 const STATUTS_RDV = { nouveau: "En attente", accepte: "Confirmé", refuse: "Refusé" };
@@ -50,11 +50,33 @@ const COND_BOUTIQUE = "Boutique en ligne : les frais du service de paiement (Str
 const COND_AVOIR = "Avoir à valoir sur une prochaine facture ou remboursé par virement. TVA non applicable, art. 293 B du CGI.";
 const COND_FACT = "Paiement par virement à réception. IBAN : [à compléter]. Pénalités de retard : 3 fois le taux d'intérêt légal. Indemnité forfaitaire pour frais de recouvrement : 40 € (professionnels). Pas d'escompte pour paiement anticipé. TVA non applicable, art. 293 B du CGI.";
 
-let data = { devis: [], factures: [], clients: [], depenses: [], projets: [], avoirs: [], documents: [], rappels: [] };
+let data = { devis: [], factures: [], clients: [], depenses: [], projets: [], avoirs: [], documents: [], rappels: [], espaces: [] };
+const tsF = x => (x && x.toMillis ? x.toMillis() : 0);
+const espacesNonLus = () => data.espaces.filter(e => tsF(e.dernierClient) > tsF(e.vuMel));
+async function chargerEspaces(){
+  try { const snap = await getDocs(collection(db, "espaces")); data.espaces = snap.docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { data.espaces = []; }
+}
 let ficheKey = null, filtreC = "tous", rechC = "", depEdit = null, ficheRetour = "clients", rechP = "", filtreJ = "cours", rechJ = "", projetOuvert = null;
 let tab = "dash";
 let filtreF = "factures", vuePl = "mois", datePl = new Date(), rechDoc = "", catDoc = "";
 let cur = null;
+
+// ---- Réglages : enregistrés dans Firebase (compteurs/reglages), donc identiques sur ton téléphone et ton ordi ----
+const REGLAGES_DEFAUT = { nom: "Mel · Studio Mel", adresse: "", siret: "", email: "studio-mel@outlook.fr", iban: "", debut: "", taux: 0, objectif: 0, plafond: 83600, seuilTva: 37500 };
+let R = { ...REGLAGES_DEFAUT };
+async function chargerReglages(){
+  try {
+    const s = await getDoc(doc(db, "compteurs", "reglages"));
+    R = { ...REGLAGES_DEFAUT, ...(s.exists() ? s.data() : {}) };
+    // reprise des anciennes valeurs enregistrées dans ce navigateur
+    let old = {}; try { old = { taux: parseFloat(localStorage.getItem("taux-urssaf")) || 0, objectif: parseFloat(localStorage.getItem("objectif-ca")) || 0 }; } catch {}
+    const maj = {};
+    if (!R.taux && old.taux) maj.taux = R.taux = old.taux;
+    if (!R.objectif && old.objectif) maj.objectif = R.objectif = old.objectif;
+    if (Object.keys(maj).length) await setDoc(doc(db, "compteurs", "reglages"), maj, { merge: true });
+  } catch (e) { console.warn("réglages", e); }
+}
+async function majReglages(patch){ Object.assign(R, patch); await setDoc(doc(db, "compteurs", "reglages"), patch, { merge: true }); }
 
 onAuthStateChanged(auth, u => {
   $("login").classList.toggle("hide", !!u);
@@ -70,7 +92,7 @@ $("burger").onclick = () => appEl.classList.add("menu");
 $("veil").onclick = () => appEl.classList.remove("menu");
 document.querySelectorAll(".side .tabs button").forEach(b => b.addEventListener("click", () => { appEl.classList.remove("menu"); window.scrollTo(0, 0); }));
 document.addEventListener("keydown", e => { if (e.key === "Escape") appEl.classList.remove("menu"); });
-const TITRES = { planning: ["Pilotage", "Planning"], documents: ["Gestion", "Documents"], prospects: ["Commercial", "Prospects"], projets: ["Production", "Projets"], dash: ["Pilotage", "Tableau de bord"], devis: ["Commercial", "Demandes et devis"], rdv: ["Commercial", "Rendez-vous"], clients: ["Commercial", "Clients"], factures: ["Gestion", "Factures"], depenses: ["Gestion", "Dépenses"] };
+const TITRES = { contenu: ["Site", "Contenu du site"], espaces: ["Site", "Espaces clients"], stats: ["Site", "Statistiques"], parametres: ["Compte", "Paramètres"], planning: ["Pilotage", "Planning"], documents: ["Gestion", "Documents"], prospects: ["Commercial", "Prospects"], projets: ["Production", "Projets"], dash: ["Pilotage", "Tableau de bord"], devis: ["Commercial", "Demandes et devis"], rdv: ["Commercial", "Rendez-vous"], clients: ["Commercial", "Clients"], factures: ["Gestion", "Factures"], depenses: ["Gestion", "Dépenses"] };
 function titre(crumb, t){ $("crumb").textContent = crumb; $("pageTitle").textContent = t; document.title = t + " · Studio Mel"; }
 
 $("lbtn").onclick = async () => {
@@ -90,15 +112,34 @@ $("tabP").onclick = () => { tab = "prospects"; renderList(); };
 $("tabL").onclick = () => { tab = "planning"; renderList(); };
 $("tabO").onclick = () => { tab = "documents"; renderList(); };
 $("tabJ").onclick = () => { tab = "projets"; projetOuvert = null; renderList(); };
+$("tabS").onclick = () => { tab = "contenu"; renderList(); };
+$("tabE").onclick = () => { tab = "espaces"; renderList(); };
+$("tabT").onclick = () => { tab = "stats"; renderList(); };
+$("tabG").onclick = () => { tab = "parametres"; renderList(); };
+
+// ---- pages Site intégrées dans l'ERP (la barre latérale reste en place) ----
+const CADRES = { contenu: "admin-contenu.html", espaces: "admin-clients.html", stats: "admin-stats.html" };
+let dernierOnglet = "dash";
+function afficherCadre(k){
+  const box = $("cadre");
+  box.querySelectorAll("iframe").forEach(f => f.hidden = f.dataset.k !== k);
+  if (!box.querySelector(`iframe[data-k="${k}"]`)) {
+    const f = document.createElement("iframe");
+    f.dataset.k = k; f.src = CADRES[k]; f.title = TITRES[k][1];
+    box.appendChild(f);
+  }
+}
 $("newDevis").onclick = () => openDoc("devis");
 $("newFacture").onclick = () => openDoc("factures");
 
 async function load() {
+  await chargerReglages();
   for (const k of ["devis", "factures"]) {
     const snap = await getDocs(query(collection(db, k), orderBy("createdAt", "desc")));
     data[k] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
   }
   // clients et dépenses : si les règles Firestore ne sont pas encore à jour, on continue sans
+  await chargerEspaces();
   for (const k of ["clients", "depenses", "projets", "avoirs", "documents", "rappels"]) {
     try { const snap = await getDocs(collection(db, k)); data[k] = snap.docs.map(d => ({ id: d.id, ...d.data() })); }
     catch (e) { console.warn(k, e); data[k] = []; data[k].bloque = true; }
@@ -113,6 +154,11 @@ const total = d => Math.round((brut(d) - montantRemise(d)) * 100) / 100;
 function renderList() {
   $("list").classList.remove("hide");
   $("editor").classList.add("hide");
+  $("cadre").classList.toggle("hide", !CADRES[tab]);
+  [["tabS", "contenu"], ["tabE", "espaces"], ["tabT", "stats"], ["tabG", "parametres"]].forEach(([b, k]) => $(b).classList.toggle("on", tab === k));
+  // en revenant des espaces clients, on remet à jour les messages lus
+  if (dernierOnglet === "espaces" && tab !== "espaces") chargerEspaces().then(() => { $("nbE").textContent = espacesNonLus().length || ""; if (tab === "dash") renderDash(); });
+  dernierOnglet = tab;
   $("tabH").classList.toggle("on", tab === "dash");
   $("tabD").classList.toggle("on", tab === "devis");
   $("tabF").classList.toggle("on", tab === "factures");
@@ -123,8 +169,8 @@ function renderList() {
   $("tabJ").classList.toggle("on", tab === "projets");
   $("tabL").classList.toggle("on", tab === "planning");
   $("tabO").classList.toggle("on", tab === "documents");
-  const nouv = data.devis.filter(d => d.statut === "nouveau").length;
-  const acc = data.devis.filter(d => d.statut === "accepte" && d.type !== "rdv" && d.formule !== "Rendez-vous").length;
+  const nouv = data.devis.filter(d => isDemande(d) && d.statut === "nouveau").length;
+  const acc = data.devis.filter(d => d.statut === "accepte" && isDemande(d)).length;
   const fact = data.factures.reduce((s, f) => s + total(f), 0);
   const enc = data.factures.reduce((s, f) => s + paye(f), 0);
   $("stats").innerHTML = `
@@ -134,13 +180,16 @@ function renderList() {
     <div class="stat"><small>Encaissé</small><div>${eur(enc)}</div></div>`;
   const isRdv = d => d.type === "rdv" || d.formule === "Rendez-vous";
   titre(...(TITRES[tab] || TITRES.dash));
-  $("nbD").textContent = data.devis.filter(d => !isRdv(d) && d.statut === "nouveau").length || "";
+  $("nbD").textContent = data.devis.filter(d => isDemande(d) && d.statut === "nouveau").length || "";
   $("nbR").textContent = data.devis.filter(d => isRdv(d) && d.statut === "nouveau").length || "";
   $("nbF").textContent = data.factures.filter(enRetardF).length || "";
   $("nbL").textContent = rappelsDus().length || "";
   $("nbP").textContent = relancesDues().length || "";
   $("nbJ").textContent = data.projets.filter(projetEnRetard).length || "";
-  $("stats").classList.toggle("hide", ["dash", "clients", "depenses", "rdv", "prospects", "projets", "planning", "documents", "factures"].includes(tab));
+  $("nbE").textContent = espacesNonLus().length || "";
+  $("stats").classList.toggle("hide", ["dash", "clients", "depenses", "rdv", "prospects", "projets", "planning", "documents", "factures", "parametres"].includes(tab));
+  if (CADRES[tab]) { $("list").classList.add("hide"); return afficherCadre(tab); }
+  if (tab === "parametres") return renderParametres();
   if (tab === "planning") return renderPlanning();
   if (tab === "documents") return renderDocuments();
   if (tab === "factures") return renderFactures();
@@ -150,7 +199,7 @@ function renderList() {
   if (tab === "clients") return ficheKey ? renderFiche(ficheKey) : renderClients();
   if (tab === "depenses") return renderDepenses();
   if (tab === "rdv") return renderRdv(data.devis.filter(isRdv));
-  const list = tab === "devis" ? data.devis.filter(d => !isRdv(d)) : data[tab];
+  const list = tab === "devis" ? data.devis.filter(isDemande) : data[tab];
   if (!list.length) {
     $("items").innerHTML = `<div class="empty">${tab === "devis" ? "Aucune demande pour l'instant. Elles arriveront ici dès qu'un client remplit le formulaire." : "Aucune facture. Crée-en une, ou transforme un devis accepté en facture."}</div>`;
     return;
@@ -201,7 +250,7 @@ function texteClient(d, ok, mot){
   const q = quand(d), prenom = d.nom ? d.nom.split(" ")[0] : "";
   const comment = { "Téléphone": "Je vous appellerai au " + (d.tel || "numéro indiqué") + ".", "Visio": "Je vous enverrai le lien de la visio juste avant le rendez-vous.", "Sur place": "Je vous recontacte pour convenir de l'adresse." }[d.mode] || "";
   if (ok) return { sujet: "Votre rendez-vous avec Studio Mel est confirmé", contenu: `Bonjour ${prenom},\n\nC'est confirmé : rendez-vous le ${q}. ${comment}\n\nÀ très vite,\nMel, Studio Mel` };
-  return { sujet: "Votre demande de rendez-vous avec Studio Mel", contenu: `Bonjour ${prenom},\n\nMalheureusement, je ne suis pas disponible le ${q}.${mot ? "\n\n" + mot : ""}\n\nVous pouvez choisir un autre créneau ici : ${SITE}#contact\n\nÀ bientôt,\nMel, Studio Mel` };
+  return { sujet: "Votre demande de rendez-vous avec Studio Mel", contenu: `Bonjour ${prenom},\n\nMalheureusement, je ne suis pas disponible le ${q}.${mot ? "\n\n" + mot : ""}\n\nVous pouvez choisir un autre créneau ici : ${SITE}contact/#rdv\n\nÀ bientôt,\nMel, Studio Mel` };
 }
 
 async function repondre(id, ok, btn){
@@ -238,6 +287,9 @@ function frDate(s){ // "28/10/2026" -> Date
 function docDate(d){ return frDate(d.date) || (d.createdAt && d.createdAt.toDate ? d.createdAt.toDate() : null); }
 const jours = (a, b) => Math.floor((b - a) / 864e5);
 const isRdvDoc = d => d.type === "rdv" || d.formule === "Rendez-vous";
+// téléchargements de la checklist du site : des prospects, pas des demandes de devis
+const isGuide = d => d.type === "guide" || d.formule === "Checklist gratuite";
+const isDemande = d => !isRdvDoc(d) && !isGuide(d);
 const lignesMaint = d => (d.lignes || []).filter(l => /maintenance/i.test(l.des || ""));
 
 // encaissements : facture payée = total à sa date de paiement ; facture en attente = acompte déjà versé
@@ -267,7 +319,7 @@ function encaissements(){
   return out.filter(e => e.date);
 }
 
-function taux(){ try { return parseFloat(localStorage.getItem("taux-urssaf")) || 0; } catch { return 0; } }
+function taux(){ return num(R.taux); }
 
 function renderDash(){
   const now = new Date(), y = now.getFullYear(), mo = now.getMonth();
@@ -288,7 +340,7 @@ function renderDash(){
   const spark = six.map((v, k) => `<i class="${k === 5 ? "on" : ""}" style="height:${Math.max(8, v / maxSix * 100)}%" title="${eur(v)}"></i>`).join("");
   const diff = moisPrec ? Math.round((moisCe - moisPrec) / moisPrec * 100) : null;
 
-  const dem = data.devis.filter(d => !isRdvDoc(d));
+  const dem = data.devis.filter(isDemande);
   const attente = dem.filter(d => statutD(d) === "envoye"), expires = dem.filter(d => statutD(d) === "expire"), acceptes = dem.filter(d => d.statut === "accepte");
   const accAn = acceptes.filter(d => (frDate(d.dateAccept) || docDate(d) || new Date(0)).getFullYear() === y);
   const payees = data.factures.filter(f => statutF(f) === "payee" && (frDate(f.datePaiement) || docDate(f) || new Date(0)).getFullYear() === y);
@@ -314,6 +366,7 @@ function renderDash(){
 
   // à faire
   const todo = [];
+  espacesNonLus().forEach(e => todo.push({ k: "Message client", c: "t-nouveau", txt: e.nom || e.email || "Client", sub: "Nouveau message ou réponse dans son espace client", go: () => { tab = "espaces"; renderList(); } }));
   dem.filter(d => d.statut === "nouveau").forEach(d => todo.push({ k: "Rappeler", c: "t-nouveau", txt: d.entreprise || d.nom, sub: d.formule || "", go: () => openDoc("devis", d.id) }));
   data.devis.filter(d => isRdvDoc(d) && d.statut === "nouveau").forEach(d => todo.push({ k: "Rendez-vous à accepter", c: "t-nouveau", txt: d.entreprise || d.nom, sub: quand(d), go: () => { tab = "rdv"; renderList(); } }));
   attente.filter(d => docDate(d) && jours(docDate(d), now) >= 7).forEach(d => todo.push({ k: "Relancer le devis", c: "t-envoye", txt: d.entreprise || d.nom, sub: `${d.numero || ""} · envoyé il y a ${jours(docDate(d), now)} jours`, go: () => openDoc("devis", d.id) }));
@@ -344,10 +397,10 @@ function renderDash(){
   const repL = Object.entries(rep).sort((a, b) => b[1] - a[1]), repT = repL.reduce((s, x) => s + x[1], 0);
 
   // objectif annuel
-  let obj = 0; try { obj = parseFloat(localStorage.getItem("objectif-ca")) || 0; } catch {}
+  const obj = num(R.objectif);
   const pct = obj ? Math.min(1, annee / obj) : 0, ARC = Math.PI * 90;
 
-  const abos = data.devis.filter(d => !isRdvDoc(d) && d.statut === "accepte" && lignesMaint(d).length);
+  const abos = data.devis.filter(d => isDemande(d) && d.statut === "accepte" && lignesMaint(d).length);
   const actifs = abos.filter(d => !d.maintFin);
   const mrr = actifs.reduce((s, d) => s + lignesMaint(d).reduce((u, l) => u + num(l.pu), 0), 0);
 
@@ -422,6 +475,22 @@ function renderDash(){
         <button class="exp" id="expR" style="margin:0">Exporter le livre des recettes ${y}</button>
       </div>
     </div>
+
+    ${(() => {
+      // plafond du régime micro, proratisé l'année de création (date de début dans les Paramètres)
+      const deb = R.debut ? new Date(R.debut + "T12:00") : null;
+      const finAn = new Date(y, 11, 31, 12), debAn = new Date(y, 0, 1, 12);
+      const joursAn = Math.round((finAn - debAn) / 864e5) + 1;
+      const prorata = deb && deb.getFullYear() === y ? (Math.round((finAn - deb) / 864e5) + 1) / joursAn : 1;
+      const plaf = Math.round(num(R.plafond || 83600) * prorata), tva = num(R.seuilTva || 37500);
+      const barre = (lab, v, max, aide) => { const pc = max ? Math.min(100, v / max * 100) : 0, cl = pc >= 100 ? "pf-ko" : pc >= 80 ? "pf-warn" : "";
+        return `<div class="pf ${cl}"><div class="pf-h"><span>${lab}</span><b>${Math.round(pc)} %</b></div><div class="f-bar"><i style="width:${Math.max(pc ? 3 : 0, pc)}%"></i></div><small>${eur(v)} sur ${eur(max)} · ${aide}</small></div>`; };
+      return `<div class="panel" style="margin-top:14px">
+        <h3>Plafonds de la micro-entreprise <span class="count">${y}</span></h3>
+        ${barre("Franchise de TVA", annee, tva, annee >= tva ? "<span class='down'>seuil dépassé : vérifie tes obligations de TVA</span>" : annee >= tva * .8 ? "<span class='down'>tu approches du seuil</span>" : "en dessous, tu factures sans TVA")}
+        ${barre("Plafond du régime micro" + (prorata < 1 ? " (proratisé, année de création)" : ""), annee, plaf, "prestations de services")}
+        <p class="calm" style="font-size:12.5px;margin:8px 0 0">Basé sur ce que tu as encaissé. Montants 2026-2028 modifiables dans Paramètres${deb ? "" : " · indique ta date de début d’activité pour le calcul au prorata"}. À vérifier sur autoentrepreneur.urssaf.fr.</p>
+      </div>`; })()}
   </div>`;
 
   // courbe recettes / dépenses
@@ -463,8 +532,8 @@ function renderDash(){
     await updateDoc(doc(db, "devis", b.dataset.stop), { maintFin: today() });
     await load();
   });
-  $("tauxIn").onchange = e => { try { localStorage.setItem("taux-urssaf", String(num(e.target.value))); } catch {} renderDash(); };
-  $("objIn").onchange = e => { try { localStorage.setItem("objectif-ca", String(num(e.target.value))); } catch {} renderDash(); };
+  $("tauxIn").onchange = async e => { try { await majReglages({ taux: num(e.target.value) }); } catch {} renderDash(); };
+  $("objIn").onchange = async e => { try { await majReglages({ objectif: num(e.target.value) }); } catch {} renderDash(); };
   $("expR").onclick = () => exportRecettes(y);
 }
 
@@ -473,7 +542,7 @@ const cleClient = o => String(o.email || o.entreprise || o.nom || "").trim().toL
 const idClient = k => k.replace(/[\/#\[\]$.]/g, "_").slice(0, 140) || "sans-nom";
 function annuaire(){
   const map = new Map();
-  const add = (k, patch) => { if (!k) return; const c = map.get(k) || { key: k, devis: [], factures: [], rdv: [], projets: [] }; map.set(k, Object.assign(c, patch)); return c; };
+  const add = (k, patch) => { if (!k) return; const c = map.get(k) || { key: k, devis: [], factures: [], rdv: [], projets: [], guides: [] }; map.set(k, Object.assign(c, patch)); return c; };
   // fiches enregistrées
   data.clients.forEach(c => add(c.key || c.id, { fiche: c, entreprise: c.entreprise, nom: c.nom, email: c.email, tel: c.tel }));
   const lier = (d, liste) => {
@@ -482,7 +551,7 @@ function annuaire(){
     c.entreprise = c.entreprise || d.entreprise; c.nom = c.nom || d.nom; c.email = c.email || d.email; c.tel = c.tel || d.tel;
     c[liste].push(d);
   };
-  data.devis.forEach(d => lier(d, isRdvDoc(d) ? "rdv" : "devis"));
+  data.devis.forEach(d => lier(d, isGuide(d) ? "guides" : isRdvDoc(d) ? "rdv" : "devis"));
   data.factures.forEach(f => lier(f, "factures"));
   data.projets.forEach(p => { const c = p.clientKey && map.get(p.clientKey); if (c) c.projets.push(p); });
   return [...map.values()].map(c => {
@@ -490,7 +559,7 @@ function annuaire(){
     c.etape = etapeDe(c);
     c.archive = !!(c.fiche && c.fiche.archive);
     c.client = c.ca > 0 || c.devis.some(d => d.statut === "accepte") || c.etape === "gagne";
-    const dates = [...c.devis, ...c.factures, ...c.rdv].map(docDate).filter(Boolean);
+    const dates = [...c.devis, ...c.factures, ...c.rdv, ...c.guides].map(docDate).filter(Boolean);
     if (c.fiche && c.fiche.cree) dates.push(frDate(c.fiche.cree));
     c.derniere = dates.length ? new Date(Math.max(...dates)) : null;
     return c;
@@ -529,13 +598,14 @@ function renderClients(){
 
 function renderFiche(key){
   const nouveau = key === "__nouveau";
-  const c = nouveau ? { key: "", devis: [], factures: [], rdv: [], projets: [], ca: 0, etape: "nouveau" } : annuaire().find(x => x.key === key);
+  const c = nouveau ? { key: "", devis: [], factures: [], rdv: [], projets: [], guides: [], ca: 0, etape: "nouveau" } : annuaire().find(x => x.key === key);
   if (!c) { ficheKey = null; return renderClients(); }
   const f = c.fiche || {};
   const v = k => esc(f[k] ?? c[k] ?? "");
   const histo = [
     ...c.devis.map(d => ({ d: docDate(d), t: "Devis", lab: `${d.numero || "Demande"} · ${d.formule || ""}`, st: STATUTS.devis[statutD(d)] || d.statut, cl: "t-" + statutD(d), m: total(d), go: () => openDoc("devis", d.id) })),
     ...c.factures.map(x => ({ d: docDate(x), t: "Facture", lab: x.numero || "", st: STATUTS.factures[statutF(x)], cl: "t-" + statutF(x), m: total(x), go: () => openDoc("factures", x.id) })),
+    ...c.guides.map(g => ({ d: docDate(g), t: "Checklist", lab: "A téléchargé la checklist du site", st: "Prospect", cl: "t-nouveau", m: null, go: () => {} })),
     ...c.rdv.map(r => ({ d: docDate(r), t: "Rendez-vous", lab: quand(r), st: STATUTS_RDV[r.statut] || r.statut, cl: "t-" + r.statut, m: null, go: () => { tab = "rdv"; renderList(); } })),
     ...data.documents.filter(o => o.clientKey && o.clientKey === c.key).map(o => ({ d: frDate(o.date), t: "Document", lab: o.titre || "", st: o.categorie || "Document", cl: "t-nouveau", m: null, go: () => { tab = "documents"; docEdit = o.id; renderList(); } })),
     ...c.projets.map(p => ({ d: p.debut ? new Date(p.debut + "T12:00") : null, t: "Projet", lab: `${p.titre || "Projet"} · ${avancement(p)} %`, st: STATUTS_P[p.statut] || p.statut, cl: "t-" + (p.statut === "enligne" ? "accepte" : "envoye"), m: null, go: () => { tab = "projets"; projetOuvert = p.id; renderList(); } }))
@@ -638,7 +708,7 @@ function renderProspects(){
     const r = c.fiche && c.fiche.relance, due = r && r <= auj && !["gagne", "perdu"].includes(c.etape);
     return `<article class="pc ${due ? "due" : ""}">
       <button class="pc-o" data-pc="${esc(c.key)}"><b>${esc(c.entreprise || c.nom || c.email)}</b>
-        <small>${esc([c.entreprise && c.nom !== c.entreprise ? c.nom : "", c.fiche && c.fiche.source].filter(Boolean).join(" · ")) || "&nbsp;"}</small>
+        <small>${esc([c.entreprise && c.nom !== c.entreprise ? c.nom : "", (c.fiche && c.fiche.source) || (c.guides.length ? "Checklist du site" : "")].filter(Boolean).join(" · ")) || "&nbsp;"}</small>
         ${r ? `<span class="pc-r">${due ? "Relance à faire" : "Relance"} · ${new Date(r + "T12:00").toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}</span>` : ""}</button>
       <div class="pc-f">${c.tel ? `<a href="tel:${esc(c.tel.replace(/\s/g, ""))}" aria-label="Appeler">${esc(c.tel)}</a>` : `<span>${c.derniere ? c.derniere.toLocaleDateString("fr-FR") : ""}</span>`}
         <select data-et="${esc(c.key)}" aria-label="Changer l'étape">${Object.entries(ETAPES).map(([k, l]) => `<option value="${k}" ${c.etape === k ? "selected" : ""}>${l}</option>`).join("")}</select></div>
@@ -653,6 +723,7 @@ function renderProspects(){
       <div><small>Prospects actifs</small><b>${actifs}</b></div>
       <div><small>Relances à faire</small><b class="${dues ? "down" : ""}">${dues}</b></div>
       <div><small>Taux de transformation</small><b>${conv == null ? "—" : conv + " %"}</b></div>
+      <div><small>Checklists téléchargées</small><b>${data.devis.filter(isGuide).length}</b></div>
     </div>
     <div class="kanban">${Object.entries(ETAPES).map(([k, l]) => { const col = list.filter(c => c.etape === k).sort((a, b) => ((a.fiche && a.fiche.relance) || "9999").localeCompare((b.fiche && b.fiche.relance) || "9999"));
       return `<section class="kcol k-${k}"><h4>${l}<span>${col.length}</span></h4>${col.map(carte).join("") || `<p class="kvide">Vide</p>`}</section>`; }).join("")}</div>`;
@@ -1011,6 +1082,49 @@ function renderDocuments(){
   if ($("oD")) $("oD").onclick = async () => { if (!confirm("Supprimer ce document ? Le fichier lui-même reste sur ton Drive.")) return; try { await deleteDoc(doc(db, "documents", docEdit)); docEdit = null; await load(); } catch (err) { $("oM").textContent = "Échec : vérifie les règles Firestore."; } };
 }
 
+// ================= PARAMÈTRES =================
+function renderParametres(){
+  const f = (id, lab, val, extra = "") => `<label>${lab}<input id="${id}" value="${esc(val ?? "")}" ${extra}></label>`;
+  $("items").innerHTML = `
+  <div class="grid2">
+    <div class="panel fiche">
+      <h3>Identité de facturation</h3>
+      <p class="calm" style="margin:-4px 0 6px">Reprise automatiquement dans tes nouveaux devis et factures.</p>
+      ${f("gN", "Nom affiché", R.nom)}
+      ${f("gA", "Adresse", R.adresse, 'placeholder="N° et rue, code postal, ville"')}
+      ${f("gS", "SIRET", R.siret, 'inputmode="numeric" placeholder="14 chiffres (après l’immatriculation)"')}
+      ${f("gM", "E-mail", R.email, 'type="email"')}
+      ${f("gI", "IBAN (affiché sur les factures)", R.iban, 'placeholder="FR76 …"')}
+    </div>
+    <div class="panel fiche">
+      <h3>Activité</h3>
+      ${f("gD", "Date de début d’activité", R.debut, 'type="date"')}
+      <div class="cols3">
+        ${f("gT", "Taux de cotisations (%)", R.taux || "", 'inputmode="decimal" placeholder="ex. 24,6"')}
+        ${f("gO", "Objectif annuel (€)", R.objectif || "", 'inputmode="decimal" placeholder="ex. 10000"')}
+        <span></span>
+      </div>
+      <div class="cols3">
+        ${f("gP", "Plafond micro (€)", R.plafond, 'inputmode="decimal"')}
+        ${f("gV", "Seuil franchise TVA (€)", R.seuilTva, 'inputmode="decimal"')}
+        <span></span>
+      </div>
+      <p class="calm" style="font-size:13px">Plafonds 2026-2028 pour les prestations de services : 83 600 € (régime micro) et 37 500 € (franchise de TVA). Ces réglages sont enregistrés dans Firebase : tu retrouves les mêmes sur ton téléphone et ton ordinateur.</p>
+    </div>
+  </div>
+  <div class="bar" style="margin-top:14px"><button class="pri" id="gSave">Enregistrer</button><span class="msg" id="gMsg"></span></div>`;
+  $("gSave").onclick = async () => {
+    const siret = $("gS").value.replace(/\s/g, "");
+    if (siret && !/^\d{14}$/.test(siret)) { $("gMsg").textContent = "Le SIRET doit faire 14 chiffres."; return; }
+    const patch = { nom: $("gN").value.trim(), adresse: $("gA").value.trim(), siret, email: $("gM").value.trim(), iban: $("gI").value.trim().toUpperCase(),
+      debut: $("gD").value, taux: num($("gT").value), objectif: num($("gO").value), plafond: num($("gP").value) || 83600, seuilTva: num($("gV").value) || 37500 };
+    $("gSave").disabled = true;
+    try { await majReglages(patch); $("gMsg").textContent = "Enregistré."; }
+    catch (e) { $("gMsg").textContent = "Échec : vérifie les règles Firestore (collection « compteurs »)."; }
+    $("gSave").disabled = false;
+  };
+}
+
 // ================= DÉPENSES =================
 const CATS = ["Nom de domaine", "Logiciels et abonnements", "Matériel", "Transport", "Téléphone et internet", "Publicité", "Formation", "Banque et assurance", "Autre"];
 function renderDepenses(){
@@ -1114,7 +1228,13 @@ function openDoc(kind, id, preset) {
   if (!base.numero) { base.numero = nextNum(kind); provisoire = base.numero; }
   if (!base.date) base.date = today();
   if (!base.statut) base.statut = kind === "devis" ? "brouillon" : kind === "avoirs" ? "emis" : "attente";
-  if (!base.conditions) base.conditions = kind === "devis" ? COND_DEVIS : kind === "avoirs" ? COND_AVOIR : COND_FACT;
+  if (!base.conditions) base.conditions = kind === "devis" ? COND_DEVIS : kind === "avoirs" ? COND_AVOIR : (R.iban ? COND_FACT.replace("IBAN : [à compléter]", "IBAN : " + R.iban) : COND_FACT);
+  if (!id) {
+    if (!base.emNom && R.nom) base.emNom = R.nom;
+    if (!base.emAdr && R.adresse) base.emAdr = R.adresse;
+    if (!base.emSiret && R.siret) base.emSiret = "SIRET : " + R.siret;
+    if (!base.emMail && R.email) base.emMail = R.email;
+  }
   const plus30 = () => ajoutJours(frDate(base.date) || new Date(), 30).toLocaleDateString("fr-FR");
   if (kind === "devis" && !base.validite) base.validite = plus30();
   if (kind === "factures") {
