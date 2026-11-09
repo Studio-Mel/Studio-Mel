@@ -47,6 +47,23 @@ export function robot(form){
   return !!(hp && hp.value) || (performance.now() < 3000);
 }
 
+// accusé de réception automatique : n'est envoyé que si Mel l'a activé et a indiqué son modèle EmailJS « client »
+async function accuse(db, fs, d){
+  try {
+    if (!d.email) return;
+    const sc = await fs.getDoc(fs.doc(db, "site", "contenu"));
+    const A = sc.exists() ? (sc.data().auto || {}) : {};
+    if (!A.accuse || !A.modele) return;
+    const p = String(d.nom || "").trim().split(/\s+/)[0], bj = p ? "Bonjour " + p + "," : "Bonjour,";
+    const sign = "\n\nMelvyn · Studio Mel\n06 04 15 98 58 · studiomel.eu";
+    let sujet = "Studio Mel a bien reçu votre demande", contenu;
+    if (d.type === "guide") { sujet = "Votre checklist : préparer son site en 10 étapes"; contenu = bj + "\n\nMerci pour votre intérêt ! Voici votre checklist, à garder sous la main :\nhttps://studiomel.eu/checklist-site-artisan.pdf\n\nSi vous voulez en parler, je vous offre un premier appel de 15 minutes, sans engagement : https://studiomel.eu/contact#rdv\n\nBonne préparation," + sign; }
+    else if (d.type === "rdv" || d.formule === "Rendez-vous") contenu = bj + "\n\nJ’ai bien reçu votre demande de rendez-vous. Je vous confirme le créneau très vite par e-mail.\n\nÀ bientôt," + sign;
+    else contenu = bj + "\n\nMerci pour votre message, je l’ai bien reçu ! Je l’étudie et je vous réponds sous 48 h, avec des idées concrètes pour votre site.\n\nEn attendant, vous pouvez voir quelques réalisations ici : https://studiomel.eu/realisations\n\nÀ très vite," + sign;
+    await emailjs.send("service_nszz5ip", A.modele, { email: d.email, nom: d.nom || "", sujet, contenu });
+  } catch (e) { console.warn("accusé de réception", e); }
+}
+
 export async function envoyer(form, statutId, demande, merci){
   const s = document.getElementById(statutId), btn = form.querySelector("button[type=submit]");
   if (robot(form)) { s.className = "statut ok"; s.textContent = merci; form.reset(); return; }
@@ -61,6 +78,7 @@ export async function envoyer(form, statutId, demande, merci){
     const { titre, ...fiche } = demande;
     try { await fs.addDoc(fs.collection(db, "devis"), { ...fiche, statut: "nouveau", createdAt: fs.serverTimestamp() }); enregistre = true; } catch (err) { console.error(err); }
     await emailjs.send("service_nszz5ip", "template_ab96u3d", demande);
+    accuse(db, fs, demande);   // accusé de réception au visiteur (réglé dans les Paramètres de l'ERP)
     s.classList.add("ok"); s.textContent = merci;
     form.reset(); form.dispatchEvent(new Event("reset-done"));
   } catch (err) {
