@@ -1169,7 +1169,7 @@ const AUTO_DEF = { relanceProspect: "valider", relanceDevis: "valider", rappelFa
 const AUTO_NOMS = { relanceProspect: "Relance prospect", relanceDevis: "Relance devis", rappelFacture: "Rappel de paiement", avis: "Demande d’avis", invitation: "Invitation espace client" };
 const modeA = k => ((R.auto || {})[k]) || AUTO_DEF[k];
 let FILE = [], JOURNAL = { journal: [], ignores: [] }, autoEnCours = false;
-const SIGN = "\n\nMelvyn · Studio Mel\n06 04 15 98 58 · studiomel.eu";
+const SIGN = "\nMelvyn";  // la signature complète (logo, téléphone, site) est dans le modèle EmailJS
 const prenom = n => String(n || "").trim().split(/\s+/)[0] || "";
 const bonjour = n => prenom(n) ? `Bonjour ${prenom(n)},` : "Bonjour,";
 const isoPlus = n => isoJour(ajoutJours(new Date(), n));
