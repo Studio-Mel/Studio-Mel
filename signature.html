@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Signature e-mail · Studio Mel</title>
+<style>
+  :root{color-scheme:light}
+  body{margin:0;padding:32px 18px 60px;background:#EEF2FC;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#111}
+  main{max-width:720px;margin:0 auto;display:grid;gap:18px}
+  h1{font-size:24px;margin:0}
+  h2{font-size:17px;margin:0 0 8px}
+  .carte{background:#fff;border-radius:18px;padding:22px;box-shadow:0 10px 40px -20px rgba(20,40,120,.35)}
+  .apercu{padding:22px;border:1px dashed #C9D3EE;border-radius:12px;background:#fff;overflow-x:auto}
+  button{font:inherit;font-weight:700;padding:12px 18px;border-radius:99px;border:0;background:#2F5BFF;color:#fff;cursor:pointer;margin-top:14px}
+  button.sec{background:#fff;color:#2F5BFF;border:1.5px solid #2F5BFF}
+  .ok{color:#0a8a4a;font-weight:600;margin-left:10px}
+  ol{margin:0;padding-left:20px;line-height:1.7}
+  pre{white-space:pre-wrap;word-break:break-all;background:#0B1020;color:#DDE3F5;padding:14px;border-radius:12px;font-size:12.5px;max-height:220px;overflow:auto}
+  small{color:#555}
+</style>
+</head>
+<body>
+<main>
+  <h1>Ta signature e-mail</h1>
+
+  <section class="carte">
+    <h2>Aperçu</h2>
+    <div class="apercu" id="sig"><!--SIGNATURE--><table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.45;color:#111111">
+  <tr>
+    <td style="padding:0 14px 0 0;vertical-align:middle">
+      <a href="https://studiomel.eu" style="text-decoration:none"><img src="https://studiomel.eu/signature-logo.png" width="56" height="56" alt="Studio Mel" style="display:block;border:0;width:56px;height:56px"></a>
+    </td>
+    <td style="padding:2px 0 2px 14px;vertical-align:middle;border-left:2px solid #2F5BFF">
+      <div style="font-size:16px;font-weight:bold;color:#111111">Melvyn Clouzet <span style="font-weight:normal;color:#9AA3B8">·</span> <span style="color:#2F5BFF">Studio Mel</span></div>
+      <div style="color:#555555">Création de sites internet pour artisans</div>
+      <div style="padding-top:4px"><a href="tel:+33604159858" style="color:#111111;text-decoration:none">06 04 15 98 58</a> <span style="color:#9AA3B8">·</span> <a href="https://studiomel.eu" style="color:#2F5BFF;text-decoration:none;font-weight:bold">studiomel.eu</a></div>
+    </td>
+  </tr>
+</table><!--/SIGNATURE--></div>
+    <button type="button" id="copier">Copier la signature</button><span class="ok" id="ok1" hidden>Copiée ✓</span>
+  </section>
+
+  <section class="carte">
+    <h2>La mettre dans Outlook</h2>
+    <ol>
+      <li><b>Outlook sur ordinateur ou outlook.com</b> : Paramètres (roue dentée) → Courrier → <b>Composer et répondre</b> → Signature électronique.</li>
+      <li>Crée une signature « Studio Mel », clique dans la zone de texte et <b>colle</b> (Ctrl+V, ou Cmd+V sur Mac).</li>
+      <li>Coche-la pour les nouveaux messages et les réponses, puis enregistre.</li>
+    </ol>
+    <p><small>Sur iPhone, l’appli Outlook ne garde que le texte des signatures : c’est normal, le logo apparaîtra depuis l’ordinateur et outlook.com.</small></p>
+  </section>
+
+  <section class="carte">
+    <h2>Pour tes e-mails automatiques (EmailJS)</h2>
+    <p><small>Dans ton modèle EmailJS « client », passe <b>Content</b> en mode code, remplace tout par ce code, puis enregistre.</small></p>
+    <pre id="code"></pre>
+    <button type="button" class="sec" id="copierCode">Copier le code</button><span class="ok" id="ok2" hidden>Copié ✓</span>
+  </section>
+</main>
+<script>
+  var sig = document.getElementById('sig').innerHTML.split('<!--SIGNATURE-->')[1].split('<!--/SIGNATURE-->')[0].trim();
+  var codeEmail = '<div style="white-space:pre-line;font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#111">{{contenu}}</div>\n<br>\n' + sig;
+  document.getElementById('code').textContent = codeEmail;
+  function montrer(id){ var e = document.getElementById(id); e.hidden = false; setTimeout(function(){ e.hidden = true; }, 2500); }
+  document.getElementById('copier').addEventListener('click', function(){
+    var texte = 'Melvyn Clouzet · Studio Mel\nCréation de sites internet pour artisans\n06 04 15 98 58 · studiomel.eu';
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([sig], { type: 'text/html' }), 'text/plain': new Blob([texte], { type: 'text/plain' }) })]).then(function(){ montrer('ok1'); }, copieSel);
+    } else copieSel();
+    function copieSel(){ var r = document.createRange(); r.selectNodeContents(document.getElementById('sig')); var s = getSelection(); s.removeAllRanges(); s.addRange(r); try { document.execCommand('copy'); montrer('ok1'); } catch (e) {} s.removeAllRanges(); }
+  });
+  document.getElementById('copierCode').addEventListener('click', function(){
+    if (navigator.clipboard) navigator.clipboard.writeText(codeEmail).then(function(){ montrer('ok2'); });
+  });
+</script>
+</body>
+</html>

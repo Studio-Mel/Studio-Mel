@@ -55,7 +55,7 @@ async function accuse(db, fs, d){
     const A = sc.exists() ? (sc.data().auto || {}) : {};
     if (!A.accuse || !A.modele) return;
     const p = String(d.nom || "").trim().split(/\s+/)[0], bj = p ? "Bonjour " + p + "," : "Bonjour,";
-    const sign = "\n\nMelvyn · Studio Mel\n06 04 15 98 58 · studiomel.eu";
+    const sign = "\nMelvyn";
     let sujet = "Studio Mel a bien reçu votre demande", contenu;
     if (d.type === "guide") { sujet = "Votre checklist : préparer son site en 10 étapes"; contenu = bj + "\n\nMerci pour votre intérêt ! Voici votre checklist, à garder sous la main :\nhttps://studiomel.eu/checklist-site-artisan.pdf\n\nSi vous voulez en parler, je vous offre un premier appel de 15 minutes, sans engagement : https://studiomel.eu/contact#rdv\n\nBonne préparation," + sign; }
     else if (d.type === "rdv" || d.formule === "Rendez-vous") contenu = bj + "\n\nJ’ai bien reçu votre demande de rendez-vous. Je vous confirme le créneau très vite par e-mail.\n\nÀ bientôt," + sign;
