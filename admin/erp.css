@@ -470,3 +470,10 @@ main{max-width:1320px;width:100%;margin:0 auto;padding:26px 32px 64px}
 .pf small{color:var(--muted,#8b93a7);font-size:12.5px}
 .pf.pf-warn .f-bar i{background:linear-gradient(90deg,#F5B451,#ff9d4d)}
 .pf.pf-ko .f-bar i{background:linear-gradient(90deg,#ff6b6b,#ff8a8f)}
+
+/* automatisations */
+.autos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px 14px;margin:6px 0 8px}
+.journal{margin-top:12px}
+.journal summary{cursor:pointer;color:var(--muted,#8b93a7);font-size:13.5px}
+.journal ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px;font-size:13.5px}
+.journal small{color:var(--muted,#8b93a7);margin-right:6px}

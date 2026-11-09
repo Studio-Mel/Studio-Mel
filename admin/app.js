@@ -69,7 +69,7 @@ let filtreF = "factures", vuePl = "mois", datePl = new Date(), rechDoc = "", cat
 let cur = null;
 
 // ---- Réglages : enregistrés dans Firebase (compteurs/reglages), donc identiques sur ton téléphone et ton ordi ----
-const REGLAGES_DEFAUT = { nom: "Mel · Studio Mel", adresse: "", siret: "", email: "studio-mel@outlook.fr", iban: "", debut: "", taux: 0, objectif: 0, plafond: 83600, seuilTva: 37500 };
+const REGLAGES_DEFAUT = { nom: "Mel · Studio Mel", adresse: "", siret: "", email: "studio-mel@outlook.fr", iban: "", debut: "", taux: 0, objectif: 0, plafond: 83600, seuilTva: 37500, templateClient: "", auto: {} };
 let R = { ...REGLAGES_DEFAUT };
 async function chargerReglages(){
   try {
@@ -141,7 +141,7 @@ $("newFacture").onclick = () => openDoc("factures");
 
 async function load() {
   await chargerReglages();
-  try { const sc = await getDoc(doc(db, "site", "contenu")); const t = sc.exists() ? (sc.data().tarifs || {}) : {}; T = { ...TARIFS_DEF }; for (const k in t) if (typeof t[k] === "number" && t[k] >= 0) T[k] = t[k]; } catch (e) { console.warn("tarifs", e); }
+  try { const sc = await getDoc(doc(db, "site", "contenu")); const t = sc.exists() ? (sc.data().tarifs || {}) : {}; R.avisGoogle = sc.exists() ? (sc.data().avisGoogle || "") : ""; T = { ...TARIFS_DEF }; for (const k in t) if (typeof t[k] === "number" && t[k] >= 0) T[k] = t[k]; } catch (e) { console.warn("tarifs", e); }
   for (const k of ["devis", "factures"]) {
     const snap = await getDocs(query(collection(db, k), orderBy("createdAt", "desc")));
     data[k] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -154,6 +154,7 @@ async function load() {
   }
   await synchroValidations();
   renderList();
+  lancerAuto();
 }
 
 const brut = d => (d.lignes || [{ qte: 1, pu: num(d.prix) }]).reduce((s, l) => s + num(l.qte) * num(l.pu), 0);
@@ -278,8 +279,8 @@ async function repondre(id, ok, btn){
   }
   const t = texteClient(d, ok, mot.trim());
   let envoye = false;
-  if (TEMPLATE_CLIENT && window.emailjs) {
-    try { await emailjs.send("service_nszz5ip", TEMPLATE_CLIENT, { email: d.email, nom: d.nom || "", sujet: t.sujet, contenu: t.contenu }); envoye = true; } catch (e) { console.error(e); }
+  if ((R.templateClient || TEMPLATE_CLIENT) && window.emailjs) {
+    try { await emailjs.send("service_nszz5ip", R.templateClient || TEMPLATE_CLIENT, { email: d.email, nom: d.nom || "", sujet: t.sujet, contenu: t.contenu }); envoye = true; } catch (e) { console.error(e); }
   }
   if (!envoye) location.href = `mailto:${d.email}?subject=${encodeURIComponent(t.sujet)}&body=${encodeURIComponent(t.contenu)}`;
   await load();
@@ -444,6 +445,13 @@ function renderDash(){
       </div>
     </div>
 
+    ${FILE.length || (JOURNAL.journal || []).length ? `<div class="panel auto-p" style="margin-bottom:14px">
+      <h3>E-mails automatiques ${FILE.length ? `<span class="count">${FILE.length} à valider</span>` : ""}</h3>
+      ${FILE.length ? `<ul class="todo">${FILE.map((x, i) => `<li><button data-mail="${i}"><span class="tag t-envoye">${esc(AUTO_NOMS[x.type])}</span><b>${esc(x.qui || x.to)}</b><small>${esc(x.sujet)} · cliquer pour relire et envoyer</small></button></li>`).join("")}</ul>
+        ${R.templateClient && FILE.length > 1 ? `<button class="pri" id="mailTout" style="margin-top:10px">Tout envoyer (${FILE.length})</button>` : ""}` : `<p class="calm">Rien à envoyer aujourd’hui.</p>`}
+      ${!R.templateClient ? `<p class="calm" style="font-size:13px;margin-top:8px">Pour que les e-mails partent tout seuls, ajoute ton modèle EmailJS « client » dans Paramètres. En attendant, ils s’ouvrent dans ta messagerie.</p>` : ""}
+      ${(JOURNAL.journal || []).length ? `<details class="journal"><summary>Fait automatiquement</summary><ul>${JOURNAL.journal.slice(0, 8).map(j => `<li><small>${esc(j.d)}</small> ${esc(j.txt)}</li>`).join("")}</ul></details>` : ""}
+    </div>` : ""}
     <div class="row2b">
       <div class="panel">
         <h3>À faire <span class="count">${todo.length}</span></h3>
@@ -536,6 +544,13 @@ function renderDash(){
   document.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => { document.querySelectorAll("[data-mode]").forEach(z => z.classList.toggle("on", z === b)); drawChart(b.dataset.mode); });
 
   document.querySelectorAll("[data-todo]").forEach(b => b.onclick = () => todo[+b.dataset.todo].go());
+  document.querySelectorAll("[data-mail]").forEach(b => b.onclick = () => ouvrirMail(FILE[+b.dataset.mail]));
+  if ($("mailTout")) $("mailTout").onclick = async () => {
+    if (!confirm(`Envoyer les ${FILE.length} e-mails tels quels ?`)) return;
+    $("mailTout").disabled = true;
+    for (const x of [...FILE]) { try { await envoyerCandidat(x); } catch (e) { console.warn(e); } }
+    load();
+  };
   document.querySelectorAll("[data-stop]").forEach(b => b.onclick = async () => {
     if (!confirm("Arrêter cet abonnement maintenance ?")) return;
     await updateDoc(doc(db, "devis", b.dataset.stop), { maintFin: today() });
@@ -1147,6 +1162,164 @@ function renderDocuments(){
   if ($("oD")) $("oD").onclick = async () => { if (!confirm("Supprimer ce document ? Le fichier lui-même reste sur ton Drive.")) return; try { await deleteDoc(doc(db, "documents", docEdit)); docEdit = null; await load(); } catch (err) { $("oM").textContent = "Échec : vérifie les règles Firestore."; } };
 }
 
+// ================= AUTOMATISATIONS =================
+// Elles se lancent à l'ouverture de l'ERP. Chaque type se règle dans Paramètres :
+// « auto » (envoyé tout seul), « valider » (préparé, tu cliques sur Envoyer) ou « off ».
+const AUTO_DEF = { relanceProspect: "valider", relanceDevis: "valider", rappelFacture: "valider", avis: "valider", invitation: "auto", projetAuto: "oui", espaceAuto: "oui", ficheAuto: "oui", accuse: "oui" };
+const AUTO_NOMS = { relanceProspect: "Relance prospect", relanceDevis: "Relance devis", rappelFacture: "Rappel de paiement", avis: "Demande d’avis", invitation: "Invitation espace client" };
+const modeA = k => ((R.auto || {})[k]) || AUTO_DEF[k];
+let FILE = [], JOURNAL = { journal: [], ignores: [] }, autoEnCours = false;
+const SIGN = "\n\nMelvyn · Studio Mel\n06 04 15 98 58 · studiomel.eu";
+const prenom = n => String(n || "").trim().split(/\s+/)[0] || "";
+const bonjour = n => prenom(n) ? `Bonjour ${prenom(n)},` : "Bonjour,";
+const isoPlus = n => isoJour(ajoutJours(new Date(), n));
+const mailOk = m => /^[^@ ]+@[^@ ]+\.[^@ ]+$/.test(String(m || "").trim());
+
+async function chargerJournal(){
+  try { const s = await getDoc(doc(db, "compteurs", "auto")); JOURNAL = { journal: [], ignores: [], ...(s.exists() ? s.data() : {}) }; } catch (e) {}
+}
+async function noter(txt, ignore){
+  JOURNAL.journal = [{ d: today(), txt }, ...(JOURNAL.journal || [])].slice(0, 60);
+  if (ignore) JOURNAL.ignores = [ignore, ...(JOURNAL.ignores || [])].slice(0, 300);
+  try { await setDoc(doc(db, "compteurs", "auto"), { journal: JOURNAL.journal, ignores: JOURNAL.ignores }, { merge: true }); } catch (e) {}
+}
+
+// envoi d'un e-mail au client, avec le modèle EmailJS « client » (réglé dans Paramètres)
+async function envoyerMail(to, nom, sujet, contenu){
+  if (!R.templateClient || !window.emailjs) throw new Error("modele");
+  await emailjs.send("service_nszz5ip", R.templateClient, { email: to, nom: nom || "", sujet, contenu });
+}
+
+// ---- les e-mails à envoyer aujourd'hui ----
+function candidats(){
+  const L = [], ign = new Set(JOURNAL.ignores || []), now = new Date();
+  const ajout = x => { if (!ign.has(x.id) && mailOk(x.to) && modeA(x.type) !== "off") L.push(x); };
+  // 1. prospects dont la relance est arrivée
+  relancesDues().forEach(c => ajout({ id: `rp:${c.key}:${c.fiche.relance}`, type: "relanceProspect", to: c.email, nom: c.nom || c.entreprise, qui: c.entreprise || c.nom,
+    sujet: c.entreprise ? `Votre site internet · ${c.entreprise}` : "Votre projet de site internet",
+    contenu: `${bonjour(c.nom)}\n\nJe me permets de revenir vers vous suite à notre échange${c.entreprise ? " au sujet du site de " + c.entreprise : ""}. Avez-vous eu le temps d’y réfléchir ?\n\nSi vous le souhaitez, je peux vous montrer en 15 minutes ce que je ferais pour votre site, sans engagement. Il suffit de répondre à ce mail, ou de choisir un créneau ici : https://studiomel.eu/contact/#rdv\n\nBonne journée,${SIGN}`,
+    apres: async () => {
+      const n = ((c.fiche && c.fiche.relances) || 0) + 1;
+      await majContact(c, { relances: n, relance: n < 2 ? isoPlus(7) : "", etape: c.etape === "nouveau" ? "contacte" : c.etape, etapeDate: today(),
+        notes: ((c.fiche && c.fiche.notes) ? c.fiche.notes + "\n" : "") + `${today()} : relance n° ${n} envoyée par e-mail` });
+    } }));
+  // 2. devis envoyés sans réponse : relance à J+7, puis J+14 (2 maximum)
+  data.devis.filter(d => isDemande(d) && statutD(d) === "envoye").forEach(d => {
+    const R0 = d.relances || [], dern = frDate(R0[R0.length - 1]) || docDate(d);
+    if (!dern || R0.length >= 2 || jours(dern, now) < 7) return;
+    ajout({ id: `rd:${d.id}:${R0.length}`, type: "relanceDevis", to: d.email, nom: d.nom, qui: d.entreprise || d.nom,
+      sujet: `Votre devis ${d.numero || ""} · Studio Mel`.replace("  ", " "),
+      contenu: `${bonjour(d.nom)}\n\nJe reviens vers vous au sujet du devis ${d.numero || ""} (${eur(total(d))}) que je vous ai envoyé le ${d.date || ""}. Avez-vous des questions, ou souhaitez-vous ajuster quelque chose ?\n\nJe reste disponible par mail ou par téléphone.\n\nBonne journée,${SIGN}`,
+      apres: async () => { await updateDoc(doc(db, "devis", d.id), { relances: [...R0, today()] }); } });
+  });
+  // 3. factures en retard : rappel à J+1, puis 2e rappel 14 jours après
+  data.factures.filter(enRetardF).forEach(f => {
+    const R0 = f.rappels || [], dern = frDate(R0[R0.length - 1]);
+    if (R0.length >= 2 || (dern && jours(dern, now) < 14)) return;
+    const deux = R0.length === 1, ech = echeanceF(f).toLocaleDateString("fr-FR");
+    ajout({ id: `rf:${f.id}:${R0.length}`, type: "rappelFacture", to: f.email, nom: f.nom, qui: f.entreprise || f.nom,
+      sujet: `${deux ? "Second rappel" : "Rappel"} · facture ${f.numero || ""}`,
+      contenu: deux
+        ? `${bonjour(f.nom)}\n\nJe reviens vers vous concernant la facture ${f.numero || ""}, arrivée à échéance le ${ech}, dont il reste ${eur(reste(f))} à régler. Pourriez-vous me dire quand le paiement est prévu ? Si besoin, nous pouvons convenir d’un paiement en plusieurs fois.\n\nBien cordialement,${SIGN}`
+        : `${bonjour(f.nom)}\n\nSauf erreur de ma part, la facture ${f.numero || ""} (reste à régler : ${eur(reste(f))}), arrivée à échéance le ${ech}, n’a pas encore été payée. Pourriez-vous y jeter un œil quand vous aurez un moment ?\n\nSi le paiement est déjà parti, merci de ne pas tenir compte de ce message.\n\nBien cordialement,${SIGN}`,
+      apres: async () => { await updateDoc(doc(db, "factures", f.id), { rappels: [...R0, today()] }); } });
+  });
+  // 4. une semaine après la mise en ligne : demande d'avis Google
+  if (R.avisGoogle) data.projets.filter(p => p.statut === "enligne" && !p.avisDemande && frDate(p.livre) && jours(frDate(p.livre), now) >= 7).forEach(p => {
+    const c = annuaire().find(x => x.key === p.clientKey); if (!c) return;
+    ajout({ id: `av:${p.id}`, type: "avis", to: c.email, nom: c.nom || c.entreprise, qui: c.entreprise || c.nom, sujet: "Votre avis compte beaucoup pour moi",
+      contenu: `${bonjour(c.nom)}\n\nVotre site est en ligne depuis une semaine : j’espère qu’il vous plaît ! Si vous êtes satisfait de notre collaboration, un petit avis Google m’aiderait beaucoup à me faire connaître :\n${R.avisGoogle}\n\nUn grand merci d’avance,${SIGN}`,
+      apres: async () => { await updateDoc(doc(db, "projets", p.id), { avisDemande: today() }); } });
+  });
+  // 5. espaces créés automatiquement : invitation du client
+  data.espaces.filter(e => e.aInviter && !e.invite).forEach(e => ajout({ id: `in:${e.id}`, type: "invitation", to: e.email, nom: e.nom, qui: e.nom, sujet: "Votre espace client Studio Mel est prêt",
+    contenu: `${bonjour(e.nom)}\n\nVotre espace client est prêt ! Vous pourrez y suivre l’avancement de votre site, valider la maquette, retrouver vos documents et m’écrire.\n\nPour vous connecter : https://studiomel.eu/espace-client avec l’adresse ${e.email}. La première fois, cliquez sur « Recevoir un lien de connexion par e-mail », puis choisissez votre mot de passe.\n\nÀ très vite,${SIGN}`,
+    apres: async () => { await updateDoc(doc(db, "espaces", e.id), { invite: today(), aInviter: false }); } }));
+  return L;
+}
+
+async function envoyerCandidat(x, sujet, contenu){
+  await envoyerMail(x.to, x.nom, sujet || x.sujet, contenu || x.contenu);
+  try { await x.apres(); } catch (e) { console.warn("après envoi", e); }
+  await noter(`${AUTO_NOMS[x.type]} envoyée à ${x.qui || x.to}`, x.id);
+}
+
+// ---- actions sans e-mail : fiches clients, projet et espace après un devis accepté ----
+async function actionsSilencieuses(){
+  let n = 0;
+  // un espace client existe mais pas de fiche dans l'ERP → on la crée (client gagné)
+  if (modeA("ficheAuto") === "oui") {
+    const keys = new Set(annuaire().map(c => c.key));
+    for (const e of data.espaces) {
+      const k = String(e.email || "").trim().toLowerCase(); if (!k || keys.has(k)) continue;
+      try { await setDoc(doc(db, "clients", idClient(k)), { key: k, email: k, nom: e.nom || "", entreprise: "", etape: "gagne", etapeDate: today(), source: "Autre", cree: today(), notes: "Créé automatiquement depuis son espace client." }, { merge: true }); keys.add(k); n++; await noter(`Fiche client créée pour ${e.nom || k} (depuis son espace client)`); } catch (err) {}
+    }
+  }
+  // devis accepté sans projet → projet créé (et son espace client)
+  if (modeA("projetAuto") === "oui") for (const d of data.devis.filter(x => isDemande(x) && x.statut === "accepte" && !x.projetAuto)) {
+    if (data.projets.some(p => p.devisId === d.id)) continue;
+    try { await creerProjetDepuisDevis(d); n++; } catch (err) { console.warn("projet auto", err); }
+  }
+  return n;
+}
+async function creerProjetDepuisDevis(d){
+  const ck = cleClient(d);
+  const p = { titre: `Site ${d.entreprise || d.nom || ""}`.trim(), clientKey: ck, client: d.entreprise || d.nom || d.email || "", devisId: d.id, devisNum: d.numero || "", statut: "demarrage", debut: isoJour(), echeance: isoPlus(21), montant: 0, liens: "", notes: "Créé automatiquement à l’acceptation du devis.", taches: tachesDefaut(d), maquette: "", site: "", createdAt: serverTimestamp() };
+  const r = await addDoc(collection(db, "projets"), p);
+  await updateDoc(doc(db, "devis", d.id), { projetAuto: today() });
+  await noter(`Projet « ${p.titre} » créé (devis ${d.numero || ""} accepté)`);
+  if (modeA("espaceAuto") === "oui" && mailOk(d.email) && !data.espaces.some(e => String(e.email || "").toLowerCase() === String(d.email).toLowerCase())) {
+    const e = await addDoc(collection(db, "espaces"), { nom: d.nom || d.entreprise || "", email: String(d.email).trim().toLowerCase(), projet: p.titre, formule: (d.lignes && d.lignes[0] && d.lignes[0].des) || d.formule || "", etape: 1, maquette: "", site: "", docs: [], afournir: AF_DEF.map(t => ({ t, fait: false })), validation: null, aInviter: true, creeLe: serverTimestamp(), maj: serverTimestamp() });
+    await updateDoc(doc(db, "projets", r.id), { espaceId: e.id });
+    await noter(`Espace client créé pour ${d.nom || d.entreprise || d.email}`);
+  }
+}
+
+// ---- moteur : lancé après chaque chargement ----
+async function lancerAuto(){
+  if (autoEnCours) return; autoEnCours = true;
+  try {
+    await chargerJournal();
+    const changes = await actionsSilencieuses();
+    if (changes) { autoEnCours = false; return load(); }
+    const L = candidats(), fait = [];
+    for (const x of L.filter(x => modeA(x.type) === "auto")) {
+      if (!R.templateClient) break;
+      try { await envoyerCandidat(x); fait.push(x); } catch (e) { console.warn("envoi auto", e); }
+    }
+    FILE = L.filter(x => !fait.includes(x));
+    if (fait.length) { autoEnCours = false; return load(); }
+    if (tab === "dash" && $("list") && !$("list").classList.contains("hide")) renderDash();
+  } finally { autoEnCours = false; }
+}
+
+// ---- fenêtre d'aperçu : modifier, envoyer ou ignorer ----
+function ouvrirMail(x){
+  const ov = document.createElement("div"); ov.className = "modal";
+  ov.innerHTML = `<div class="mbox" role="dialog" aria-modal="true" aria-label="E-mail">
+    <h3>${esc(AUTO_NOMS[x.type])} · ${esc(x.qui || "")}</h3>
+    <div class="fiche"><label>À<input value="${esc(x.to)}" disabled></label><label>Objet<input id="aS" value="${esc(x.sujet)}"></label><label>Message<textarea id="aC" rows="11">${esc(x.contenu)}</textarea></label></div>
+    <div class="bar" style="margin:4px 0 0"><button class="pri" id="aE">${R.templateClient ? "Envoyer" : "Ouvrir dans ma messagerie"}</button><button id="aI">Ignorer</button><button id="aX">Fermer</button><span class="msg" id="aM"></span></div>
+  </div>`;
+  document.body.appendChild(ov);
+  const fermer = () => ov.remove();
+  ov.onclick = e => { if (e.target === ov) fermer(); };
+  $("aX").onclick = fermer;
+  $("aI").onclick = async () => { await noter(`${AUTO_NOMS[x.type]} ignorée pour ${x.qui || x.to}`, x.id); fermer(); FILE = FILE.filter(y => y !== x); renderDash(); };
+  $("aE").onclick = async () => {
+    const s = $("aS").value, c = $("aC").value;
+    if (!R.templateClient) {
+      location.href = `mailto:${x.to}?subject=${encodeURIComponent(s)}&body=${encodeURIComponent(c)}`;
+      try { await x.apres(); } catch (e) {}
+      await noter(`${AUTO_NOMS[x.type]} préparée pour ${x.qui || x.to} (messagerie)`, x.id);
+      fermer(); return load();
+    }
+    $("aE").disabled = true;
+    try { await envoyerCandidat(x, s, c); fermer(); await load(); }
+    catch (e) { $("aE").disabled = false; $("aM").textContent = "L’envoi a échoué. Vérifie le modèle EmailJS dans Paramètres."; }
+  };
+}
+
 // ================= PARAMÈTRES =================
 function renderParametres(){
   const f = (id, lab, val, extra = "") => `<label>${lab}<input id="${id}" value="${esc(val ?? "")}" ${extra}></label>`;
@@ -1177,17 +1350,28 @@ function renderParametres(){
       <p class="calm" style="font-size:13px">Plafonds 2026-2028 pour les prestations de services : 83 600 € (régime micro) et 37 500 € (franchise de TVA). Ces réglages sont enregistrés dans Firebase : tu retrouves les mêmes sur ton téléphone et ton ordinateur.</p>
     </div>
   </div>
+  <div class="panel fiche" style="margin-top:14px">
+    <h3>Automatisations</h3>
+    <p class="calm" style="margin:-4px 0 4px">Elles se lancent quand tu ouvres l’ERP. « À valider » : l’e-mail est préparé, tu le relis et tu cliques sur Envoyer depuis le tableau de bord.</p>
+    ${f("gTpl", "ID du modèle EmailJS pour les mails aux clients", R.templateClient, 'placeholder="template_xxxxxxx"')}
+    <div class="autos">
+      ${Object.keys(AUTO_NOMS).map(k => `<label>${AUTO_NOMS[k]}<select data-auto="${k}">${[["auto", "Automatique"], ["valider", "À valider"], ["off", "Désactivé"]].map(([v, l]) => `<option value="${v}" ${modeA(k) === v ? "selected" : ""}>${l}</option>`).join("")}</select></label>`).join("")}
+      ${[["projetAuto", "Devis accepté → créer le projet"], ["espaceAuto", "… et l’espace client"], ["ficheAuto", "Espace client → créer la fiche client"], ["accuse", "Accusé de réception des demandes du site"]].map(([k, l]) => `<label>${l}<select data-auto="${k}">${[["oui", "Oui"], ["off", "Non"]].map(([v, t]) => `<option value="${v}" ${modeA(k) === v ? "selected" : ""}>${t}</option>`).join("")}</select></label>`).join("")}
+    </div>
+    <p class="calm" style="font-size:13px">Relances : prospects à la date prévue (2 maximum), devis sans réponse à J+7 et J+14, factures en retard à J+1 puis J+15, avis Google 7 jours après la mise en ligne (lien à mettre dans l’éditeur, onglet Avis).</p>
+  </div>
   <div class="bar" style="margin-top:14px"><button class="pri" id="gSave">Enregistrer</button><span class="msg" id="gMsg"></span></div>`;
   $("gSave").onclick = async () => {
     const siret = $("gS").value.replace(/\s/g, "");
     if (siret && !/^\d{14}$/.test(siret)) { $("gMsg").textContent = "Le SIRET doit faire 14 chiffres."; return; }
     const patch = { nom: $("gN").value.trim(), adresse: $("gA").value.trim(), siret, email: $("gM").value.trim(), iban: $("gI").value.trim().toUpperCase(),
-      debut: $("gD").value, taux: num($("gT").value), objectif: num($("gO").value), plafond: num($("gP").value) || 83600, seuilTva: num($("gV").value) || 37500 };
+      debut: $("gD").value, taux: num($("gT").value), objectif: num($("gO").value), plafond: num($("gP").value) || 83600, seuilTva: num($("gV").value) || 37500,
+      templateClient: $("gTpl").value.trim(), auto: Object.fromEntries([...document.querySelectorAll("[data-auto]")].map(x => [x.dataset.auto, x.value])) };
     $("gSave").disabled = true;
     try {
       await majReglages(patch);
       // partie publique de l'identité : affichée automatiquement sur le site (l'IBAN reste privé)
-      await setDoc(doc(db, "site", "contenu"), { identite: { nom: "Melvyn Clouzet", siret: patch.siret, adresse: patch.adresse } }, { merge: true });
+      await setDoc(doc(db, "site", "contenu"), { identite: { nom: "Melvyn Clouzet", siret: patch.siret, adresse: patch.adresse }, auto: { accuse: patch.auto.accuse === "oui", modele: patch.templateClient } }, { merge: true });
       $("gMsg").textContent = patch.siret ? "Enregistré. Ton SIRET et ton adresse s’affichent maintenant sur le site." : "Enregistré.";
     }
     catch (e) { $("gMsg").textContent = "Échec : vérifie les règles Firestore (collection « compteurs »)."; }
@@ -1494,6 +1678,9 @@ async function save() {
     }
     if (id) await updateDoc(doc(db, kind, id), payload);
     else { payload.createdAt = serverTimestamp(); const r = await addDoc(collection(db, kind), payload); cur.id = r.id; }
+    if (kind === "devis" && payload.statut === "accepte" && !payload.projetAuto && modeA("projetAuto") === "oui" && !data.projets.some(p => p.devisId === cur.id)) {
+      try { await creerProjetDepuisDevis({ ...payload, id: cur.id }); } catch (e) { console.warn("projet auto", e); }
+    }
     await load();
     tab = kind === "avoirs" ? "factures" : kind;
     $("msg").textContent = "";
