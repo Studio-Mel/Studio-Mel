@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
-import { getFirestore, collection, getDocs, getDoc, doc, addDoc, updateDoc, deleteDoc, setDoc, serverTimestamp, query, orderBy, runTransaction } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, getDoc, doc, addDoc, updateDoc as updateDoc0, deleteDoc as deleteDoc0, setDoc as setDoc0, serverTimestamp, query, orderBy, where, runTransaction } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
 
 const app = initializeApp({
   apiKey: "AIzaSyA42dvTyNYoQCliUXqF3ie_5SxWI95xxoY",
@@ -61,7 +61,7 @@ let data = { devis: [], factures: [], clients: [], depenses: [], projets: [], av
 const tsF = x => (x && x.toMillis ? x.toMillis() : 0);
 const espacesNonLus = () => data.espaces.filter(e => tsF(e.dernierClient) > tsF(e.vuMel));
 async function chargerEspaces(){
-  try { const snap = await getDocs(collection(db, "espaces")); data.espaces = snap.docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { data.espaces = []; }
+  try { const snap = await getDocs(collection(db, "espaces")); data.espaces = snap.docs.map(d => ({ id: d.id, ...d.data() })); return true; } catch (e) { data.espaces = []; return e.code === "permission-denied"; }
 }
 let ficheKey = null, filtreC = "tous", rechC = "", depEdit = null, ficheRetour = "clients", rechP = "", filtreJ = "cours", rechJ = "", projetOuvert = null;
 let tab = "dash";
@@ -80,10 +80,11 @@ async function chargerReglages(){
     const maj = {};
     if (!R.taux && old.taux) maj.taux = R.taux = old.taux;
     if (!R.objectif && old.objectif) maj.objectif = R.objectif = old.objectif;
-    if (Object.keys(maj).length) await setDoc(doc(db, "compteurs", "reglages"), maj, { merge: true });
-  } catch (e) { console.warn("réglages", e); }
+    if (Object.keys(maj).length) await setDoc0(doc(db, "compteurs", "reglages"), maj, { merge: true });
+    return true;
+  } catch (e) { console.warn("réglages", e); return false; }
 }
-async function majReglages(patch){ Object.assign(R, patch); await setDoc(doc(db, "compteurs", "reglages"), patch, { merge: true }); }
+async function majReglages(patch){ Object.assign(R, patch); await setDoc0(doc(db, "compteurs", "reglages"), patch, { merge: true }); }
 
 onAuthStateChanged(auth, u => {
   $("login").classList.toggle("hide", !!u);
@@ -140,21 +141,23 @@ $("newDevis").onclick = () => openDoc("devis");
 $("newFacture").onclick = () => openDoc("factures");
 
 async function load() {
-  await chargerReglages();
+  ECHECS = [];
+  if (!(await chargerReglages())) ECHECS.push("paramètres");
   try { const sc = await getDoc(doc(db, "site", "contenu")); const t = sc.exists() ? (sc.data().tarifs || {}) : {}; R.avisGoogle = sc.exists() ? (sc.data().avisGoogle || "") : ""; T = { ...TARIFS_DEF }; for (const k in t) if (typeof t[k] === "number" && t[k] >= 0) T[k] = t[k]; } catch (e) { console.warn("tarifs", e); }
   for (const k of ["devis", "factures"]) {
-    const snap = await getDocs(query(collection(db, k), orderBy("createdAt", "desc")));
-    data[k] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    try { const snap = await getDocs(query(collection(db, k), orderBy("createdAt", "desc"))); data[k] = snap.docs.map(d => ({ id: d.id, ...d.data() })); }
+    catch (e) { console.warn(k, e); ECHECS.push(k === "devis" ? "demandes et devis" : "factures"); }
   }
   // clients et dépenses : si les règles Firestore ne sont pas encore à jour, on continue sans
-  await chargerEspaces();
+  if (!(await chargerEspaces())) ECHECS.push("espaces clients");
   for (const k of ["clients", "depenses", "projets", "avoirs", "documents", "rappels"]) {
     try { const snap = await getDocs(collection(db, k)); data[k] = snap.docs.map(d => ({ id: d.id, ...d.data() })); }
-    catch (e) { console.warn(k, e); data[k] = []; data[k].bloque = true; }
+    catch (e) { console.warn(k, e); if (e.code === "permission-denied") { data[k] = []; data[k].bloque = true; } else ECHECS.push(k); }
   }
-  await synchroValidations();
+  if (!incomplet()) await synchroValidations();
   renderList();
-  lancerAuto();
+  bandeauReseau();
+  if (!incomplet()) { lancerAuto(); purgerCorbeille(); }   // jamais d'automatisme sur des données incomplètes
 }
 
 const brut = d => (d.lignes || [{ qte: 1, pu: num(d.prix) }]).reduce((s, l) => s + num(l.qte) * num(l.pu), 0);
@@ -376,6 +379,7 @@ function renderDash(){
 
   // à faire
   const todo = [];
+  if (!R.derniereSauvegarde || jours(new Date(R.derniereSauvegarde + "T12:00"), now) > 30) todo.push({ k: "Sauvegarde", c: "t-envoye", txt: "Télécharger une sauvegarde de tes données", sub: R.derniereSauvegarde ? "Dernière il y a plus d’un mois" : "Jamais faite", go: () => { tab = "parametres"; renderList(); } });
   espacesNonLus().forEach(e => todo.push({ k: "Message client", c: "t-nouveau", txt: e.nom || e.email || "Client", sub: "Nouveau message ou réponse dans son espace client", go: () => { tab = "espaces"; renderList(); } }));
   dem.filter(d => d.statut === "nouveau").forEach(d => todo.push({ k: "Rappeler", c: "t-nouveau", txt: d.entreprise || d.nom, sub: d.formule || "", go: () => openDoc("devis", d.id) }));
   data.devis.filter(d => isRdvDoc(d) && d.statut === "nouveau").forEach(d => todo.push({ k: "Rendez-vous à accepter", c: "t-nouveau", txt: d.entreprise || d.nom, sub: quand(d), go: () => { tab = "rdv"; renderList(); } }));
@@ -636,7 +640,7 @@ function renderFiche(key){
   ].sort((a, b) => (b.d || 0) - (a.d || 0));
   const facturé = c.factures.reduce((s, x) => s + total(x), 0);
   $("items").innerHTML = `${bandeauRegles("clients")}
-  <div class="bar"><button id="backC">${ficheRetour === "prospects" ? "Retour aux prospects" : "Tous les contacts"}</button>${nouveau ? "" : `<button id="devisC">Créer un devis</button><button id="projC">Créer un projet</button><button id="archC">${c.archive ? "Désarchiver" : "Archiver"}</button>`}<span class="msg" id="msgC"></span></div>
+  <div class="bar"><button id="backC">${ficheRetour === "prospects" ? "Retour aux prospects" : "Tous les contacts"}</button>${nouveau ? "" : `<button id="devisC">Créer un devis</button><button id="projC">Créer un projet</button><button id="archC">${c.archive ? "Désarchiver" : "Archiver"}</button><button id="histC">Historique</button>`}<span class="msg" id="msgC"></span></div>
   <div class="grid2">
     <div class="panel fiche">
       <h3>${nouveau ? "Nouveau contact" : esc(c.entreprise || c.nom || c.email)} ${nouveau ? "" : tagContact(c)}</h3>
@@ -681,9 +685,21 @@ function renderFiche(key){
     const k = nouveau ? cleClient(fiche) : c.key;
     if (!k) { $("msgC").textContent = "Indique au moins une entreprise ou un e-mail."; return; }
     fiche.key = k; fiche.cree = f.cree || today();
+    if (incomplet()) { $("msgC").textContent = "Connexion faible : recharge la page avant d’enregistrer."; return; }
+    if (nouveau) {
+      // un contact avec le même e-mail (ou le même nom) existe déjà ? on ne l'écrase surtout pas
+      let existe = annuaire().find(x => x.key === k);
+      if (!existe) { try { const s = await getDoc(doc(db, "clients", idClient(k))); if (s.exists()) existe = { key: k, entreprise: s.data().entreprise, nom: s.data().nom }; } catch (e) { $("msgC").textContent = "Connexion faible : impossible de vérifier les doublons, réessaie."; return; } }
+      if (existe) {
+        if (confirm(`Ce contact existe déjà : ${existe.entreprise || existe.nom || k}.\n\nOuvrir sa fiche existante ? (Rien ne sera modifié.)`)) { ficheKey = existe.key; renderFiche(existe.key); }
+        else $("msgC").textContent = "Pas enregistré : un contact avec cet e-mail existe déjà.";
+        return;
+      }
+    }
     try { await setDoc(doc(db, "clients", idClient(k)), fiche, { merge: true }); await load(); tab = "clients"; ficheKey = k; renderList(); $("msgC").textContent = "Enregistré."; }
-    catch (e) { $("msgC").textContent = "Échec : vérifie les règles Firestore."; }
+    catch (e) { $("msgC").textContent = e.code === "permission-denied" ? "Échec : vérifie les règles Firestore." : "Échec : connexion faible, réessaie."; }
   };
+  if ($("histC")) $("histC").onclick = () => ouvrirHistorique("clients", idClient(c.key), () => { tab = "clients"; ficheKey = c.key; renderList(); });
 }
 
 // ================= PROSPECTS =================
@@ -919,7 +935,7 @@ function renderProjet(id){
   };
 
   $("items").innerHTML = `${bandeauRegles("projets")}
-  <div class="bar"><button id="backJ">Tous les projets</button><button class="pri" id="saveJ">Enregistrer</button>${p.clientKey ? `<button id="ficheJ">Fiche client</button>` : ""}${nouveau ? "" : `<button class="dan" id="delJ">Supprimer</button>`}<span class="msg" id="msgJ"></span></div>
+  <div class="bar"><button id="backJ">Tous les projets</button><button class="pri" id="saveJ">Enregistrer</button>${p.clientKey ? `<button id="ficheJ">Fiche client</button>` : ""}${nouveau ? "" : `<button id="histJ">Historique</button><button class="dan" id="delJ">Supprimer</button>`}<span class="msg" id="msgJ"></span></div>
   <div class="grid2">
     <div class="panel fiche">
       <label>Nom du projet<input id="jT" value="${esc(p.titre)}" placeholder="Site Garage Bernard"></label>
@@ -968,6 +984,7 @@ function renderProjet(id){
       projetPreset = null; await load(); tab = "projets"; renderList(); if ($("msgJ")) $("msgJ").textContent = "Enregistré.";
     } catch (e) { console.error(e); if ($("saveJ")) $("saveJ").disabled = false; if ($("msgJ")) $("msgJ").textContent = "Échec : " + (e.code === "permission-denied" ? "ajoute la règle « projets » dans Firestore." : (e.message || "erreur inconnue")); }
   };
+  if ($("histJ")) $("histJ").onclick = () => ouvrirHistorique("projets", id, () => { tab = "projets"; projetOuvert = id; renderList(); });
   if ($("delJ")) $("delJ").onclick = async () => {
     if (!confirm("Supprimer ce projet ? Les devis et factures liés ne sont pas touchés.")) return;
     try { await deleteDoc(doc(db, "projets", id)); projetOuvert = null; await load(); }
@@ -1162,6 +1179,118 @@ function renderDocuments(){
   if ($("oD")) $("oD").onclick = async () => { if (!confirm("Supprimer ce document ? Le fichier lui-même reste sur ton Drive.")) return; try { await deleteDoc(doc(db, "documents", docEdit)); docEdit = null; await load(); } catch (err) { $("oM").textContent = "Échec : vérifie les règles Firestore."; } };
 }
 
+// ================= SÉCURITÉ DES DONNÉES =================
+// 1) historique : avant chaque modification, l'ancienne version est gardée (15 dernières par fiche)
+// 2) corbeille : un élément supprimé y reste 30 jours, restaurable
+// Tout est rangé dans la collection « compteurs » (déjà autorisée par tes règles Firestore).
+const VERSIONNEES = ["clients", "devis", "factures", "projets", "avoirs", "depenses", "documents", "rappels", "espaces"];
+const refPath = r => (r && r.path ? r.path : `${r.col}/${r.id}`).split("/");
+const histId = (col, id) => `h_${col}_${id}`.slice(0, 1400);
+async function versionner(ref, quoi){
+  const [col, id] = refPath(ref); if (!VERSIONNEES.includes(col) || !id) return;
+  try {
+    const s = await getDoc(ref); if (!s.exists()) return;
+    const h = doc(db, "compteurs", histId(col, id)), hs = await getDoc(h);
+    const versions = (hs.exists() ? hs.data().versions || [] : []);
+    versions.unshift({ quand: new Date().toISOString(), quoi: quoi || "modification", v: s.data() });
+    await setDoc0(h, { type: "historique", col, id, versions: versions.slice(0, 15) });
+  } catch (e) { console.warn("historique", e); }
+}
+// les écritures de l'ERP passent toutes par ici
+async function updateDoc(ref, d){ await versionner(ref); return updateDoc0(ref, d); }
+async function setDoc(ref, d, o){ await versionner(ref); return o ? setDoc0(ref, d, o) : setDoc0(ref, d); }
+async function deleteDoc(ref){
+  const [col, id] = refPath(ref);
+  if (VERSIONNEES.includes(col) && id) {
+    try { const s = await getDoc(ref); if (s.exists()) await setDoc0(doc(db, "compteurs", `c_${col}_${id}`.slice(0, 1400)), { type: "corbeille", col, id, quand: new Date().toISOString(), v: s.data() }); }
+    catch (e) { console.warn("corbeille", e); }
+  }
+  return deleteDoc0(ref);
+}
+async function lireCompteurs(type){
+  try { const s = await getDocs(query(collection(db, "compteurs"), where("type", "==", type))); return s.docs.map(d => ({ docId: d.id, ...d.data() })).filter(x => x.type === type); }
+  catch (e) { console.warn(type, e); return null; }
+}
+async function purgerCorbeille(){
+  const L = await lireCompteurs("corbeille"); if (!L) return;
+  const limite = Date.now() - 30 * 864e5;
+  for (const x of L) if (new Date(x.quand).getTime() < limite) { try { await deleteDoc0(doc(db, "compteurs", x.docId)); } catch (e) {} }
+}
+const NOMS_COL = { clients: "Contact", devis: "Devis / demande", factures: "Facture", projets: "Projet", avoirs: "Avoir", depenses: "Dépense", documents: "Document", rappels: "Rappel", espaces: "Espace client" };
+const libelle = v => v ? (v.entreprise || v.nom || v.titre || v.fournisseur || v.numero || v.email || "Sans nom") + (v.numero && (v.entreprise || v.nom) ? " · " + v.numero : "") : "";
+const brutVal = x => x && x.toDate ? x.toDate().toLocaleString("fr-FR") : typeof x === "object" && x !== null ? JSON.stringify(x).slice(0, 120) : String(x ?? "");
+
+// fenêtre « Historique » d'une fiche : voir ce qui a changé et restaurer
+async function ouvrirHistorique(col, id, apres){
+  const ov = document.createElement("div"); ov.className = "modal";
+  ov.innerHTML = `<div class="mbox" role="dialog" aria-modal="true" aria-label="Historique"><h3>Historique des modifications</h3><div id="hiL"><p class="calm">Chargement…</p></div><div class="bar" style="margin:10px 0 0"><button id="hiX">Fermer</button><span class="msg" id="hiM"></span></div></div>`;
+  document.body.appendChild(ov);
+  const fermer = () => ov.remove(); ov.onclick = e => { if (e.target === ov) fermer(); }; $("hiX").onclick = fermer;
+  let V = [], actuel = {};
+  try { const h = await getDoc(doc(db, "compteurs", histId(col, id))); V = h.exists() ? h.data().versions || [] : []; const a = await getDoc(doc(db, col, id)); actuel = a.exists() ? a.data() : {}; }
+  catch (e) { $("hiL").innerHTML = `<p class="calm">Impossible de charger l’historique (connexion ?).</p>`; return; }
+  if (!V.length) { $("hiL").innerHTML = `<p class="calm">Aucune ancienne version pour l’instant. Elles sont gardées à partir de maintenant, à chaque modification.</p>`; return; }
+  const IGN = ["maj", "createdAt", "key"];
+  $("hiL").innerHTML = `<ul class="hist">${V.map((x, i) => {
+    const diff = Object.keys({ ...x.v, ...actuel }).filter(k => !IGN.includes(k) && JSON.stringify(x.v[k] ?? "") !== JSON.stringify(actuel[k] ?? ""));
+    return `<li><div class="hi-h"><b>${new Date(x.quand).toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" })}</b><button data-rest="${i}">Restaurer cette version</button></div>
+      ${diff.length ? `<small>Différences avec aujourd’hui :</small><ul>${diff.slice(0, 8).map(k => `<li><span>${esc(k)}</span> ${esc(brutVal(x.v[k]) || "(vide)")}</li>`).join("")}</ul>` : `<small>Identique à la version actuelle.</small>`}</li>`; }).join("")}</ul>`;
+  ov.querySelectorAll("[data-rest]").forEach(b => b.onclick = async () => {
+    if (!confirm("Remettre cette version ? La version actuelle sera gardée dans l’historique.")) return;
+    try { await setDoc(doc(db, col, id), V[+b.dataset.rest].v); fermer(); await load(); if (apres) apres(); }
+    catch (e) { $("hiM").textContent = "Échec de la restauration (connexion ?)."; }
+  });
+}
+
+// ---- sauvegarde complète (fichier à garder sur ton ordi ou ton Drive) ----
+async function sauvegarder(btn){
+  btn.disabled = true; const t0 = btn.textContent; btn.textContent = "Sauvegarde en cours…";
+  try {
+    const out = { date: new Date().toISOString(), site: "studiomel.eu", collections: {} };
+    for (const k of ["devis", "factures", "clients", "depenses", "projets", "avoirs", "documents", "rappels", "espaces", "creneaux", "compteurs"]) {
+      try { const s = await getDocs(collection(db, k)); out.collections[k] = s.docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { out.collections[k] = { erreur: String(e.code || e.message) }; }
+    }
+    for (const e of Array.isArray(out.collections.espaces) ? out.collections.espaces : []) {
+      try { const s = await getDocs(collection(db, "espaces", e.id, "messages")); e.messages = s.docs.map(d => ({ id: d.id, ...d.data() })); } catch (err) {}
+    }
+    try { const s = await getDoc(doc(db, "site", "contenu")); out.collections.site = s.exists() ? [{ id: "contenu", ...s.data() }] : []; } catch (e) {}
+    const json = JSON.stringify(out, (k, v) => v && typeof v === "object" && typeof v.toDate === "function" ? v.toDate().toISOString() : v, 2);
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([json], { type: "application/json" }));
+    a.download = `sauvegarde-studio-mel-${isoJour()}.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+    await majReglages({ derniereSauvegarde: isoJour() });
+    btn.textContent = "Sauvegarde téléchargée ✓";
+  } catch (e) { btn.textContent = "Échec, réessaie"; }
+  setTimeout(() => { btn.textContent = t0; btn.disabled = false; }, 2500);
+}
+
+// ---- corbeille (dans Paramètres) ----
+async function rendreCorbeille(){
+  const box = $("corb"); if (!box) return;
+  const L = await lireCompteurs("corbeille");
+  if (L === null) { box.innerHTML = `<p class="calm">Impossible de charger la corbeille (connexion ?).</p>`; return; }
+  L.sort((a, b) => String(b.quand).localeCompare(String(a.quand)));
+  box.innerHTML = L.length ? `<ul class="abos">${L.map((x, i) => `<li><div><b>${esc(NOMS_COL[x.col] || x.col)} · ${esc(libelle(x.v))}</b><small>Supprimé le ${new Date(x.quand).toLocaleDateString("fr-FR")} · effacé définitivement le ${new Date(new Date(x.quand).getTime() + 30 * 864e5).toLocaleDateString("fr-FR")}</small></div><div class="r"><button data-resto="${i}">Restaurer</button></div></li>`).join("")}</ul>`
+    : `<p class="calm">La corbeille est vide.</p>`;
+  box.querySelectorAll("[data-resto]").forEach(b => b.onclick = async () => {
+    const x = L[+b.dataset.resto]; b.disabled = true;
+    try { await setDoc0(doc(db, x.col, x.id), x.v); await deleteDoc0(doc(db, "compteurs", x.docId)); await load(); tab = "parametres"; renderList(); }
+    catch (e) { b.disabled = false; alert("Échec de la restauration (connexion ?)."); }
+  });
+}
+
+// ---- connexion faible : on prévient au lieu d'afficher des listes vides ----
+let ECHECS = [];
+function bandeauReseau(){
+  let b = $("reseau");
+  if (!ECHECS.length) { if (b) b.remove(); return; }
+  if (!b) { b = document.createElement("div"); b.id = "reseau"; b.className = "reseau"; $("list").parentNode.insertBefore(b, $("list")); }
+  b.innerHTML = `<b>Connexion faible : tout n’a pas pu être chargé</b> (${esc(ECHECS.join(", "))}). Rien n’est perdu, tes données sont dans Firebase. Évite de créer ou modifier des fiches tant que ce message est là. <button id="reseauR">Recharger</button>`;
+  $("reseauR").onclick = () => { $("reseauR").disabled = true; load(); };
+}
+const incomplet = () => ECHECS.length > 0;
+
 // ================= AUTOMATISATIONS =================
 // Elles se lancent à l'ouverture de l'ERP. Chaque type se règle dans Paramètres :
 // « auto » (envoyé tout seul), « valider » (préparé, tu cliques sur Envoyer) ou « off ».
@@ -1181,7 +1310,7 @@ async function chargerJournal(){
 async function noter(txt, ignore){
   JOURNAL.journal = [{ d: today(), txt }, ...(JOURNAL.journal || [])].slice(0, 60);
   if (ignore) JOURNAL.ignores = [ignore, ...(JOURNAL.ignores || [])].slice(0, 300);
-  try { await setDoc(doc(db, "compteurs", "auto"), { journal: JOURNAL.journal, ignores: JOURNAL.ignores }, { merge: true }); } catch (e) {}
+  try { await setDoc0(doc(db, "compteurs", "auto"), { journal: JOURNAL.journal, ignores: JOURNAL.ignores }, { merge: true }); } catch (e) {}
 }
 
 // envoi d'un e-mail au client, avec le modèle EmailJS « client » (réglé dans Paramètres)
@@ -1252,6 +1381,7 @@ async function actionsSilencieuses(){
     const keys = new Set(annuaire().map(c => c.key));
     for (const e of data.espaces) {
       const k = String(e.email || "").trim().toLowerCase(); if (!k || keys.has(k)) continue;
+      try { const ex = await getDoc(doc(db, "clients", idClient(k))); if (ex.exists()) { keys.add(k); continue; } } catch (err) { continue; }
       try { await setDoc(doc(db, "clients", idClient(k)), { key: k, email: k, nom: e.nom || "", entreprise: "", etape: "gagne", etapeDate: today(), source: "Autre", cree: today(), notes: "Créé automatiquement depuis son espace client." }, { merge: true }); keys.add(k); n++; await noter(`Fiche client créée pour ${e.nom || k} (depuis son espace client)`); } catch (err) {}
     }
   }
@@ -1360,13 +1490,28 @@ function renderParametres(){
     </div>
     <p class="calm" style="font-size:13px">Relances : prospects à la date prévue (2 maximum), devis sans réponse à J+7 et J+14, factures en retard à J+1 puis J+15, avis Google 7 jours après la mise en ligne (lien à mettre dans l’éditeur, onglet Avis).</p>
   </div>
-  <div class="bar" style="margin-top:14px"><button class="pri" id="gSave">Enregistrer</button><span class="msg" id="gMsg"></span></div>`;
+  <div class="bar" style="margin-top:14px"><button class="pri" id="gSave">Enregistrer</button><span class="msg" id="gMsg"></span></div>
+  <div class="grid2" style="margin-top:14px">
+    <div class="panel">
+      <h3>Sauvegarde</h3>
+      <p class="calm">Télécharge un fichier avec toutes tes données (clients, devis, factures, projets, espaces…). Garde-le sur ton ordi ou ton Drive, une fois par mois.</p>
+      <p class="calm" style="font-size:13px">Dernière sauvegarde : <b>${R.derniereSauvegarde ? new Date(R.derniereSauvegarde + "T12:00").toLocaleDateString("fr-FR") : "jamais"}</b></p>
+      <button class="pri" id="gBack">Télécharger une sauvegarde</button>
+    </div>
+    <div class="panel">
+      <h3>Corbeille <span class="count">30 jours</span></h3>
+      <div id="corb"><p class="calm">Chargement…</p></div>
+    </div>
+  </div>`;
+  $("gBack").onclick = () => sauvegarder($("gBack"));
+  rendreCorbeille();
   $("gSave").onclick = async () => {
     const siret = $("gS").value.replace(/\s/g, "");
     if (siret && !/^\d{14}$/.test(siret)) { $("gMsg").textContent = "Le SIRET doit faire 14 chiffres."; return; }
     const patch = { nom: $("gN").value.trim(), adresse: $("gA").value.trim(), siret, email: $("gM").value.trim(), iban: $("gI").value.trim().toUpperCase(),
       debut: $("gD").value, taux: num($("gT").value), objectif: num($("gO").value), plafond: num($("gP").value) || 83600, seuilTva: num($("gV").value) || 37500,
       templateClient: $("gTpl").value.trim(), auto: Object.fromEntries([...document.querySelectorAll("[data-auto]")].map(x => [x.dataset.auto, x.value])) };
+    if (ECHECS.includes("paramètres")) { $("gMsg").textContent = "Tes paramètres n’ont pas pu être chargés (connexion faible) : recharge avant d’enregistrer, sinon ils seraient remplacés."; return; }
     $("gSave").disabled = true;
     try {
       await majReglages(patch);
@@ -1516,7 +1661,7 @@ function renderEditor() {
     ${isD && cur.id ? `<button id="toF">Transformer en facture</button>` : ""}
     ${isD && cur.id && d.statut === "accepte" ? `<button id="toP">${data.projets.some(p => p.devisId === cur.id) ? "Voir le projet" : "Créer le projet"}</button>` : ""}
     ${isF && cur.id ? `<button id="toAv">Créer un avoir</button>` : ""}
-    ${cur.id ? `<button class="dan" id="del">Supprimer</button>` : ""}
+    ${cur.id ? `<button id="hist">Historique</button><button class="dan" id="del">Supprimer</button>` : ""}
     ${isF ? `<span class="tag t-${statutF(d)}" id="stF" style="margin:0">${STATUTS.factures[statutF(d)]}</span>`
       : `<select id="statut" aria-label="Statut">${Object.entries(STATUTS[kind]).filter(([k]) => k !== "expire").map(([k, v]) => `<option value="${k}" ${d.statut === k ? "selected" : ""}>${v}</option>`).join("")}</select>`}
     ${isD && statutD(d) === "expire" ? `<span class="tag t-expire" style="margin:0">Expiré depuis le ${validiteD(d).toLocaleDateString("fr-FR")}</span>` : ""}
@@ -1587,6 +1732,7 @@ function renderEditor() {
     renderLines();
   };
   if ($("del")) $("del").onclick = remove;
+  if ($("hist")) $("hist").onclick = () => ouvrirHistorique(cur.kind, cur.id, () => openDoc(cur.kind, cur.id));
   if ($("toF")) $("toF").onclick = toFacture;
   if ($("toP")) $("toP").onclick = () => {
     const p = data.projets.find(x => x.devisId === cur.id);
@@ -1694,7 +1840,7 @@ async function save() {
 }
 
 async function remove() {
-  if (!confirm("Supprimer définitivement ce document ?")) return;
+  if (!confirm("Supprimer ce document ? Il restera 30 jours dans la corbeille (Paramètres).")) return;
   await deleteDoc(doc(db, cur.kind, cur.id));
   await load();
 }

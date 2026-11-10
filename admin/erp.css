@@ -477,3 +477,12 @@ main{max-width:1320px;width:100%;margin:0 auto;padding:26px 32px 64px}
 .journal summary{cursor:pointer;color:var(--muted,#8b93a7);font-size:13.5px}
 .journal ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px;font-size:13.5px}
 .journal small{color:var(--muted,#8b93a7);margin-right:6px}
+
+/* sécurité des données */
+.reseau{margin:0 0 14px;padding:14px 16px;border-radius:14px;border:1px solid rgba(255,138,143,.5);background:rgba(255,107,107,.12);color:#FFD9DB;font-size:14px;line-height:1.5}
+.reseau button{margin-left:8px}
+.hist{list-style:none;margin:0;padding:0;display:grid;gap:10px;max-height:55vh;overflow:auto}
+.hist > li{padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03)}
+.hi-h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+.hist ul{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:4px;font-size:13px}
+.hist ul span{display:inline-block;min-width:90px;color:#8b93a7}
