@@ -504,13 +504,14 @@ document.querySelectorAll('[data-copier]').forEach(function(b){
     document.addEventListener('focusin', function(e){ if (e.target.matches('input, textarea, select')) fab.classList.add('cache'); });
   }
 
-  // barre des raccourcis de l'accueil : cachée en descendant, visible en remontant
-  if (document.querySelector('.sn')) {
+  // barre des raccourcis de l'accueil (et bouton d'appel) : cachés en descendant, visibles en remontant
+  if (true) {
     var dernier = window.scrollY, tic = false;
     window.addEventListener('scroll', function(){
       if (tic) return; tic = true;
       requestAnimationFrame(function(){
         var y = window.scrollY;
+        if (mobile()) { if (y > dernier + 6 && y > 300) root.classList.add('fab-repli'); else if (y < dernier - 6) root.classList.remove('fab-repli'); clearTimeout(window.__fabT); window.__fabT = setTimeout(function(){ root.classList.remove('fab-repli'); }, 900); }
         if (!mobile() || y < 500) root.classList.remove('sn-cache');
         else if (y > dernier + 6) root.classList.add('sn-cache');
         else if (y < dernier - 6) root.classList.remove('sn-cache');
@@ -618,7 +619,10 @@ document.querySelectorAll('[data-copier]').forEach(function(b){
     var tt = document.createElement('div'); tt.className = 'plein-t';
     ot.appendChild(tt); ot.appendChild(x);
     var retourY = 0;
+    function majTitre(){ var on = tools.querySelector('.tool.on b'); if (on) tt.textContent = on.textContent.trim(); }
+    new MutationObserver(function(){ if (ot.classList.contains('plein')) { majTitre(); var p = ot.querySelector('.tpane:not([hidden])'); if (p) p.scrollTop = 0; } }).observe(tools, { subtree: true, attributes: true, attributeFilter: ['class'] });
     function ouvrirPlein(nom){
+      if (ot.classList.contains('plein')) { majTitre(); return; }
       retourY = window.scrollY; tt.textContent = nom.trim();
       ot.classList.add('plein'); document.body.classList.add('plein-ouvert');
       var p = ot.querySelector('.tpane:not([hidden])'); if (p) { p.scrollTop = 0; p.setAttribute('role', 'dialog'); p.setAttribute('aria-modal', 'true'); }
@@ -650,4 +654,21 @@ document.querySelectorAll('[data-copier]').forEach(function(b){
   var pc = document.querySelector('.pcards'); if (pc) carrousel(pc, 0);
   var fm = document.getElementById('formules-grid');
   if (fm) carrousel(fm, function(){ var i = Array.prototype.indexOf.call(fm.children, fm.querySelector('.sel')); return i > 0 ? i : 1; });   // « Création » au centre
+})();
+
+/* v2.43 · carrousels : la carte au centre ressort */
+(function(){
+  if (!window.matchMedia('(max-width:760px)').matches) return;
+  function maj(el){
+    var re = el.getBoundingClientRect(), c = re.left + re.width / 2, best = null, d = 1e9;
+    Array.prototype.forEach.call(el.children, function(k){ var r = k.getBoundingClientRect(), x = Math.abs(r.left + r.width / 2 - c); if (x < d) { d = x; best = k; } });
+    Array.prototype.forEach.call(el.children, function(k){ k.classList.toggle('cote', k !== best); });
+  }
+  setTimeout(function(){
+    document.querySelectorAll('.car').forEach(function(el){
+      var t = null; maj(el);
+      el.addEventListener('scroll', function(){ if (t) return; t = requestAnimationFrame(function(){ t = null; maj(el); }); }, { passive: true });
+      window.addEventListener('load', function(){ maj(el); });
+    });
+  }, 60);
 })();

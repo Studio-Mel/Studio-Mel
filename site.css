@@ -1493,3 +1493,42 @@ html.ban-on .nav-in{height:72px}
 }
 @media (max-width:760px) and (prefers-reduced-motion:reduce){.car.coucou > *,.tv *{animation:none!important}}
 @media (max-width:760px) and (prefers-color-scheme: light){#outils.plein .tpane:not([hidden]){background:#F4F6FC}.plein-x{background:#fff}}
+
+/* v2.43 · corrections téléphone + animations */
+@media (max-width:760px){
+  /* outil plein écran : vraie barre de titre, le contenu passe dessous proprement */
+  .plein-t{left:0;right:0;top:0;height:calc(env(safe-area-inset-top,0px) + 64px);padding:calc(env(safe-area-inset-top,0px) + 20px) 120px 0 18px;background:rgba(6,9,18,.86);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .plein-x{z-index:9992}
+  #outils.plein .at-side{top:76px}
+  /* bouton d'appel : se replie pendant qu'on fait défiler */
+  html.fab-repli .fab:not(.cache){opacity:0;transform:translateY(20px) scale(.85);pointer-events:none}
+  /* ligne sous le bouton de l'accueil : lisible sur la planète */
+  .hero-note{color:#fff!important;text-shadow:0 1px 10px rgba(0,8,40,.55)}
+  .hero-note a{color:#fff!important}
+}
+@media (max-width:760px) and (prefers-color-scheme: light){.plein-t{background:rgba(244,246,252,.9)}}
+
+/* animations : retour au toucher, carte au centre qui ressort, menu en cascade */
+@media (hover:none){
+  .btn,.tool,.pt-b,.cmp-seg button,.car-dots button,.fcard-head,.sn a,.q-ch button,.m-top{transition:transform .18s ease,background .25s ease,color .25s ease,opacity .25s ease}
+  .btn:active,.tool:active,.pt-b:active,.cmp-seg button:active,.q-ch button:active,.m-top:active,.sn a:active{transform:scale(.96)}
+  .pcard:active,.fcard:active{transform:scale(.985)!important}
+}
+@media (max-width:760px){
+  .car > *{transition:transform .45s var(--e-reveal),opacity .45s ease,filter .45s ease}
+  .car > .cote{transform:scale(.94);opacity:.6}
+  .car.coucou > *{opacity:1}
+  .tool-go{position:relative;overflow:hidden}
+  .tool-go::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);transform:translateX(-120%);animation:reflet 3.6s ease-in-out 1.5s infinite}
+  @keyframes reflet{0%,60%{transform:translateX(-120%)}85%,100%{transform:translateX(120%)}}
+  .fab:not([hidden]) a{animation:fabPop .6s cubic-bezier(.3,1.6,.5,1) .8s both}
+  @keyframes fabPop{from{transform:scale(0)}}
+  .fab:not([hidden]) a::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--blue);opacity:0;animation:fabOnde 2.2s ease-out 1.6s 2}
+  .fab a{position:relative}
+  @keyframes fabOnde{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(1.7)}}
+  .menu.open > ul > li{animation:menuIn .45s var(--e-reveal) both}
+  .menu.open > ul > li:nth-child(2){animation-delay:.04s}.menu.open > ul > li:nth-child(3){animation-delay:.08s}.menu.open > ul > li:nth-child(4){animation-delay:.12s}
+  .menu.open > ul > li:nth-child(5){animation-delay:.16s}.menu.open > ul > li:nth-child(6){animation-delay:.2s}.menu.open > ul > li:nth-child(7){animation-delay:.24s}
+  @keyframes menuIn{from{opacity:0;transform:translateX(24px)}}
+}
+@media (prefers-reduced-motion:reduce){.car > *,.tool-go::after,.fab a,.fab a::after,.menu.open > ul > li{animation:none!important;transition:none!important}.car > .cote{transform:none;opacity:1}}
