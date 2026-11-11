@@ -1445,9 +1445,6 @@ html.ban-on .nav-in{height:72px}
   .car-dots button{width:8px;height:8px;padding:0;border:0;border-radius:99px;background:var(--line-2);cursor:pointer;transition:width .35s var(--e-reveal),background .35s ease}
   .car-dots button[aria-current="true"]{width:24px;background:var(--blue)}
   .car-n{min-width:34px;font-size:12.5px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
-  /* formules : chaque carte affiche son contenu en entier */
-  .formules.car .fcard-body{grid-template-rows:1fr}
-  .formules.car .fcard-hint{display:none}
   /* réalisations : cartes de même hauteur */
   .pcards.car .pcard{display:flex;flex-direction:column}
   /* outils : de vraies cartes avec un aperçu animé */
@@ -1532,3 +1529,21 @@ html.ban-on .nav-in{height:72px}
   @keyframes menuIn{from{opacity:0;transform:translateX(24px)}}
 }
 @media (prefers-reduced-motion:reduce){.car > *,.tool-go::after,.fab a,.fab a::after,.menu.open > ul > li{animation:none!important;transition:none!important}.car > .cote{transform:none;opacity:1}}
+
+/* v2.44 · formules en onglets sur téléphone */
+.fm-tabs{display:none}
+@media (max-width:760px){
+  .fm-tabs{display:flex;gap:4px;margin-top:28px;padding:4px;border-radius:99px;border:1px solid var(--line-2);background:var(--glass);position:sticky;top:calc(var(--nav-h) + 8px);z-index:6;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+  .fm-tabs button{flex:1;min-width:0;height:42px;padding:0 4px;border:0;border-radius:99px;background:none;color:var(--soft);font:inherit;font-weight:650;font-size:14px;white-space:nowrap;cursor:pointer;transition:background .3s ease,color .3s ease,transform .18s ease}
+  .fm-tabs button[aria-selected="true"]{background:var(--blue);color:#fff;box-shadow:0 8px 22px -10px rgba(47,91,255,.9)}
+  .fm-tabs button:active{transform:scale(.95)}
+  .formules.onglets{display:block!important;margin-top:14px}
+  .formules.onglets .fcard:not(.sel){display:none}
+  .formules.onglets .fcard{width:100%;opacity:1!important;transform:none!important}
+  .formules.onglets .fcard-hint,.formules.onglets .pm-sw{display:none}
+  .formules.onglets .fcard-head{pointer-events:none}
+  .formules.onglets .fcard.fm-in{animation:fmIn .5s var(--e-reveal)}
+  @keyframes fmIn{from{opacity:0;transform:translateY(14px) scale(.98)}}
+}
+@media (max-width:760px) and (prefers-color-scheme: light){.fm-tabs{background:rgba(255,255,255,.85)}}
+@media (prefers-reduced-motion:reduce){.formules.onglets .fcard.fm-in{animation:none}}

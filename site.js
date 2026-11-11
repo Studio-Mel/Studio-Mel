@@ -653,7 +653,35 @@ document.querySelectorAll('[data-copier]').forEach(function(b){
   // ---- réalisations et formules ----
   var pc = document.querySelector('.pcards'); if (pc) carrousel(pc, 0);
   var fm = document.getElementById('formules-grid');
-  if (fm) carrousel(fm, function(){ var i = Array.prototype.indexOf.call(fm.children, fm.querySelector('.sel')); return i > 0 ? i : 1; });   // « Création » au centre
+  // formules : des onglets plutôt qu'un carrousel (fiable sur tous les téléphones, et la boutique est visible)
+  if (fm) {
+    var cartes = fm.querySelectorAll('.fcard');
+    var ONG = [['Refonte', 0], ['Création', 1], ['Premium', 2, 'vitrine'], ['Boutique', 2, 'boutique']];
+    var barre = document.createElement('div'); barre.className = 'fm-tabs'; barre.setAttribute('role', 'tablist'); barre.setAttribute('aria-label', 'Choisir une formule');
+    var choisir = function(o, anim){
+      var c = cartes[o[1]]; if (!c) return;
+      if (!c.classList.contains('sel')) {
+        // le script des formules recentre la carte : ici l'onglet reste en place, on garde la position
+        var y = window.scrollY, garde = function(){ window.scrollTo(0, y); };
+        c.querySelector('.fcard-head').click(); setTimeout(garde, 0); setTimeout(garde, 380); setTimeout(garde, 700);
+      }
+      if (o[2]) { var b = c.querySelector('[data-pm="' + o[2] + '"]'); if (b && b.getAttribute('aria-pressed') !== 'true') b.click(); }
+      var nomEl = c.querySelector('.fcard-name > span');
+      if (nomEl) { if (!nomEl.dataset.orig) nomEl.dataset.orig = nomEl.textContent; nomEl.textContent = o[2] === 'boutique' ? 'Boutique en ligne' : nomEl.dataset.orig; }
+      var pourEl = c.querySelector('.fcard-for');
+      if (pourEl) { if (!pourEl.dataset.orig) pourEl.dataset.orig = pourEl.textContent; pourEl.textContent = o[2] === 'boutique' ? 'Vous voulez vendre vos produits en ligne, sans commission.' : pourEl.dataset.orig; }
+      barre.querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-selected', String(b.textContent === o[0])); });
+      if (anim) { c.classList.remove('fm-in'); void c.offsetWidth; c.classList.add('fm-in'); }
+    };
+    ONG.forEach(function(o){
+      if (!cartes[o[1]]) return;
+      var b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab'); b.textContent = o[0];
+      b.addEventListener('click', function(){ choisir(o, true); });
+      barre.appendChild(b);
+    });
+    fm.before(barre); fm.classList.add('onglets');
+    choisir(ONG[1], false);
+  }
 })();
 
 /* v2.43 · carrousels : la carte au centre ressort */
