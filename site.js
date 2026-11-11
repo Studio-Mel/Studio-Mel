@@ -483,3 +483,87 @@ document.querySelectorAll('[data-copier]').forEach(function(b){
   });
   if (location.hash && /^#q-\d+$/.test(location.hash)) { var d = document.querySelector(location.hash); if (d) d.open = true; }
 })();
+
+/* v2.41 · confort sur téléphone */
+(function(){
+  var mobile = function(){ return window.matchMedia('(max-width:760px)').matches; };
+  var root = document.documentElement;
+
+  // bouton Appeler : caché sur la page contact, près des formulaires et en bas de page
+  var fab = document.getElementById('fab');
+  if (fab) {
+    if (location.pathname.indexOf('contact') > -1) fab.classList.add('cache');
+    else if ('IntersectionObserver' in window) {
+      var vus = new Set();
+      var io = new IntersectionObserver(function(es){
+        es.forEach(function(e){ if (e.isIntersecting) vus.add(e.target); else vus.delete(e.target); });
+        fab.classList.toggle('cache', vus.size > 0);
+      }, { rootMargin: '0px 0px -10% 0px' });
+      document.querySelectorAll('.foot, .final, form, .cta-band, .ck, .rdv').forEach(function(el){ io.observe(el); });
+    }
+    document.addEventListener('focusin', function(e){ if (e.target.matches('input, textarea, select')) fab.classList.add('cache'); });
+  }
+
+  // barre des raccourcis de l'accueil : cachée en descendant, visible en remontant
+  if (document.querySelector('.sn')) {
+    var dernier = window.scrollY, tic = false;
+    window.addEventListener('scroll', function(){
+      if (tic) return; tic = true;
+      requestAnimationFrame(function(){
+        var y = window.scrollY;
+        if (!mobile() || y < 500) root.classList.remove('sn-cache');
+        else if (y > dernier + 6) root.classList.add('sn-cache');
+        else if (y < dernier - 6) root.classList.remove('sn-cache');
+        dernier = y; tic = false;
+      });
+    }, { passive: true });
+    document.querySelectorAll('.sn a').forEach(function(a){ a.addEventListener('click', function(){ setTimeout(function(){ root.classList.remove('sn-cache'); }, 900); }); });
+  }
+
+  // outils de l'accueil : sur téléphone, on choisit d'abord l'outil
+  var ot = document.getElementById('outils');
+  if (ot && mobile() && !/#(atelier|site-ideal|diagnostic)/.test(location.hash)) {
+    ot.classList.add('ferme');
+    var tl = ot.querySelector('[role="tablist"]');
+    if (tl) { var p = document.createElement('p'); p.className = 'ot-aide'; p.textContent = 'Touchez un outil pour l’ouvrir.'; tl.after(p); }
+    ot.querySelectorAll('[role="tab"]').forEach(function(t){ t.addEventListener('click', function(){
+      if (!ot.classList.contains('ferme')) return;
+      ot.classList.remove('ferme');
+      setTimeout(function(){ var pn = ot.querySelector('[role="tabpanel"]:not([hidden])'); if (pn) pn.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+    }); });
+  }
+
+  // réalisations : le détail de chaque projet se déplie
+  document.querySelectorAll('.case-txt').forEach(function(c){
+    var enfants = Array.prototype.slice.call(c.children), premierP = false, act = c.querySelector('.case-act');
+    enfants.forEach(function(e){
+      if (e === act || e.classList.contains('tag') || /^H2$/.test(e.tagName) || e.classList.contains('case-m')) return;
+      if (e.tagName === 'P' && !premierP) { premierP = true; return; }
+      e.classList.add('cd');
+    });
+    if (!c.querySelector('.cd') || !act) return;
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'case-plus'; b.setAttribute('aria-expanded', 'false'); b.textContent = 'Voir le détail du projet';
+    b.addEventListener('click', function(){ var o = c.classList.toggle('ouvert'); b.setAttribute('aria-expanded', String(o)); b.textContent = o ? 'Masquer le détail' : 'Voir le détail du projet'; });
+    act.before(b);
+  });
+
+  // tarifs : comparer formule par formule sur téléphone
+  document.querySelectorAll('.compare-scroll table').forEach(function(t){
+    var ths = t.querySelectorAll('thead th'); if (ths.length < 3) return;
+    var seg = document.createElement('div'); seg.className = 'cmp-seg'; seg.setAttribute('role', 'group'); seg.setAttribute('aria-label', 'Formule à afficher');
+    var choix = 2 < ths.length ? 2 : 1;
+    function voir(c){
+      choix = c;
+      t.querySelectorAll('tr').forEach(function(tr){ Array.prototype.forEach.call(tr.children, function(cell, i){ cell.hidden = mobile() && i > 0 && i !== c; }); });
+      seg.querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-pressed', String(+b.dataset.c === c)); });
+    }
+    for (var i = 1; i < ths.length; i++) {
+      var b = document.createElement('button'); b.type = 'button'; b.dataset.c = i;
+      b.textContent = (ths[i].childNodes[0] && ths[i].childNodes[0].textContent || ths[i].textContent).trim();
+      b.addEventListener('click', function(){ voir(+this.dataset.c); });
+      seg.appendChild(b);
+    }
+    t.parentElement.before(seg); voir(choix);
+    window.addEventListener('resize', function(){ voir(choix); });
+  });
+})();

@@ -1402,3 +1402,35 @@ html.ban-on .nav-in{height:72px}
 .pl a{display:block;padding:6px 0;color:var(--soft);text-decoration:none;transition:color .2s ease,transform .25s var(--e-reveal)}
 .pl a:hover{color:var(--ink);transform:translateX(4px)}
 
+
+/* v2.41 · confort sur téléphone */
+/* bouton Appeler : rond et discret, il s'efface près des formulaires et en bas de page */
+.fab{transition:opacity .35s ease,transform .35s var(--e-reveal)}
+.fab.cache{opacity:0;transform:translateY(16px) scale(.85);pointer-events:none}
+@media (max-width:760px){
+  .fab a{width:54px;height:54px;padding:0;gap:0;justify-content:center;font-size:0;border-radius:50%}
+  .fab svg{width:22px;height:22px}
+  body.has-fab .foot{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  /* barre des 4 raccourcis : cachée quand on descend, revient quand on remonte */
+  .sn{transition:transform .35s var(--e-reveal),opacity .3s ease,padding .4s var(--e-reveal)}
+  html.sn-cache .sn{transform:translateY(-130%);opacity:0;pointer-events:none}
+  /* apparitions plus rapides : pas d'écran qui paraît vide */
+  .js [data-reveal]{transition-duration:.55s,.6s;transition-delay:calc(min(var(--d,0),3) * 45ms)}
+  /* outils de l'accueil : fermés tant qu'on n'en choisit pas un */
+  #outils.ferme [role="tabpanel"]{display:none!important}
+  #outils.ferme [role="tab"]{background:var(--glass)!important;color:var(--ink)!important;border-color:var(--line-2)!important}
+  .ot-aide{margin:12px 0 0;color:var(--muted);font-size:14px}
+  #outils:not(.ferme) .ot-aide{display:none}
+  /* réalisations : l'essentiel d'abord, le détail sur demande */
+  .case-txt:not(.ouvert) .cd{display:none}
+  .case-plus{justify-self:start;margin:4px 0 6px;padding:10px 16px;border-radius:99px;border:1px solid var(--line-2);background:none;color:var(--ink);font:inherit;font-weight:600;font-size:14.5px;cursor:pointer}
+  /* tarifs : exemples empilés, tableau formule par formule */
+  .tx{grid-template-columns:1fr}
+  .tx small{grid-column:1}
+  .compare table{min-width:0}
+  .cmp-seg{display:flex;gap:6px;margin:0 0 12px;padding:4px;border-radius:99px;border:1px solid var(--line-2);background:var(--glass)}
+  .cmp-seg button{flex:1;height:38px;border:0;border-radius:99px;background:none;color:var(--soft);font:inherit;font-weight:600;font-size:14px;cursor:pointer}
+  .cmp-seg button[aria-pressed="true"]{background:var(--blue);color:#fff}
+  .compare th,.compare td{padding:11px 10px}
+}
+@media (min-width:761px){.cmp-seg,.case-plus,.ot-aide{display:none}}
