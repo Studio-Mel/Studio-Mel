@@ -1416,11 +1416,6 @@ html.ban-on .nav-in{height:72px}
   html.sn-cache .sn{transform:translateY(-130%);opacity:0;pointer-events:none}
   /* apparitions plus rapides : pas d'écran qui paraît vide */
   .js [data-reveal]{transition-duration:.55s,.6s;transition-delay:calc(min(var(--d,0),3) * 45ms)}
-  /* outils de l'accueil : fermés tant qu'on n'en choisit pas un */
-  #outils.ferme [role="tabpanel"]{display:none!important}
-  #outils.ferme [role="tab"]{background:var(--glass)!important;color:var(--ink)!important;border-color:var(--line-2)!important}
-  .ot-aide{margin:12px 0 0;color:var(--muted);font-size:14px}
-  #outils:not(.ferme) .ot-aide{display:none}
   /* réalisations : l'essentiel d'abord, le détail sur demande */
   .case-txt:not(.ouvert) .cd{display:none}
   .case-plus{justify-self:start;margin:4px 0 6px;padding:10px 16px;border-radius:99px;border:1px solid var(--line-2);background:none;color:var(--ink);font:inherit;font-weight:600;font-size:14.5px;cursor:pointer}
@@ -1433,4 +1428,68 @@ html.ban-on .nav-in{height:72px}
   .cmp-seg button[aria-pressed="true"]{background:var(--blue);color:#fff}
   .compare th,.compare td{padding:11px 10px}
 }
-@media (min-width:761px){.cmp-seg,.case-plus,.ot-aide{display:none}}
+@media (min-width:761px){.cmp-seg,.case-plus{display:none}}
+
+/* v2.42 · carrousels sur téléphone (réalisations, outils, formules) */
+.car-nav{display:none}
+@media (max-width:760px){
+  .car{display:flex!important;grid-template-columns:none!important;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;gap:12px;margin-inline:calc(var(--gut) * -1);padding:6px var(--gut) 14px;scroll-padding-inline:var(--gut);scrollbar-width:none;-webkit-overflow-scrolling:touch;align-items:stretch}
+  .car::-webkit-scrollbar{display:none}
+  .car > *{flex:0 0 84%;max-width:84%;scroll-snap-align:center;margin:0!important}
+  .car > [hidden]{display:none}
+  /* coup de pouce : les cartes glissent un peu puis reviennent, une seule fois */
+  .car.coucou > *{animation:carCoucou 1.1s cubic-bezier(.45,0,.2,1) .15s 1}
+  @keyframes carCoucou{0%,100%{transform:none}45%{transform:translateX(-64px)}}
+  .car-nav{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:4px}
+  .car-dots{display:flex;gap:6px}
+  .car-dots button{width:8px;height:8px;padding:0;border:0;border-radius:99px;background:var(--line-2);cursor:pointer;transition:width .35s var(--e-reveal),background .35s ease}
+  .car-dots button[aria-current="true"]{width:24px;background:var(--blue)}
+  .car-n{min-width:34px;font-size:12.5px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+  /* formules : chaque carte affiche son contenu en entier */
+  .formules.car .fcard-body{grid-template-rows:1fr}
+  .formules.car .fcard-hint{display:none}
+  /* réalisations : cartes de même hauteur */
+  .pcards.car .pcard{display:flex;flex-direction:column}
+  /* outils : de vraies cartes avec un aperçu animé */
+  .tools.car{margin-top:24px}
+  .tools.car .tool{display:flex;flex-direction:column;gap:8px;padding:14px 14px 18px;transform:none!important}
+  .tools.car .tool small{display:block!important;height:auto!important;opacity:1!important;font-size:14px}
+  .tools.car .tool b{font-size:18px}
+  .tool-go{margin-top:auto;align-self:flex-start;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 18px;border-radius:99px;background:var(--white-btn);color:var(--btn-ink);font-weight:700;font-size:14.5px}
+  .tv{position:relative;height:150px;border-radius:14px;overflow:hidden;background:linear-gradient(160deg,#0E1630,#0A1024);border:1px solid rgba(255,255,255,.08);margin-bottom:6px}
+  /* aperçu Atelier : un mini site dont les couleurs changent */
+  .tv-at .tv-site{position:absolute;inset:14px;border-radius:10px;background:#fff;overflow:hidden;animation:tvFond 6s steps(1) infinite}
+  .tv-at .tv-site i{position:absolute;left:12px;right:12px;height:8px;border-radius:4px;background:#E3E8F5}
+  .tv-at .tv-site i:nth-child(1){top:12px;width:40%;right:auto;animation:tvAccent 6s steps(1) infinite}
+  .tv-at .tv-site i:nth-child(2){top:34px;height:14px;width:70%;right:auto;background:#0B1020}
+  .tv-at .tv-site i:nth-child(3){top:56px;width:60%;right:auto}
+  .tv-at .tv-site i:nth-child(4){top:82px;height:20px;width:38%;right:auto;border-radius:99px;animation:tvAccent 6s steps(1) infinite}
+  @keyframes tvAccent{0%{background:#2F5BFF}33%{background:#C2410C}66%{background:#15803D}}
+  @keyframes tvFond{0%{background:#FFFFFF}33%{background:#FBF4EA}66%{background:#F1F7EE}}
+  /* aperçu Quiz : des réponses qui s'allument */
+  .tv-qz{display:grid;align-content:center;gap:8px;padding:14px 18px}
+  .tv-qz span{height:26px;border-radius:99px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04)}
+  .tv-qz span:nth-child(2){animation:tvQ 3s ease-in-out infinite}
+  .tv-qz span:nth-child(3){animation:tvQ 3s ease-in-out 1.5s infinite}
+  @keyframes tvQ{0%,15%,85%,100%{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.14)}30%,70%{background:rgba(47,91,255,.55);border-color:#2F5BFF}}
+  /* aperçu Diagnostic : une jauge qui se remplit */
+  .tv-dg{display:grid;place-items:center}
+  .tv-dg svg{width:120px;height:120px}
+  .tv-dg .g{fill:none;stroke-width:10;stroke-linecap:round}
+  .tv-dg .g1{stroke:rgba(255,255,255,.1)}
+  .tv-dg .g2{stroke:#2F5BFF;stroke-dasharray:251;stroke-dashoffset:251;animation:tvG 4s ease-in-out infinite}
+  .tv-dg text{fill:#fff;font:700 22px var(--f-display,sans-serif)}
+  @keyframes tvG{0%{stroke-dashoffset:251}55%,85%{stroke-dashoffset:60}100%{stroke-dashoffset:251}}
+  /* l'outil choisi s'ouvre en plein écran, comme une appli */
+  #outils.plein .tpane:not([hidden]){position:fixed;inset:0;z-index:9990;margin:0;padding:calc(env(safe-area-inset-top,0px) + 64px) 16px calc(env(safe-area-inset-bottom,0px) + 28px);border-radius:0;overflow-y:auto;overscroll-behavior:contain;background:var(--bg,#060912);animation:pleinIn .4s var(--e-reveal)}
+  @keyframes pleinIn{from{opacity:0;transform:translateY(30px)}}
+  .plein-x{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);right:14px;z-index:9991;display:none;align-items:center;gap:6px;height:40px;padding:0 16px;border-radius:99px;border:1px solid var(--line-2);background:var(--surface,#0E1424);color:var(--ink);font:inherit;font-weight:700;font-size:14px}
+  .plein-t{position:fixed;top:calc(env(safe-area-inset-top,0px) + 20px);left:18px;z-index:9991;display:none;font-family:var(--f-display);font-weight:650;font-size:18px;color:var(--ink)}
+  #outils.plein .plein-x{display:inline-flex}
+  #outils.plein .plein-t{display:block}
+  body.plein-ouvert{overflow:hidden}
+  body.plein-ouvert .fab,body.plein-ouvert .nav,body.plein-ouvert .sn,body.plein-ouvert .ban{visibility:hidden}
+  #outils.plein{z-index:9989;position:relative}
+}
+@media (max-width:760px) and (prefers-reduced-motion:reduce){.car.coucou > *,.tv *{animation:none!important}}
+@media (max-width:760px) and (prefers-color-scheme: light){#outils.plein .tpane:not([hidden]){background:#F4F6FC}.plein-x{background:#fff}}

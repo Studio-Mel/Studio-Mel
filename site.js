@@ -520,19 +520,6 @@ document.querySelectorAll('[data-copier]').forEach(function(b){
     document.querySelectorAll('.sn a').forEach(function(a){ a.addEventListener('click', function(){ setTimeout(function(){ root.classList.remove('sn-cache'); }, 900); }); });
   }
 
-  // outils de l'accueil : sur téléphone, on choisit d'abord l'outil
-  var ot = document.getElementById('outils');
-  if (ot && mobile() && !/#(atelier|site-ideal|diagnostic)/.test(location.hash)) {
-    ot.classList.add('ferme');
-    var tl = ot.querySelector('[role="tablist"]');
-    if (tl) { var p = document.createElement('p'); p.className = 'ot-aide'; p.textContent = 'Touchez un outil pour l’ouvrir.'; tl.after(p); }
-    ot.querySelectorAll('[role="tab"]').forEach(function(t){ t.addEventListener('click', function(){
-      if (!ot.classList.contains('ferme')) return;
-      ot.classList.remove('ferme');
-      setTimeout(function(){ var pn = ot.querySelector('[role="tabpanel"]:not([hidden])'); if (pn) pn.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
-    }); });
-  }
-
   // réalisations : le détail de chaque projet se déplie
   document.querySelectorAll('.case-txt').forEach(function(c){
     var enfants = Array.prototype.slice.call(c.children), premierP = false, act = c.querySelector('.case-act');
@@ -566,4 +553,101 @@ document.querySelectorAll('[data-copier]').forEach(function(b){
     t.parentElement.before(seg); voir(choix);
     window.addEventListener('resize', function(){ voir(choix); });
   });
+})();
+
+/* v2.42 · carrousels sur téléphone + outils en plein écran */
+(function(){
+  if (!window.matchMedia('(max-width:760px)').matches) return;
+  var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function carrousel(el, depart){
+    var cartes = Array.prototype.filter.call(el.children, function(c){ return !c.hidden; });
+    if (cartes.length < 2) return;
+    el.classList.add('car');
+    var nav = document.createElement('div'); nav.className = 'car-nav';
+    var dots = document.createElement('div'); dots.className = 'car-dots';
+    var n = document.createElement('span'); n.className = 'car-n';
+    cartes.forEach(function(c, i){
+      var b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', 'Carte ' + (i + 1) + ' sur ' + cartes.length);
+      b.addEventListener('click', function(){ aller(i, true); });
+      dots.appendChild(b);
+    });
+    nav.appendChild(dots); nav.appendChild(n); el.after(nav);
+    function aller(i, doux){ var c = cartes[i], r = c.getBoundingClientRect(), re = el.getBoundingClientRect(); el.scrollTo({ left: el.scrollLeft + (r.left - re.left) - (el.clientWidth - r.width) / 2, behavior: doux ? 'smooth' : 'auto' }); }
+    function actif(){
+      var milieu = el.scrollLeft + el.clientWidth / 2, best = 0, d = 1e9;
+      var re = el.getBoundingClientRect(), centre = re.left + re.width / 2;
+      cartes.forEach(function(c, i){ var r = c.getBoundingClientRect(), x = Math.abs(r.left + r.width / 2 - centre); if (x < d) { d = x; best = i; } });
+      Array.prototype.forEach.call(dots.children, function(b, i){ b.setAttribute('aria-current', String(i === best)); });
+      n.textContent = (best + 1) + ' / ' + cartes.length;
+    }
+    var t = null; el.addEventListener('scroll', function(){ if (t) return; t = requestAnimationFrame(function(){ t = null; actif(); }); }, { passive: true });
+    var dep = function(){ return typeof depart === 'function' ? depart() : depart; };
+    requestAnimationFrame(function(){ if (dep()) aller(dep(), false); actif(); });
+    if (depart) window.addEventListener('load', function(){ if (dep()) aller(dep(), false); actif(); });
+    // coup de pouce une seule fois, quand le carrousel arrive à l'écran
+    if (!calm && 'IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function(es){ es.forEach(function(e){
+        if (!e.isIntersecting) return; io.disconnect();
+        setTimeout(function(){ el.classList.add('coucou'); setTimeout(function(){ el.classList.remove('coucou'); }, 1500); }, 350);
+      }); }, { threshold: .6 });
+      io.observe(el);
+    }
+  }
+
+  // ---- outils : cartes avec aperçu, ouverture en plein écran ----
+  var ot = document.getElementById('outils'), tools = ot && ot.querySelector('.tools');
+  if (tools) {
+    var APERCUS = [
+      [/atelier/i, '<div class="tv tv-at" aria-hidden="true"><div class="tv-site"><i></i><i></i><i></i><i></i></div></div>', 'Choisissez couleurs, polices et style : votre futur site prend forme en direct.'],
+      [/id[ée]al/i, '<div class="tv tv-qz" aria-hidden="true"><span></span><span></span><span></span></div>', '5 questions rapides pour savoir quel site vous correspond, et à quel prix.'],
+      [/diagnostic/i, '<div class="tv tv-dg" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="g g1" cx="50" cy="50" r="40"/><circle class="g g2" cx="50" cy="50" r="40" transform="rotate(-90 50 50)"/><text x="50" y="58" text-anchor="middle">?/10</text></svg></div>', 'Êtes-vous facile à trouver sur internet ? Votre note en une minute.']
+    ];
+    Array.prototype.forEach.call(tools.querySelectorAll('.tool'), function(b){
+      var nom = (b.querySelector('b') || b).textContent, a = APERCUS.find(function(x){ return x[0].test(nom); });
+      if (!a) return;
+      b.insertAdjacentHTML('afterbegin', a[1]);
+      var sm = b.querySelector('small'); if (sm && !sm.textContent.trim()) sm.textContent = a[2]; else if (!sm) b.insertAdjacentHTML('beforeend', '<small>' + a[2] + '</small>');
+      b.insertAdjacentHTML('beforeend', '<span class="tool-go">Essayer →</span>');
+      b.addEventListener('click', function(){ setTimeout(function(){ ouvrirPlein(nom); }, 0); });
+    });
+    // aucun outil ouvert sous les cartes : on les ouvre en plein écran
+    ot.querySelectorAll('.tpane').forEach(function(p){ p.hidden = true; });
+    tools.querySelectorAll('.tool').forEach(function(b){ b.classList.remove('on'); });
+    var x = document.createElement('button'); x.type = 'button'; x.className = 'plein-x'; x.textContent = 'Fermer ✕';
+    var tt = document.createElement('div'); tt.className = 'plein-t';
+    ot.appendChild(tt); ot.appendChild(x);
+    var retourY = 0;
+    function ouvrirPlein(nom){
+      retourY = window.scrollY; tt.textContent = nom.trim();
+      ot.classList.add('plein'); document.body.classList.add('plein-ouvert');
+      var p = ot.querySelector('.tpane:not([hidden])'); if (p) { p.scrollTop = 0; p.setAttribute('role', 'dialog'); p.setAttribute('aria-modal', 'true'); }
+      history.pushState({ plein: 1 }, '');
+      x.focus();
+    }
+    function fermerPlein(depuisHistorique){
+      if (!ot.classList.contains('plein')) return;
+      ot.classList.remove('plein'); document.body.classList.remove('plein-ouvert');
+      ot.querySelectorAll('.tpane').forEach(function(p){ p.hidden = true; p.removeAttribute('aria-modal'); });
+      tools.querySelectorAll('.tool').forEach(function(b){ b.classList.remove('on'); });
+      window.scrollTo(0, retourY);
+      if (!depuisHistorique && history.state && history.state.plein) history.back();
+    }
+    x.addEventListener('click', function(){ fermerPlein(false); });
+    window.addEventListener('popstate', function(){ fermerPlein(true); });   // le geste « retour » du téléphone ferme l'outil
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') fermerPlein(false); });
+    // un lien vers #atelier (depuis une autre page) ouvre directement l'outil
+    function parAdresse(){
+      var h = { '#atelier': /atelier/i, '#site-ideal': /id[ée]al/i, '#diagnostic': /diagnostic/i }[location.hash]; if (!h) return;
+      var b = Array.prototype.find.call(tools.querySelectorAll('.tool'), function(t){ return h.test((t.querySelector('b') || t).textContent); });
+      if (b) b.click();
+    }
+    setTimeout(parAdresse, 400); window.addEventListener('hashchange', function(){ setTimeout(parAdresse, 50); });
+    carrousel(tools, 0);
+  }
+
+  // ---- réalisations et formules ----
+  var pc = document.querySelector('.pcards'); if (pc) carrousel(pc, 0);
+  var fm = document.getElementById('formules-grid');
+  if (fm) carrousel(fm, function(){ var i = Array.prototype.indexOf.call(fm.children, fm.querySelector('.sel')); return i > 0 ? i : 1; });   // « Création » au centre
 })();
