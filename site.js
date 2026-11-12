@@ -751,8 +751,21 @@ document.querySelectorAll('[data-copier]').forEach(function(b){
   ff.querySelectorAll('.ff-go, .ff-lien').forEach(function(a){ a.addEventListener('click', function(e){ e.stopPropagation(); }); });
 })();
 
-/* v2.48 · accueil sur téléphone : un écran = une étape */
+/* v2.49 · tout le site sur téléphone : un écran = une étape (sauf espace client et admin) */
 (function(){
-  if (!window.matchMedia('(max-width:760px)').matches || !document.querySelector('.sn')) return;
-  document.documentElement.classList.add('etapes');
+  if (!window.matchMedia('(max-width:760px)').matches) return;
+  if (/espace-client|admin/.test(location.pathname)) return;
+  var root = document.documentElement; root.classList.add('etapes');
+  if (document.querySelector('.sn')) return;   // l'accueil a ses propres règles
+  // écran de titre : seulement pour les en-têtes courts (pas les articles, qui contiennent tout le texte)
+  var ph = document.querySelector('main > .page-head');
+  if (ph && ph.offsetHeight < 700) ph.classList.add('ph-cover');
+  // un bloc = un écran (les longs textes de lecture restent en continu)
+  var SANS = '.legal, .jr-list, .pls, .ba-wrap, .lxs, script, style, [hidden]';
+  var blocs = [].slice.call(document.querySelectorAll('.page-body .wrap > section, .page-body .wrap > div, .pj > section, .pj > div, main > .pj-hero, .case'));
+  blocs.forEach(function(b){
+    if (b.matches(SANS) || b.querySelector('.legal, .lxs, .pls') || !b.offsetHeight) return;
+    if (b.querySelector('.case')) return;          // la liste des réalisations : chaque projet devient une étape
+    b.classList.add('etape');
+  });
 })();

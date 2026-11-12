@@ -1689,3 +1689,18 @@ body.ff-ouvert{overflow:hidden}
 }
 @media (max-width:760px){html.etapes #formules .price-notes{display:none}}
 .ff-p[hidden]{display:none!important}
+
+/* v2.49 · un écran = une étape sur tout le site (téléphone), défilement libre */
+@media (max-width:760px){
+  html.etapes{scroll-snap-type:none!important}
+  html.etapes main > :is(.hero,section.sec,.final),html.etapes .foot{scroll-snap-align:none!important}
+  html.etapes .ph-cover{min-height:calc(100svh - var(--nav-h));display:flex;flex-direction:column;justify-content:center;position:relative;padding-bottom:70px!important;box-sizing:border-box}
+  html.etapes .ph-cover h1{font-size:clamp(40px,12vw,56px);line-height:1.02}
+  html.etapes .ph-cover .lede,html.etapes .ph-cover p:not(.kicker){-webkit-line-clamp:4}
+  html.etapes .ph-cover::after{content:"";position:absolute;left:50%;bottom:26px;width:26px;height:26px;margin-left:-13px;border-radius:50%;background:rgba(127,155,255,.16) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5' fill='none' stroke='%23B4C6FF' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/18px no-repeat;animation:descends 2.2s ease-in-out infinite}
+  @keyframes descends{0%,100%{transform:translateY(0);opacity:.9}50%{transform:translateY(8px);opacity:.5}}
+  html.etapes .etape{min-height:calc(100svh - var(--nav-h));display:flex;flex-direction:column;justify-content:center;padding-block:36px;box-sizing:border-box;margin-block:0!important}
+  html.etapes .case.etape{padding-block:28px}
+  html.etapes .etape > *{max-width:100%}
+}
+@media (prefers-reduced-motion:reduce){html.etapes .ph-cover::after{animation:none}}
