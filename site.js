@@ -465,13 +465,18 @@
       root.style.scrollBehavior = 'auto';
       function pas(t){
         var q = Math.min(1, (t - t0) / duree), e2 = q < .5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2;
-        scrollTo(0, y0 + dist * e2);
+        var y1b = Math.max(0, cible.getBoundingClientRect().top + scrollY - decal() + 1);   // la page peut bouger pendant le trajet : on vise toujours la vraie position
+        scrollTo(0, y0 + (y1b - y0) * e2);
         if (q < 1) anim = requestAnimationFrame(pas); else fin();
       }
       anim = requestAnimationFrame(pas);
       function fin(){
         anim = null; root.style.scrollBehavior = '';
-        setTimeout(function(){ verrou = null; reperer(); }, 60);
+        setTimeout(function(){   // petite correction finale si quelque chose a encore bougé
+          var ec = cible.getBoundingClientRect().top - decal() + 1;
+          if (Math.abs(ec) > 6 && !anim) scrollTo(0, scrollY + ec);
+          verrou = null; reperer();
+        }, 120);
         cible.setAttribute('tabindex', '-1'); cible.focus({ preventScroll: true });
         cible.classList.remove('sn-arrive'); void cible.offsetWidth; cible.classList.add('sn-arrive');
       }

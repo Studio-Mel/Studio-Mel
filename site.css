@@ -1772,3 +1772,7 @@ main{overflow-x:clip}
 .concepts-t h2{font-size:clamp(26px,3vw,36px)}
 .concepts-t p{margin:0;color:var(--muted);max-width:60ch}
 .case[data-concept]{opacity:.92}
+
+/* v2.55 · ordinateur : l'anneau garde sa taille ; Rendez-vous ne passe plus sous la barre */
+.sn a.sn-home svg.sn-ring{width:32px;height:32px;flex:none}
+#rdv,.rdv{scroll-margin-top:calc(var(--nav-h) + 90px)}
