@@ -392,7 +392,7 @@ html:not(.js) .track li::before{border-color:var(--blue-hi);background:var(--blu
 
 /* ---------- pied de page ---------- */
 .foot{position:relative;z-index:1;border-top:1px solid var(--line);background:linear-gradient(180deg,var(--bg),#04060c);padding:clamp(56px,7vw,84px) 0 calc(28px + env(safe-area-inset-bottom,0px));font-size:15px}
-.foot-grid{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(3,minmax(0,1fr));gap:clamp(28px,4vw,56px)}
+.foot-grid{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(4,minmax(0,1fr));gap:clamp(28px,4vw,56px)}
 .foot-about p{margin-top:16px;color:var(--muted);line-height:1.65;max-width:36ch}
 .foot h2{font-family:var(--f-body);font-size:13.5px;font-weight:600;letter-spacing:0;color:var(--muted);margin:6px 0 14px}
 .foot ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
