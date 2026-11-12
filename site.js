@@ -1,3 +1,33 @@
+/* v2.50 · ascenseur automatique pour les pages à plusieurs parties (créé avant le code de l'ascenseur) */
+(function(){
+  if (document.querySelector('.sn') || /espace-client|admin|journal|mentions|confidentialite|cgv|plan-du-site|lexique/.test(location.pathname)) return;
+  var ph = document.querySelector('main > .page-head'), body = document.querySelector('main .page-body'); if (!ph || !body) return;
+  var COURT = [[/choisissez/i,'Formules'],[/combien pour/i,'Exemples'],[/comparer/i,'Comparer'],[/après la mise/i,'Suivi'],[/questions/i,'Questions'],[/ce que je sais/i,'Savoir-faire'],[/ce qui compte/i,'Valeurs'],[/comment on travaille|comment ça se passe/i,'Étapes'],[/confié/i,'Clients'],[/réserver/i,'Rendez-vous'],[/ce que votre site/i,'Le site'],[/lancer l.audit/i,'Audit'],[/besoin d.aide/i,'Aide'],[/ce que l.audit/i,'Contrôles'],[/^création|^refonte|^premium|^boutique/i,'Formule']];
+  var SAUTE = /on fait connaissance|on en parle|un devis gratuit|envie d.imaginer|projet en tête/i;
+  var items = [], vus = {};
+  var form = body.querySelector('.contact-grid'); if (form) items.push([form, 'Devis']);
+  body.querySelectorAll('h2').forEach(function(h){
+    if (h.closest('.foot, .cta-band, .ck, .ff, .contact-grid')) return;
+    var t = h.textContent.trim(); if (!t || SAUTE.test(t)) return;
+    var lab = null; COURT.some(function(c){ if (c[0].test(t)) { lab = c[1]; return true; } });
+    if (!lab) {
+      var cible = h.closest('section') || h, ex = cible.querySelector('.case, .pcard');
+      if (ex) return;
+      lab = t.split(/\s+/).slice(0, 2).join(' ').replace(/[ :?,]+$/, '');
+    }
+    if (vus[lab]) return; vus[lab] = 1;
+    items.push([h.closest('section, .ap-sec, .rdv, div[class]') || h, lab]);
+  });
+  if (items.length < 2) return;
+  items = items.slice(0, 5);
+  var nav = document.createElement('nav'); nav.className = 'sn sn-page'; nav.setAttribute('aria-label', 'Aller à une partie de la page');
+  var html = '<div class="sn-in"><span class="sn-pill" aria-hidden="true"></span><a href="#haut-page" data-sn="haut-page" class="sn-home" aria-label="Revenir en haut de la page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg><span>Haut</span></a>';
+  items.forEach(function(it, i){ var el = it[0]; if (!el.id) el.id = 'partie-' + (i + 1); html += '<a href="#' + el.id + '" data-sn="' + el.id + '">' + it[1] + '</a>'; });
+  nav.innerHTML = html + '</div>';
+  ph.id = ph.id || 'haut-page'; if (ph.id !== 'haut-page') { ph.setAttribute('data-haut', ''); nav.querySelector('.sn-home').setAttribute('href', '#' + ph.id); nav.querySelector('.sn-home').dataset.sn = ph.id; }
+  ph.after(nav);
+})();
+
 /* =========================================================
    Studio Mel · script commun à toutes les pages
    Navigation, apparitions au défilement, bouton d'appel,
@@ -756,16 +786,30 @@ document.querySelectorAll('[data-copier]').forEach(function(b){
   if (!window.matchMedia('(max-width:760px)').matches) return;
   if (/espace-client|admin/.test(location.pathname)) return;
   var root = document.documentElement; root.classList.add('etapes');
-  if (document.querySelector('.sn')) return;   // l'accueil a ses propres règles
+  if (document.querySelector('main > .hero')) return;   // l'accueil a ses propres règles
   // écran de titre : seulement pour les en-têtes courts (pas les articles, qui contiennent tout le texte)
   var ph = document.querySelector('main > .page-head');
   if (ph && ph.offsetHeight < 700) ph.classList.add('ph-cover');
   // un bloc = un écran (les longs textes de lecture restent en continu)
   var SANS = '.legal, .jr-list, .pls, .ba-wrap, .lxs, script, style, [hidden]';
-  var blocs = [].slice.call(document.querySelectorAll('.page-body .wrap > section, .page-body .wrap > div, .pj > section, .pj > div, main > .pj-hero, .case'));
-  blocs.forEach(function(b){
-    if (b.matches(SANS) || b.querySelector('.legal, .lxs, .pls') || !b.offsetHeight) return;
-    if (b.querySelector('.case')) return;          // la liste des réalisations : chaque projet devient une étape
-    b.classList.add('etape');
+  // (v2.50) les blocs gardent leur taille naturelle : pas de grands vides
+})();
+
+
+/* v2.50 · apparitions variées : titres qui sortent du flou, images en zoom, cartes en alternance */
+(function(){
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var compte = {};
+  document.querySelectorAll('[data-reveal]').forEach(function(el){
+    if (el.dataset.anim || el.classList.contains('story-visual') || el.closest('.hero, .sn, .ff, .foot')) return;
+    var anim = 'monte';
+    if (/^H[1-3]$/.test(el.tagName) || el.classList.contains('h-sec')) anim = 'flou';
+    else if (el.matches('img, figure, .pcard-v, .case-v, .ap-photo, .ba, .tv, .pj-shot') || el.querySelector(':scope > img:only-child')) anim = 'zoom';
+    else if (el.matches('li, .pcard, .fcard, .tf, .tool, .tx, .case, .av, article')) {
+      var p = el.parentElement, k = (compte[p && p.className] = (compte[p && p.className] || 0) + 1);
+      anim = k % 2 ? 'gauche' : 'droite';
+    }
+    else if (el.matches('.cta-band, .ck, .glass, .rdv, .sim, .compare')) anim = 'pivot';
+    el.dataset.anim = anim;
   });
 })();
