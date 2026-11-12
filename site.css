@@ -1755,3 +1755,14 @@ main{overflow-x:clip}
 .sn-home:hover .sn-ring path,.sn-home:focus-visible .sn-ring path{transform:translateY(-3px)}
 .sn-home.lit .sn-ring{filter:drop-shadow(0 0 6px rgba(47,91,255,.55))}
 .sn-home:active .sn-ring{transform:scale(.9)}
+
+/* v2.53 · menu téléphone : lien direct + flèche de détail */
+.m-row{display:flex;align-items:stretch;border-bottom:1px solid var(--line)}
+.m-row .m-top{flex:1;border-bottom:0!important}
+.m-chev{flex:none;width:56px;display:grid;place-items:center;border:0;border-left:1px solid var(--line);background:none;color:var(--muted);cursor:pointer}
+.m-chev svg{width:20px;height:20px;transition:transform .35s var(--e-reveal)}
+.m-grp2.open .m-chev svg{transform:rotate(180deg)}
+.m-grp2.open .m-chev{color:var(--ink)}
+.m-sous{list-style:none;margin:0;padding:6px 0 12px 14px;display:grid;gap:2px;animation:faIn .35s var(--e-reveal)}
+.m-sous[hidden]{display:none}
+.m-sous a{display:block;padding:9px 0;color:var(--soft);text-decoration:none;font-size:16px}

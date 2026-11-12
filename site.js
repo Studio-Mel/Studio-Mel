@@ -833,3 +833,15 @@ document.querySelectorAll('[data-copier]').forEach(function(b){
   addEventListener('scroll', function(){ if (!tic) { tic = true; requestAnimationFrame(maj); } }, { passive: true });
   addEventListener('resize', maj); maj();
 })();
+
+/* v2.53 · menu téléphone : le mot mène à la page, la flèche ouvre le détail */
+(function(){
+  document.querySelectorAll('.m-grp2 .m-chev').forEach(function(b){
+    b.addEventListener('click', function(e){
+      e.preventDefault(); e.stopPropagation();
+      var li = b.closest('.m-grp2'), ul = li.querySelector('.m-sous'), o = ul.hidden;
+      document.querySelectorAll('.m-grp2 .m-sous').forEach(function(x){ if (x !== ul) { x.hidden = true; x.closest('.m-grp2').classList.remove('open'); x.closest('.m-grp2').querySelector('.m-chev').setAttribute('aria-expanded', 'false'); } });
+      ul.hidden = !o; li.classList.toggle('open', o); b.setAttribute('aria-expanded', String(o));
+    });
+  });
+})();
