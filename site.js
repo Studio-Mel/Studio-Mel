@@ -2,12 +2,12 @@
 (function(){
   if (document.querySelector('.sn') || /espace-client|admin|journal|mentions|confidentialite|cgv|plan-du-site|lexique/.test(location.pathname)) return;
   var ph = document.querySelector('main > .page-head'), body = document.querySelector('main .page-body'); if (!ph || !body) return;
-  var COURT = [[/choisissez/i,'Formules'],[/combien pour/i,'Exemples'],[/comparer/i,'Comparer'],[/après la mise/i,'Suivi'],[/questions/i,'Questions'],[/ce que je sais/i,'Savoir-faire'],[/ce qui compte/i,'Valeurs'],[/comment on travaille|comment ça se passe/i,'Étapes'],[/confié/i,'Clients'],[/réserver/i,'Rendez-vous'],[/ce que votre site/i,'Le site'],[/lancer l.audit/i,'Audit'],[/besoin d.aide/i,'Aide'],[/ce que l.audit/i,'Contrôles'],[/^création|^refonte|^premium|^boutique/i,'Formule']];
+  var COURT = [[/choisissez/i,'Formules'],[/combien pour/i,'Exemples'],[/comparer/i,'Comparer'],[/après la mise/i,'Suivi'],[/questions/i,'Questions'],[/ce que je sais/i,'Savoir-faire'],[/ce qui compte/i,'Valeurs'],[/comment on travaille|comment ça se passe/i,'Étapes'],[/confié/i,'Clients'],[/réserver/i,'Rendez-vous'],[/ce que votre site/i,'Le site'],[/lancer l.audit/i,'Audit'],[/besoin d.aide/i,'Aide'],[/ce que l.audit/i,'Contrôles'],[/^création|^refonte|^premium|^boutique/i,'Formule'],[/^concepts$/i,'Concepts']];
   var SAUTE = /on fait connaissance|on en parle|un devis gratuit|envie d.imaginer|projet en tête/i;
   var items = [], vus = {};
   var form = body.querySelector('.contact-grid'); if (form) items.push([form, 'Devis']);
   body.querySelectorAll('h2').forEach(function(h){
-    if (h.closest('.foot, .cta-band, .ck, .ff, .contact-grid, [hidden]') || !h.getClientRects().length) return;   // section cachée (ex. avis vides) : ignorée
+    if (h.closest('.foot, .cta-band, .ck, .ff, .contact-grid, [hidden], [data-concept]') || !h.getClientRects().length) return;   // concepts : un seul bouton « Concepts »   // section cachée (ex. avis vides) : ignorée
     var t = h.textContent.trim(); if (!t || SAUTE.test(t)) return;
     var lab = null; COURT.some(function(c){ if (c[0].test(t)) { lab = c[1]; return true; } });
     if (!lab) {
@@ -16,7 +16,7 @@
       lab = t.split(/\s+/).slice(0, 2).join(' ').replace(/[ :?,]+$/, '');
     }
     if (vus[lab]) return; vus[lab] = 1;
-    var t = h; while (t.parentElement && !t.parentElement.matches('.page-body .wrap, .page-body')) t = t.parentElement;   // le bloc de premier niveau
+    var t = h.closest('.case, .concepts-t') || h; if (t === h) while (t.parentElement && !t.parentElement.matches('.page-body .wrap, .page-body')) t = t.parentElement;   // le projet, ou le bloc de premier niveau
     items.push([t.parentElement ? t : h, lab]);
   });
   if (items.length < 2) return;
@@ -844,4 +844,16 @@ document.querySelectorAll('[data-copier]').forEach(function(b){
       ul.hidden = !o; li.classList.toggle('open', o); b.setAttribute('aria-expanded', String(o));
     });
   });
+})();
+
+/* v2.54 · réalisations : le titre « Concepts » se cache quand un filtre n'en montre aucun */
+(function(){
+  var t = document.getElementById('concepts'), box = document.getElementById('cases'); if (!t || !box) return;
+  function maj(){
+    var vis = [].some.call(box.querySelectorAll('[data-concept]'), function(c){ return !c.hidden && getComputedStyle(c).display !== 'none'; });
+    if (t.hidden !== !vis) t.hidden = !vis;   // ne change que si besoin (sinon la surveillance se relancerait en boucle)
+  }
+  new MutationObserver(function(liste){ if (liste.some(function(m){ return m.target !== t; })) maj(); })
+    .observe(box, { subtree: true, attributes: true, attributeFilter: ['hidden', 'class', 'style'] });
+  maj();
 })();
