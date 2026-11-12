@@ -513,7 +513,6 @@ document.querySelectorAll('[data-copier]').forEach(function(b){
         var y = window.scrollY;
         if (mobile()) { if (y > dernier + 6 && y > 300) root.classList.add('fab-repli'); else if (y < dernier - 6) root.classList.remove('fab-repli'); clearTimeout(window.__fabT); window.__fabT = setTimeout(function(){ root.classList.remove('fab-repli'); }, 900); }
         if (!mobile() || y < 500) root.classList.remove('sn-cache');
-        else if (y > dernier + 6) root.classList.add('sn-cache');
         else if (y < dernier - 6) root.classList.remove('sn-cache');
         dernier = y; tic = false;
       });
@@ -670,4 +669,21 @@ document.querySelectorAll('[data-copier]').forEach(function(b){
       window.addEventListener('load', function(){ maj(el); });
     });
   }, 60);
+})();
+
+
+/* v2.47 · téléphone : pied de page en menus dépliables */
+(function(){
+  if (!window.matchMedia('(max-width:760px)').matches) return;
+  var foot = document.querySelector('.foot'); if (!foot) return;
+  function acc(bloc, titre, contenu){
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'fa-t'; b.setAttribute('aria-expanded', 'false');
+    b.innerHTML = '<span></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+    b.firstChild.textContent = titre.textContent.trim();
+    titre.replaceWith(b); bloc.classList.add('fa');
+    b.addEventListener('click', function(){ var o = bloc.classList.toggle('open'); b.setAttribute('aria-expanded', String(o)); });
+  }
+  foot.querySelectorAll('.foot-grid > div:not(.foot-about)').forEach(function(d){ var h = d.querySelector('h2'); if (h) acc(d, h); });
+  var m = foot.querySelector('.foot-metiers');
+  if (m) { var sp = m.querySelector('span'); if (sp) { var w = document.createElement('div'); m.before(w); w.appendChild(m); var h = document.createElement('h2'); h.textContent = 'Sites par métier'; w.prepend(h); sp.remove(); acc(w, h); } }
 })();

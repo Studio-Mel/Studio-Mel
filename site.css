@@ -1591,3 +1591,37 @@ html.ban-on .nav-in{height:72px}
 /* v2.46 · ascenseur : bouton Accueil */
 .sn-home svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
 @media (max-width:560px){.sn-home{padding:0 12px!important}.sn-home span{display:none}}
+
+/* v2.47 · téléphone : une idée par écran */
+@media (max-width:760px){
+  /* 1. textes plus courts */
+  .sec-head .lede{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .page-head .lede,.page-head p:not(.kicker){display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .pcard p:not(.tag):not(.pc-meta){display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .fresume small{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+  .tools.pile .tool small{display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  /* 2. un seul gros bouton par bloc : les autres deviennent des liens */
+  :is(.fresume-act,.final-btns,.cta-row,.hero-in) .btn-ghost{height:auto;min-height:0;padding:10px 4px;border:0!important;background:none!important;box-shadow:none!important;color:var(--soft)!important;font-weight:600;text-decoration:underline;text-underline-offset:4px;text-decoration-color:rgba(127,155,255,.5)}
+  .final-btns,.fresume-act,.cta-row{flex-direction:column;align-items:stretch;gap:4px}
+  .final-btns .btn-primary,.fresume-act .btn-primary,.cta-row .btn-primary{justify-content:center}
+  /* 3. moins de petites étiquettes */
+  .sec-head .kicker,.ap-sec > .kicker,.page-head .kicker{display:none}
+  .price-notes span:not(:nth-child(2)){display:none}
+  /* 5. plus d'air, titres plus présents */
+  .sec{padding-block:clamp(64px,16vw,84px)}
+  .sec-head h2,.ap-sec > .h-sec{font-size:clamp(28px,8.2vw,34px);line-height:1.08}
+  .sec-head{gap:12px}
+  /* 4. pied de page en menus dépliables */
+  .foot .foot-grid{gap:0}
+  .foot .foot-about{padding-bottom:18px}
+  .fa{border-top:1px solid var(--line)}
+  .fa-t{display:flex;width:100%;align-items:center;justify-content:space-between;padding:16px 2px;border:0;background:none;color:var(--ink);font:inherit;font-weight:650;font-size:16px;cursor:pointer}
+  .fa-t svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .35s var(--e-reveal)}
+  .fa.open .fa-t svg{transform:rotate(180deg)}
+  .fa:not(.open) > :not(.fa-t){display:none}
+  .fa.open > :not(.fa-t){padding-bottom:14px;animation:faIn .35s var(--e-reveal)}
+  @keyframes faIn{from{opacity:0;transform:translateY(-6px)}}
+  .fa .foot-metiers{display:flex;flex-wrap:wrap;gap:8px 14px;margin:0}
+  .foot-legal{margin-top:6px;border-top:1px solid var(--line);padding-top:18px}
+}
+@media (max-width:760px){:is(.final-btns,.fresume-act,.cta-row) > *{flex:none!important}}
