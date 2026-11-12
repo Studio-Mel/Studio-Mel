@@ -7,7 +7,7 @@
   var items = [], vus = {};
   var form = body.querySelector('.contact-grid'); if (form) items.push([form, 'Devis']);
   body.querySelectorAll('h2').forEach(function(h){
-    if (h.closest('.foot, .cta-band, .ck, .ff, .contact-grid')) return;
+    if (h.closest('.foot, .cta-band, .ck, .ff, .contact-grid, [hidden]') || !h.getClientRects().length) return;   // section cachée (ex. avis vides) : ignorée
     var t = h.textContent.trim(); if (!t || SAUTE.test(t)) return;
     var lab = null; COURT.some(function(c){ if (c[0].test(t)) { lab = c[1]; return true; } });
     if (!lab) {
@@ -16,7 +16,8 @@
       lab = t.split(/\s+/).slice(0, 2).join(' ').replace(/[ :?,]+$/, '');
     }
     if (vus[lab]) return; vus[lab] = 1;
-    items.push([h.closest('section, .ap-sec, .rdv, div[class]') || h, lab]);
+    var t = h; while (t.parentElement && !t.parentElement.matches('.page-body .wrap, .page-body')) t = t.parentElement;   // le bloc de premier niveau
+    items.push([t.parentElement ? t : h, lab]);
   });
   if (items.length < 2) return;
   items = items.slice(0, 5);
@@ -812,4 +813,23 @@ document.querySelectorAll('[data-copier]').forEach(function(b){
     else if (el.matches('.cta-band, .ck, .glass, .rdv, .sim, .compare')) anim = 'pivot';
     el.dataset.anim = anim;
   });
+})();
+
+
+/* v2.51 · bouton du haut de l'ascenseur : anneau qui se remplit pendant la lecture */
+(function(){
+  var bts = document.querySelectorAll('.sn-home'); if (!bts.length) return;
+  var C = 2 * Math.PI * 15;
+  bts.forEach(function(b){
+    var lab = b.getAttribute('aria-label') || 'Revenir en haut';
+    b.innerHTML = '<svg class="sn-ring" viewBox="0 0 36 36" aria-hidden="true"><circle class="r0" cx="18" cy="18" r="15"/><circle class="r1" cx="18" cy="18" r="15" stroke-dasharray="' + C.toFixed(2) + '" stroke-dashoffset="' + C.toFixed(2) + '"/><path d="M18 24.5V12.5M13 17.5l5-5 5 5"/></svg><span class="sr-only">' + lab + '</span>';
+  });
+  var tic = false;
+  function maj(){
+    tic = false;
+    var max = document.documentElement.scrollHeight - innerHeight, p = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+    bts.forEach(function(b){ b.querySelector('.r1').setAttribute('stroke-dashoffset', (C * (1 - p)).toFixed(2)); b.classList.toggle('lit', p > .02); b.style.setProperty('--p', p.toFixed(3)); });
+  }
+  addEventListener('scroll', function(){ if (!tic) { tic = true; requestAnimationFrame(maj); } }, { passive: true });
+  addEventListener('resize', maj); maj();
 })();

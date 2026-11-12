@@ -123,7 +123,8 @@ function rendreAvis(){
 }
 function rendreFaq(){
   const p = document.querySelector('[data-p="faq"]'); p.innerHTML = "";
-  const card = el("div", { class: "card" }, el("h2", {}, "Questions fréquentes"), el("p", { class: "help" }, "Affichées sur la page Contact."));
+  const card = el("div", { class: "card" }, el("h2", {}, "Questions fréquentes"),
+    el("p", { class: "help" }, "Astuce : pour afficher un prix qui se met à jour tout seul, écris son jeton entre accolades : {maint} (maintenance), {maintBoutique}, {heure} (heure de modification), {page} (page en plus), {google} (fiche Google), {lotProduits}, {refonte}, {creation}, {premium}, {boutique}."), el("p", { class: "help" }, "Affichées sur la page Contact."));
   C.faq.forEach((x, i) => {
     const bloc = el("div", { class: "faq-it" },
       champ("Question", x.q, v => x.q = v),

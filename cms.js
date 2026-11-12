@@ -115,7 +115,9 @@
     }
     var faq = document.querySelector('[data-cms-faq]');
     if (faq && Array.isArray(C.faq) && C.faq.length) {
-      faq.innerHTML = C.faq.filter(function(x){ return x && x.q; }).map(function(x, i){ return '<details id="q-' + (i + 1) + '"><summary>' + esc(x.q) + '</summary><p>' + esc(x.r) + '</p></details>'; }).join('');
+      var T = window.TARIFS || {};
+      var jet = function(t){ return t.replace(/\{(\w+)\}/g, function(m, k){ return typeof T[k] === 'number' ? '<span data-prix="' + k + '">' + euro(T[k]) + '</span>' : m; }); };
+      faq.innerHTML = C.faq.filter(function(x){ return x && x.q; }).map(function(x, i){ return '<details id="q-' + (i + 1) + '"><summary>' + esc(x.q) + '</summary><p>' + jet(esc(x.r)) + '</p></details>'; }).join('');
       if (location.hash && /^#q-\d+$/.test(location.hash)) { var dq = document.querySelector(location.hash); if (dq) dq.open = true; }
     }
     if (articles) appliquerArticles(articles);

@@ -90,7 +90,7 @@ window.SM_DEFAUTS = {
   },
   {
    "q": "Qu’est-ce que le référencement de base ?",
-   "r": "Tout ce qui aide Google à comprendre votre site : un titre et une description pour chaque page, votre ville et votre métier bien indiqués, un aperçu propre quand on partage votre lien. C’est inclus dans toutes les formules. Pour apparaître sur Google Maps, il y a l’option Fiche Google à 80 €."
+   "r": "Tout ce qui aide Google à comprendre votre site : un titre et une description pour chaque page, votre ville et votre métier bien indiqués, un aperçu propre quand on partage votre lien. C’est inclus dans toutes les formules. Pour apparaître sur Google Maps, il y a l’option Fiche Google à {google}."
   },
   {
    "q": "Combien coûte le nom de domaine ?",
@@ -106,7 +106,7 @@ window.SM_DEFAUTS = {
   },
   {
    "q": "La maintenance est-elle obligatoire ?",
-   "r": "Non. Sans maintenance, votre site reste en ligne et les modifications sont facturées 30 € de l’heure. Avec la maintenance à 40 € par mois, je surveille le site et je fais jusqu’à 1 h de changements par mois. Pour une boutique : 70 € par mois avec 2 h de changements, l’ajout de produits et le suivi technique des commandes. Elle s’engage sur 6 mois minimum."
+   "r": "Non. Sans maintenance, votre site reste en ligne et les modifications sont facturées {heure} de l’heure. Avec la maintenance à {maint} par mois, je surveille le site et je fais jusqu’à 1 h de changements par mois. Pour une boutique : {maintBoutique} par mois avec 2 h de changements, l’ajout de produits et le suivi technique des commandes. Si vous la prenez, c’est 6 mois minimum, puis résiliable à tout moment avec un mois de préavis."
   },
   {
    "q": "Comment se passe le paiement ?",
@@ -114,7 +114,7 @@ window.SM_DEFAUTS = {
   },
   {
    "q": "Et si j’ai besoin de plus de pages ?",
-   "r": "La Refonte et la Création vont jusqu’à 5 pages, le Premium jusqu’à 8. Chaque page en plus coûte 60 €. Une boutique comprend jusqu’à 20 produits, puis 80 € par lot de 20."
+   "r": "La Refonte et la Création vont jusqu’à 5 pages, le Premium jusqu’à 8. Chaque page en plus coûte {page}. Une boutique comprend jusqu’à 20 produits, puis {lotProduits} par lot de 20."
   },
   {
    "q": "Pourquoi parler de tarifs de lancement ?",
@@ -167,7 +167,7 @@ window.SM_DEFAUTS = {
    "resume": "Ce que vous payez vraiment, ce qui doit être inclus, et les frais cachés à éviter avant de signer.",
    "date": "2026-10-31",
    "lecture": 5,
-   "contenu": "C’est la première question que me posent les artisans, et c’est normal : les prix vont de « gratuit » à plusieurs milliers d’euros. Voici comment s’y retrouver.\n\n## Ce qui fait varier le prix\n\nTrois choses comptent vraiment : **le nombre de pages**, **le travail sur mesure** (design, textes, photos) et **les fonctionnalités** en plus, comme la réservation ou la vente en ligne. Un site de 5 pages bien fait suffit à la grande majorité des artisans : accueil, services, réalisations, à propos, contact.\n\n## Les prix chez Studio Mel\n\n- Refonte d’un site existant : 500 €\n- Création d’un site vitrine : 750 €\n- Site Premium, jusqu’à 8 pages avec animations : 1 200 €\n- Boutique en ligne : à partir de 1 900 €\n\nCe sont mes tarifs de lancement. Ils comprennent la version mobile, le référencement de base, le formulaire de contact et la mise en ligne.\n\n## Les frais qui reviennent chaque année\n\nUn site a très peu de frais fixes s’il est bien construit :\n\n- **Le nom de domaine** (votre adresse en .fr) : environ 15 € par an.\n- **L’hébergement** : il peut être gratuit pour un site vitrine.\n- **La maintenance** : facultative. Chez moi, 40 € par mois avec une heure de modifications incluse.\n\n> **Le piège à éviter :** les offres « site gratuit » avec un abonnement mensuel. Au bout de deux ou trois ans, vous avez souvent payé plus cher qu’un site acheté, et le site ne vous appartient pas : si vous arrêtez l’abonnement, il disparaît.\n\n## Les 3 questions à poser avant de signer\n\n1. Le nom de domaine sera-t-il à mon nom ?\n2. Que se passe-t-il si j’arrête de payer la maintenance ?\n3. Combien de modifications sont comprises avant la mise en ligne ?\n\nSi les réponses sont floues, méfiez-vous. Chez Studio Mel, le domaine et l’hébergement sont à votre nom, et le devis précise tout avant de commencer.",
+   "contenu": "C’est la première question que me posent les artisans, et c’est normal : les prix vont de « gratuit » à plusieurs milliers d’euros. Voici comment s’y retrouver.\n\n## Ce qui fait varier le prix\n\nTrois choses comptent vraiment : **le nombre de pages**, **le travail sur mesure** (design, textes, photos) et **les fonctionnalités** en plus, comme la réservation ou la vente en ligne. Un site de 5 pages bien fait suffit à la grande majorité des artisans : accueil, services, réalisations, à propos, contact.\n\n## Les prix chez Studio Mel\n\n- Refonte d’un site existant : 500 €\n- Création d’un site vitrine : 750 €\n- Site Premium, jusqu’à 8 pages avec animations : 1 200 €\n- Boutique en ligne : à partir de 1 900 €\n\nCe sont mes tarifs de lancement. Ils comprennent la version mobile, le référencement de base, le formulaire de contact et la mise en ligne.\n\n## Les frais qui reviennent chaque année\n\nUn site a très peu de frais fixes s’il est bien construit :\n\n- **Le nom de domaine** (votre adresse en .fr) : environ 15 € par an.\n- **L’hébergement** : il peut être gratuit pour un site vitrine.\n- **La maintenance** : facultative. Chez moi, {maint} par mois avec une heure de modifications incluse.\n\n> **Le piège à éviter :** les offres « site gratuit » avec un abonnement mensuel. Au bout de deux ou trois ans, vous avez souvent payé plus cher qu’un site acheté, et le site ne vous appartient pas : si vous arrêtez l’abonnement, il disparaît.\n\n## Les 3 questions à poser avant de signer\n\n1. Le nom de domaine sera-t-il à mon nom ?\n2. Que se passe-t-il si j’arrête de payer la maintenance ?\n3. Combien de modifications sont comprises avant la mise en ligne ?\n\nSi les réponses sont floues, méfiez-vous. Chez Studio Mel, le domaine et l’hébergement sont à votre nom, et le devis précise tout avant de commencer.",
    "statique": true
   },
   {

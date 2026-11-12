@@ -1744,3 +1744,14 @@ main{overflow-x:clip}
 .js [data-reveal][data-anim="pivot"]{transform:perspective(900px) rotateX(16deg) translateY(24px);transform-origin:50% 100%}
 .js [data-reveal][data-anim].in{transform:none;filter:none}
 @media (max-width:760px){.js [data-reveal][data-anim]{transition-duration:.6s,.65s,.6s;transition-delay:calc(min(var(--d,0),3) * 45ms)}}
+
+/* v2.51 · anneau de progression (bouton du haut de l'ascenseur) */
+.sn a.sn-home{padding:0 8px!important;min-width:44px;justify-content:center}
+.sn-ring{width:32px;height:32px;display:block;overflow:visible}
+.sn-ring .r0{fill:none;stroke:rgba(127,155,255,.22);stroke-width:3}
+.sn-ring .r1{fill:none;stroke:var(--blue);stroke-width:3;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset .15s linear}
+.sn-ring path{fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .35s var(--e-reveal)}
+.sn-home.lit .sn-ring path{transform:translateY(-1px)}
+.sn-home:hover .sn-ring path,.sn-home:focus-visible .sn-ring path{transform:translateY(-3px)}
+.sn-home.lit .sn-ring{filter:drop-shadow(0 0 6px rgba(47,91,255,.55))}
+.sn-home:active .sn-ring{transform:scale(.9)}
