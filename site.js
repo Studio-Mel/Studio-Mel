@@ -687,3 +687,72 @@ document.querySelectorAll('[data-copier]').forEach(function(b){
   var m = foot.querySelector('.foot-metiers');
   if (m) { var sp = m.querySelector('span'); if (sp) { var w = document.createElement('div'); m.before(w); w.appendChild(m); var h = document.createElement('h2'); h.textContent = 'Sites par métier'; w.prepend(h); sp.remove(); acc(w, h); } }
 })();
+
+/* v2.48 · fiches détaillées des formules (accueil + tarifs) */
+(function(){
+  var ff = document.getElementById('ff'); if (!ff) return;
+  var pages = [].slice.call(ff.querySelectorAll('.ff-p')), tabs = [].slice.call(ff.querySelectorAll('.ff-tabs [data-f]'));
+  var ordre = pages.map(function(p){ return p.dataset.f; }), noms = tabs.map(function(t){ return t.textContent; });
+  var prev = ff.querySelector('.ff-prev'), next = ff.querySelector('.ff-next'), ouvreur = null, cur = 1, ouvert = false, retourY = 0;
+  function montrer(i, sens){
+    cur = (i + ordre.length) % ordre.length;
+    pages.forEach(function(p, k){
+      p.hidden = k !== cur;
+      if (k === cur && sens) { p.classList.remove('ff-g', 'ff-d'); void p.offsetWidth; p.classList.add(sens > 0 ? 'ff-d' : 'ff-g'); }
+    });
+    tabs.forEach(function(t, k){ t.setAttribute('aria-selected', String(k === cur)); });
+    prev.querySelector('span').textContent = noms[(cur - 1 + ordre.length) % ordre.length];
+    next.querySelector('span').textContent = noms[(cur + 1) % ordre.length];
+    ff.querySelector('.ff-pages').scrollTop = 0;
+    var t = ff.querySelector('.ff-tabs [aria-selected="true"]'); if (t && t.scrollIntoView) t.scrollIntoView({ block: 'nearest', inline: 'center' });
+  }
+  function ouvrir(cle){
+    ouvreur = document.activeElement; retourY = window.scrollY;
+    montrer(Math.max(0, ordre.indexOf(cle)));
+    ff.hidden = false; requestAnimationFrame(function(){ ff.classList.add('on'); });
+    document.body.classList.add('ff-ouvert'); ouvert = true;
+    history.pushState({ fiche: 1 }, '');
+    ff.querySelector('.ff-x').focus({ preventScroll: true });
+  }
+  function fermer(depuisHistorique){
+    if (!ouvert) return; ouvert = false;
+    ff.classList.remove('on'); document.body.classList.remove('ff-ouvert');
+    setTimeout(function(){ ff.hidden = true; }, 300);
+    window.scrollTo(0, retourY);
+    if (ouvreur && ouvreur.focus) ouvreur.focus({ preventScroll: true });
+    if (!depuisHistorique && history.state && history.state.fiche) history.back();
+  }
+  // écouté en premier (phase de capture) : sinon la transition entre pages emporterait le clic
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('[data-fiche]'); if (!a) return;
+    e.preventDefault(); e.stopPropagation(); if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+    ouvrir(a.dataset.fiche);
+  }, true);
+  tabs.forEach(function(t, k){ t.addEventListener('click', function(){ montrer(k, k > cur ? 1 : -1); }); });
+  prev.addEventListener('click', function(){ montrer(cur - 1, -1); });
+  next.addEventListener('click', function(){ montrer(cur + 1, 1); });
+  ff.querySelector('.ff-x').addEventListener('click', function(){ fermer(false); });
+  ff.addEventListener('click', function(e){ if (e.target === ff) fermer(false); });
+  window.addEventListener('popstate', function(){ fermer(true); });
+  document.addEventListener('keydown', function(e){
+    if (!ouvert) return;
+    if (e.key === 'Escape') fermer(false);
+    else if (e.key === 'ArrowRight') montrer(cur + 1, 1);
+    else if (e.key === 'ArrowLeft') montrer(cur - 1, -1);
+  });
+  // glisser le doigt à gauche ou à droite change de formule
+  var x0 = null, y0 = null;
+  ff.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+  ff.addEventListener('touchend', function(e){
+    if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { if (dx < 0) montrer(cur + 1, 1); else montrer(cur - 1, -1); }
+  }, { passive: true });
+  // « Choisir cette formule » : la fiche se ferme proprement avant de partir vers le devis
+  ff.querySelectorAll('.ff-go, .ff-lien').forEach(function(a){ a.addEventListener('click', function(e){ e.stopPropagation(); }); });
+})();
+
+/* v2.48 · accueil sur téléphone : un écran = une étape */
+(function(){
+  if (!window.matchMedia('(max-width:760px)').matches || !document.querySelector('.sn')) return;
+  document.documentElement.classList.add('etapes');
+})();

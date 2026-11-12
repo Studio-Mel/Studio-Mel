@@ -27,8 +27,8 @@
 <!-- Google Search Console : colle ici la balise de validation que Google te donne -->
 <link rel="preload" href="/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/plus-jakarta-sans.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/components.css?v=49">
-<link rel="stylesheet" href="/site.css?v=49">
+<link rel="stylesheet" href="/components.css?v=50">
+<link rel="stylesheet" href="/site.css?v=50">
 <script>document.documentElement.classList.add('js')</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://studiomel.eu/"}, {"@type": "ListItem", "position": 2, "name": "Tarifs", "item": "https://studiomel.eu/tarifs"}]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Pourquoi des prix aussi accessibles ?", "acceptedAnswer": {"@type": "Answer", "text": "Ce sont des tarifs de lancement, réservés à mes premiers clients. Ils restent fixes : le prix écrit dans le devis ne bouge plus."}}, {"@type": "Question", "name": "Comment se passe le paiement ?", "acceptedAnswer": {"@type": "Answer", "text": "En 2 ou 3 fois, sans frais. Un acompte au démarrage, le reste à la mise en ligne."}}, {"@type": "Question", "name": "Y a-t-il des frais chaque année ?", "acceptedAnswer": {"@type": "Answer", "text": "Seulement le nom de domaine, environ 15 € par an, à votre nom. L’hébergement est compris. La maintenance, à 40 € par mois, reste une option."}}, {"@type": "Question", "name": "La TVA est-elle en plus ?", "acceptedAnswer": {"@type": "Answer", "text": "Non. TVA non applicable, article 293 B du CGI : le prix affiché est le prix payé."}}]}</script>
@@ -59,7 +59,7 @@
 <div class="page-body ap"><div class="wrap">
   <section class="ap-sec" id="formules-detail" data-ta="rgba(124,92,255,.55)" data-tb="rgba(214,92,255,.24)">
     <p class="kicker" data-reveal>Les formules</p><h2 class="h-sec">Choisissez votre point de départ</h2>
-    <ul class="tfs"><li class="tf" data-reveal style="--d:0"><h3>Refonte</h3><p>Vous avez déjà un site, mais il ne vous ressemble plus.</p><b><span data-prix="refonte">500 €</span></b></li><li class="tf hl" data-reveal style="--d:1"><h3>Création</h3><p>Vous partez de zéro et voulez un site à votre image.</p><b><span data-prix="creation">750 €</span></b></li><li class="tf" data-reveal style="--d:2"><h3>Premium</h3><p>Vous voulez marquer les esprits, avec animations et outils sur mesure.</p><b><span data-prix="premium">1 200 €</span></b></li><li class="tf" data-reveal style="--d:3"><h3>Boutique en ligne</h3><p>Vous voulez vendre vos produits en ligne.</p><b>dès <span data-prix="boutique">1 900 €</span></b></li></ul>
+    <ul class="tfs"><li class="tf" data-reveal style="--d:0"><h3>Refonte</h3><p>Vous avez déjà un site, mais il ne vous ressemble plus.</p><b><span data-prix="refonte">500 €</span></b><a class="tf-plus" href="#formules-detail" data-fiche="refonte">Voir le détail <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li class="tf hl" data-reveal style="--d:1"><h3>Création</h3><p>Vous partez de zéro et voulez un site à votre image.</p><b><span data-prix="creation">750 €</span></b><a class="tf-plus" href="#formules-detail" data-fiche="creation">Voir le détail <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li class="tf" data-reveal style="--d:2"><h3>Premium</h3><p>Vous voulez marquer les esprits, avec animations et outils sur mesure.</p><b><span data-prix="premium">1 200 €</span></b><a class="tf-plus" href="#formules-detail" data-fiche="premium">Voir le détail <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li class="tf" data-reveal style="--d:3"><h3>Boutique en ligne</h3><p>Vous voulez vendre vos produits en ligne.</p><b>dès <span data-prix="boutique">1 900 €</span></b><a class="tf-plus" href="#formules-detail" data-fiche="boutique">Voir le détail <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li></ul>
     <p class="price-notes"><span><b>Tarifs de lancement</b> réservés à mes premiers clients</span><span>Paiement en 2 ou 3 fois, sans frais</span><span>TVA non applicable, art. 293 B du CGI</span></p>
   </section>
   <section class="ap-sec" data-ta="rgba(20,170,200,.45)" data-tb="rgba(47,91,255,.26)">
@@ -159,6 +159,73 @@
   <section class="ap-sec" data-ta="rgba(20,170,200,.45)" data-tb="rgba(47,91,255,.26)"><p class="kicker" data-reveal>Questions</p><h2 class="h-sec">Les questions qu’on me pose sur les prix</h2><div class="mq-faqs"><details class="mq-faq" data-reveal><summary>Pourquoi des prix aussi accessibles ?</summary><p>Ce sont des tarifs de lancement, réservés à mes premiers clients. Ils restent fixes : le prix écrit dans le devis ne bouge plus.</p></details><details class="mq-faq" data-reveal><summary>Comment se passe le paiement ?</summary><p>En 2 ou 3 fois, sans frais. Un acompte au démarrage, le reste à la mise en ligne.</p></details><details class="mq-faq" data-reveal><summary>Y a-t-il des frais chaque année ?</summary><p>Seulement le nom de domaine, environ <span data-prix="domaine">15 €</span> par an, à votre nom. L’hébergement est compris. La maintenance, à <span data-prix="maint">40 €</span> par mois, reste une option.</p></details><details class="mq-faq" data-reveal><summary>La TVA est-elle en plus ?</summary><p>Non. TVA non applicable, article 293 B du CGI : le prix affiché est le prix payé.</p></details></div></section>
   <div data-ta="rgba(47,91,255,.55)" data-tb="rgba(124,92,255,.28)"><div class="cta-band" data-reveal><div><h2>Un devis gratuit, sous 48 h</h2><p>Décrivez votre projet, je vous envoie un prix fixe et détaillé.</p></div><a class="btn btn-lg btn-primary" href="/contact">Parlons de votre projet <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div></div>
 </div></div>
+
+<div class="ff" id="ff" role="dialog" aria-modal="true" aria-label="Détail des formules" hidden>
+  <div class="ff-in">
+    <div class="ff-h"><span class="ff-ti">Les formules</span><button type="button" class="ff-x" aria-label="Fermer">Fermer ✕</button></div>
+    <div class="ff-tabs" role="tablist" aria-label="Choisir une formule"><button type="button" role="tab" data-f="refonte" aria-selected="false">Refonte</button><button type="button" role="tab" data-f="creation" aria-selected="true">Création</button><button type="button" role="tab" data-f="premium" aria-selected="false">Premium</button><button type="button" role="tab" data-f="boutique" aria-selected="false">Boutique</button></div>
+    <div class="ff-pages">
+    <section class="ff-p" data-f="refonte" aria-labelledby="ff-n-refonte" hidden>
+      <p class="ff-for">Vous avez déjà un site, mais il ne vous ressemble plus.</p>
+      <h3 id="ff-n-refonte">Refonte</h3>
+      <p class="ff-prix"><span data-prix="refonte">500 €</span></p>
+      <h4>Ce qui est inclus</h4>
+      <ul class="ff-inc" data-cms-list="formules.refonte.items"><li>Jusqu’à 5 pages</li><li>Nouveau design personnalisé, à partir de votre site actuel</li><li>Adapté au mobile et à la tablette</li><li>Formulaire de contact</li><li>Référencement de base</li><li>Mise en ligne et hébergement configurés</li><li>2 tours de retouches</li></ul>
+      <ul class="ff-k">
+        <li><span>Délai</span><b>1 à 3 semaines après réception de vos contenus</b></li>
+        <li><span>Retouches</span><b>2 tours de retouches</b></li>
+        <li><span>Paiement</span><b>En 2 ou 3 fois, sans frais</b></li>
+        <li><span>Propriété</span><b>Le site et le nom de domaine sont à vous</b></li>
+      </ul>
+      <a class="btn btn-lg btn-primary ff-go" href="/contact?formule=Refonte%20de%20site#formulaire">Choisir cette formule <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a class="ff-lien" href="/tarifs#formules-detail">Comparer toutes les formules et les options</a>
+    </section><section class="ff-p" data-f="creation" aria-labelledby="ff-n-creation" >
+      <p class="ff-for">Vous partez de zéro et voulez un site à votre image.</p>
+      <h3 id="ff-n-creation">Création <span class="ff-b">Le plus demandé</span></h3>
+      <p class="ff-prix"><span data-prix="creation">750 €</span></p>
+      <h4>Ce qui est inclus</h4>
+      <ul class="ff-inc" data-cms-list="formules.creation.items"><li>Jusqu’à 5 pages, créées de zéro</li><li>Design personnalisé à votre image</li><li>Adapté au mobile et à la tablette</li><li>Formulaire de contact</li><li>Référencement de base</li><li>Mise en ligne, domaine et hébergement configurés</li><li>2 tours de retouches</li></ul>
+      <ul class="ff-k">
+        <li><span>Délai</span><b>1 à 3 semaines après réception de vos contenus</b></li>
+        <li><span>Retouches</span><b>2 tours de retouches</b></li>
+        <li><span>Paiement</span><b>En 2 ou 3 fois, sans frais</b></li>
+        <li><span>Propriété</span><b>Le site et le nom de domaine sont à vous</b></li>
+      </ul>
+      <a class="btn btn-lg btn-primary ff-go" href="/contact?formule=Cr%C3%A9ation%20de%20site%20vitrine#formulaire">Choisir cette formule <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a class="ff-lien" href="/tarifs#formules-detail">Comparer toutes les formules et les options</a>
+    </section><section class="ff-p" data-f="premium" aria-labelledby="ff-n-premium" hidden>
+      <p class="ff-for">Vous voulez marquer les esprits, ou vendre en ligne.</p>
+      <h3 id="ff-n-premium">Premium</h3>
+      <p class="ff-prix"><span data-prix="premium">1 200 €</span></p>
+      <h4>Ce qui est inclus</h4>
+      <ul class="ff-inc" data-cms-list="formules.premium.items"><li>Jusqu’à 8 pages</li><li>Tout ce qu’inclut la Création</li><li>Animations sur mesure : 3D, transitions, défilement</li><li>Un outil interactif : simulateur, carte, avant/après</li><li>3 tours de retouches</li></ul>
+      <ul class="ff-k">
+        <li><span>Délai</span><b>Précisé dans le devis, selon les animations et l’outil sur mesure</b></li>
+        <li><span>Retouches</span><b>3 tours de retouches</b></li>
+        <li><span>Paiement</span><b>En 2 ou 3 fois, sans frais</b></li>
+        <li><span>Propriété</span><b>Le site et le nom de domaine sont à vous</b></li>
+      </ul>
+      <a class="btn btn-lg btn-primary ff-go" href="/contact?formule=Site%20Premium#formulaire">Choisir cette formule <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a class="ff-lien" href="/tarifs#formules-detail">Comparer toutes les formules et les options</a>
+    </section><section class="ff-p" data-f="boutique" aria-labelledby="ff-n-boutique" hidden>
+      <p class="ff-for">Vous voulez vendre vos produits en ligne, sans commission sur les ventes.</p>
+      <h3 id="ff-n-boutique">Boutique en ligne</h3>
+      <p class="ff-prix"><small>dès</small> <span data-prix="boutique">1 900 €</span></p>
+      <h4>Ce qui est inclus</h4>
+      <ul class="ff-inc" data-cms-list="formules.boutique.items"><li>Jusqu’à 20 produits mis en ligne</li><li>Panier et paiement sécurisé : carte, Apple Pay, Google Pay</li><li>Options produit : taille, couleur, personnalisation</li><li>E-mail de confirmation à chaque commande</li><li>Pages CGV, livraison et retours, rédigées à partir de vos informations</li><li>Le design et les animations du Premium</li><li>3 tours de retouches et prise en main expliquée</li></ul>
+      <ul class="ff-k">
+        <li><span>Délai</span><b>Précisé dans le devis, selon le nombre de produits</b></li>
+        <li><span>Retouches</span><b>3 tours de retouches</b></li>
+        <li><span>Paiement</span><b>En 2 ou 3 fois, sans frais</b></li>
+        <li><span>Propriété</span><b>Le site et le nom de domaine sont à vous</b></li><li><span>Paiement des ventes</span><b>Directement sur votre compte (Stripe), 0 % de commission Studio Mel</b></li>
+      </ul>
+      <a class="btn btn-lg btn-primary ff-go" href="/contact?formule=Boutique%20en%20ligne#formulaire">Choisir cette formule <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a class="ff-lien" href="/tarifs#formules-detail">Comparer toutes les formules et les options</a>
+    </section>
+    </div>
+    <div class="ff-nav"><button type="button" class="ff-prev" aria-label="Formule précédente">‹ <span></span></button><button type="button" class="ff-next" aria-label="Formule suivante"><span></span> ›</button></div>
+  </div>
+</div>
 </main>
 <footer class="foot">
   <div class="wrap">
@@ -211,11 +278,11 @@
   <div class="as-log" id="as-log" aria-live="polite"></div>
   <div class="as-ch" id="as-ch"></div>
 </div>
-<script src="/config.js?v=49" defer></script>
-<script src="/site.js?v=49" defer></script>
-<script src="/cms.js?v=49" defer></script>
-<script src="/stats.js?v=49" defer></script>
-<script src="/home.js?v=49" defer></script>
-<script src="/assistant.js?v=49" defer></script>
+<script src="/config.js?v=50" defer></script>
+<script src="/site.js?v=50" defer></script>
+<script src="/cms.js?v=50" defer></script>
+<script src="/stats.js?v=50" defer></script>
+<script src="/home.js?v=50" defer></script>
+<script src="/assistant.js?v=50" defer></script>
 </body>
 </html>
