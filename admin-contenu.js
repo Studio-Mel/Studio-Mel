@@ -63,7 +63,7 @@ function rendreTarifs(){
   const p = document.querySelector('[data-p="tarifs"]'); p.innerHTML = "";
   const g = el("div", { class: "grid" });
   Object.keys(NOMS_T).forEach(k => g.append(champ(NOMS_T[k] + " (€)", C.tarifs[k], v => { C.tarifs[k] = Math.max(0, v || 0); }, { type: "number" })));
-  p.append(el("div", { class: "card" }, el("h2", {}, "Tarifs"), el("p", { class: "help" }, "Ces prix se mettent à jour partout : formules, tableau comparatif, options, simulateur, formulaire de contact et assistant. Pense aussi à mettre à jour la FAQ et les articles s’ils citent un prix."), g));
+  p.append(el("div", { class: "card" }, el("h2", {}, "Tarifs"), el("p", { class: "help" }, "Ces prix se mettent à jour partout : formules, tableau comparatif, options, simulateur, formulaire de contact, FAQ, CGV et articles. N’oublie pas le bouton Enregistrer en haut."), g));
 }
 function rendreFormules(){
   const p = document.querySelector('[data-p="formules"]'); p.innerHTML = "";
