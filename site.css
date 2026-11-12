@@ -1587,3 +1587,7 @@ html.ban-on .nav-in{height:72px}
   .tools.pile .tv-qz{padding:10px;gap:6px}.tools.pile .tv-qz span{height:16px}
   .tools.pile .tv-dg svg{width:72px;height:72px}.tools.pile .tv-dg text{font-size:20px}
 }
+
+/* v2.46 · ascenseur : bouton Accueil */
+.sn-home svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+@media (max-width:560px){.sn-home{padding:0 12px!important}.sn-home span{display:none}}

@@ -413,7 +413,7 @@
     var ligne = decal() + innerHeight * .25, id = null;
     secs.forEach(function(s){ if (s && s.getBoundingClientRect().top <= ligne) id = s.id; });
     var fin = document.querySelector('.final');
-    if (id && fin && fin.getBoundingClientRect().top < innerHeight * .5) id = 'accompagnement';
+    if (id && fin && fin.getBoundingClientRect().top < innerHeight * .5) id = 'formules';
     poser(id);
   }
   var t = false;
